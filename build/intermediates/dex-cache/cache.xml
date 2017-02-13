@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="469c3a787afe64f7d2c104984f0478ad54604636">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_754a61f04776db1c97c8e5606f3e653c600747a1/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-recyclerview-v7-23.4.0_1542244383af40610f6898c2d8c5f54e792c5220/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-tasks/1.4.0/d85884acf6810a3bbbecb587f239005cbc846dc4/bolts-tasks-1.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d85884acf6810a3bbbecb587f239005cbc846dc4">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/bolts-tasks-1.4.0_607060e6f6f16f3f48fa1a2f065460e500a1df64/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/design/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="5326d9a850d491714fef8cbfaa9ea3416f0bf0d2">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-design-23.4.0_a71d93cc3ebb4d2c3ca06742599a278899ee4aa7/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0ec624ea55f603d7c5f0718620ee1d053c0a1018">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_79eec0a398601de06936b87993572514c2aad4d8/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-auth/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1f4bb2577a30d0b3268fed038ed59230709ad593">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-auth-9.6.0_546875e81ec6bdd9f6ff1f2299e51e4b8d8a26d8/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="c03bf57f358aa10d253f21989e93bcf6014b3b17">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-25.1.1_8f3e3ee1b2fdfd45ce8c677c2b8e7b3e9654289d/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.firebase/firebase-analytics-impl/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="74d1712880eb2b4ab37ddf3c6a3232c883756726">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.firebase-firebase-analytics-impl-9.6.0_1c667300813405f6a745c9feda4d9c44f2de18c2/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7bde4c34162092e0a77e7f12dc85ed77c484cf5c">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-media-compat-25.1.1_b5c7bf5554dd8498fd10149811e3fb836a5f7f9f/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="93a0248fe0524b4fa2d16f5f7c3cff8452796454">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-base-9.6.0_9cf13935d38533e41b61a95610fbc140776c062b/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="02741d05d4b697fba5e279e9881aaa1da0ca7c7f">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-compat-25.1.1_662623de576465cf43556c76f267a0e91a1b4fa7/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-auth-base/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0ef21408e3142ffbfbd4a7ec1762c3325c6c386c">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-auth-base-9.6.0_49cb97e5b3f4adc9700c4fe687592f36a1527f27/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="614b2ffd04818e865e1c02cc149c6b92e518e862">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-tasks-9.6.0_12c7e81cf1a1363129434413aa96da781f932949/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f6afcfbf1989631424f9ceaae6ee24777d3cf6ba">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-basement-9.6.0_36b47747aab45b9b69a5e160bba82c83da5096ea/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/25.1.1/support-annotations-25.1.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="b59b6ee8d6ecc03e672d253800430343493a6ed8">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-25.1.1_14aafc189f741dcc18e93716aac4b6dd0bf3166c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ecb496cc08dd52551fc5ec6db3bc0632e95a89bb">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-25.1.1_2e0f939c80345f8e9cec8b5075462eb55b8d43ae/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-applinks/1.4.0/8ad21bf21784dacce5f2043afb97218cc377e835/bolts-applinks-1.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="8ad21bf21784dacce5f2043afb97218cc377e835">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/bolts-applinks-1.4.0_9899350e1fbb896b28606c5ea38b0dc6cc162bf4/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/customtabs/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="2d1eaa9e0b98f8fc4c2b989d9b30d4f1480648ac">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-customtabs-23.4.0_b8db2a105cf98797b0d5d8f03e0e638c6347b3d5/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.firebase/firebase-analytics/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="a9f41e6463de88c3f979d796382fc24fb7e9cd41">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.firebase-firebase-analytics-9.6.0_65d7e14fd62dac34b0719388822ba479a5e7c3bb/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d9ecde39b460470e655de6e47c05573d2d5a8bfb">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-cardview-v7-23.4.0_a585c0d9aa0f5d6604564e1453e7157fe9edc073/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/25.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0d191c1a09e4892d059e5ce749e4ad4e08129e35">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-25.1.1_34e75e8dcace0372b2c37c7d16444fa049c82c7c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.firebase/firebase-auth/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="580fa73d5bf63ffd04b9d66d0e75a2ed21842702">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.firebase-firebase-auth-9.6.0_3e69e04cf86b694a03ae40bc120a67d9eb7aae45/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="3e04ac8ca644ea7baddf6fdcf72e15c79e9df94a">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-core-ui-25.1.1_ca95bc1d4df00e4d8308173abe19f81f4b267dec/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.firebase/firebase-database-connection/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="db0a4170961a16af6d7a5222bf90a5876eea4227">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.firebase-firebase-database-connection-9.6.0_506bbbca51ea7e61d5e0b8edddfbfbb15f8c7300/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/support-fragment/25.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e2719c102dca3a7a5b02ce07f769362da6ddb4ab">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-fragment-25.1.1_c4fe91a92a9e0b90a6167cbc4cc8ea3d1a4478e1/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.firebase/firebase-iid/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d39f676be8400123523882d189a1d84040d34339">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.firebase-firebase-iid-9.6.0_0cda9ad523881be9d556f0b243acf9787859a93c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/support-v4/25.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-25.1.1_b56591c37545f48825030bd88418ef970a938e3b/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.gradle/caches/modules-2/files-2.1/com.github.bumptech.glide/glide/3.6.1/86b122e640af09b0723e1fa44083c354ba6d9089/glide-3.6.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="86b122e640af09b0723e1fa44083c354ba6d9089">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/glide-3.6.1_080eb12fe9d9aadf081bb07e33b13a7cad5d84a8/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.firebase/firebase-auth-module/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f861fce2e9fa167e7fe8d8558cf2cbb910b9fb34">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.firebase-firebase-auth-module-9.6.0_087930eebba10631d7358517891db95c977cbe96/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.14.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="42a3ae86dd3ae2876d3e95c2e6e104ae57a50a65">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.facebook.android-facebook-android-sdk-4.14.1_cd764e9b015f1a3f3ef0ef8337d66e84b8e63a80/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.firebase/firebase-auth-common/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7a343e17f154f513a09c12946fae0f172be079ec">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.firebase-firebase-auth-common-9.6.0_fd38ca2847ea8abbd2a160ea8dd4faab4827fa89/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.1.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0fb891e8f0cfba0513043a7bb357513d229ca2cd">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-core-utils-25.1.1_6333c6c2c3fd6a54c3879a8b782c421b3d95e5f2/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.firebase/firebase-database/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="5243af50631020511cf2403789678149b1a319e6">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.firebase-firebase-database-9.6.0_6f9555ce0b5497f09d4da464912c6662117e9e58/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.firebaseui/firebase-ui-auth/0.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="8ac09931704b91e7b4d281f5e34b3b006b628c22">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.firebaseui-firebase-ui-auth-0.6.0_b40bd292c9d65be61bc02757814043c73b341317/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/exploded-aar/com.google.firebase/firebase-common/9.6.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="bd11b3899f275668a9355f19cea2c2320f5f9d14">
+        <dex dex="/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.firebase-firebase-common-9.6.0_e5ca7749f4c49ce112ece8ddbdfb1aff95dec6cb/classes.dex" />
+    </item>
+
+</items>

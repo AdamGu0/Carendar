@@ -1,0 +1,7 @@
+#Mon Feb 13 12:40:54 MST 2017
+base.0=/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_754a61f04776db1c97c8e5606f3e653c600747a1
+renamed.1=classes.dex
+renamed.0=classes2.dex
+file.1=/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_79eec0a398601de06936b87993572514c2aad4d8/classes.dex
+base.1=/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_79eec0a398601de06936b87993572514c2aad4d8
+file.0=/Users/Neo/MOOCs/Udacity/Carendar/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_754a61f04776db1c97c8e5606f3e653c600747a1/classes.dex
