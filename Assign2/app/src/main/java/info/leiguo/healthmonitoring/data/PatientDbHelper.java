@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.TABLE_NAME;
-
 /**
  * Created by Neo on 2/11/17.
  */
@@ -42,7 +40,7 @@ public class PatientDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + mTableName);
         onCreate(sqLiteDatabase);
     }
 

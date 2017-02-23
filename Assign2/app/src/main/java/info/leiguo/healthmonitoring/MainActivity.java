@@ -214,13 +214,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Sens
         cv.put(PatientContract.PatientEntry.COLUMN_X_VALUE, xValue);
         cv.put(PatientContract.PatientEntry.COLUMN_Y_VALUE, yValue);
         cv.put(PatientContract.PatientEntry.COLUMN_Z_VALUE, zValue);
-        return mDb.insert(getTableName(), null, cv);
+        return mDb.insert(mTableName, null, cv);
     }
 
 
     private Cursor readRecords() {
         return mDb.query(
-                PatientContract.PatientEntry.TABLE_NAME,
+                mTableName,
                 null,
                 null,
                 null,
