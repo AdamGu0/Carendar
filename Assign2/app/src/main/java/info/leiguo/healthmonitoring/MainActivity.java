@@ -2,12 +2,14 @@ package info.leiguo.healthmonitoring;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -15,7 +17,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.Random;
 
 import info.leiguo.healthmonitoring.data.PatientContract;
@@ -60,6 +66,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Sens
         setContentView(R.layout.main_activity);
         findViewById(R.id.btn_run).setOnClickListener(this);
         findViewById(R.id.btn_stop).setOnClickListener(this);
+        findViewById(R.id.btn_download).setOnClickListener(this);
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_group);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
@@ -125,6 +132,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Sens
             case R.id.btn_stop:
                 onStopClicked();
                 break;
+            case R.id.btn_download:
+                onDownloadClicked();
+                break;
             default:
         }
     }
@@ -138,6 +148,50 @@ public class MainActivity extends Activity implements View.OnClickListener, Sens
     private void onStopClicked(){
         clearView();
         mRunning = false;
+    }
+
+    private void onDownloadClicked() {
+        String tableName = getTableName();
+        Toast.makeText(this, "Downloading database: " + tableName, Toast.LENGTH_LONG).show();
+
+        //download in background
+        new DownloadDBTask().execute("https://impact.asu.edu/CSE535Spring17Folder/" + tableName + ".db");
+        //new DownloadFilesTask().execute("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png");
+    }
+
+    private class DownloadDBTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... params) {
+            return download(params[0]);
+        }
+
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                Toast.makeText(MainActivity.this, "Download completed.", Toast.LENGTH_SHORT).show();
+                //TODO .db文件已下载到data/data/info.leiguo.healthmonitoring/files/，还需读取并显示最后10秒的数据
+            } else
+                Toast.makeText(MainActivity.this, "Download failed, please try again.", Toast.LENGTH_LONG).show();
+        }
+
+        private boolean download(String s) {
+            try {
+                URL url = new URL(s);
+                InputStream is = url.openStream();
+                String filename = s.substring(s.lastIndexOf("/") + 1);
+                OutputStream os = openFileOutput(filename, MODE_PRIVATE);
+                byte[] buffer = new byte[1024];
+                int len = 0;
+                while ((len = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, len);
+                }
+                is.close();
+                os.close();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
     }
 
     private void initializeData(){
@@ -245,8 +299,4 @@ public class MainActivity extends Activity implements View.OnClickListener, Sens
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
-
-
-
-
 }
