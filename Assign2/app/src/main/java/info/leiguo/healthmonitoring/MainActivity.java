@@ -3,6 +3,7 @@ package info.leiguo.healthmonitoring;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
@@ -92,9 +93,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Sens
         PatientDbHelper dbHelper = new PatientDbHelper(this, getTableName());
         mDb = dbHelper.getWritableDatabase();
 
+        /*
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), sampleRate);
-
+        */
+        Intent startSenseService = new Intent(MainActivity.this, SensorHandler.class);
+        startService(startSenseService);
     }
 
     private String getTableName() {
