@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private float[] mValues;
     private boolean mRunning = true;
     private Handler mHandler = new Handler();
-    private MyRunnable mTask;
+//    private MyRunnable mTask;
     private ReadDataRunnable mReadDataTask;
     // Used to control when will we add a large value to the array
     private int mRefreshDataTimes = 0;
@@ -247,14 +247,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void initializeData(){
         if (mRunning) {
-            mHandler.removeCallbacks(mTask);
+//            mHandler.removeCallbacks(mTask);
             mHandler.removeCallbacks(mReadDataTask);
             mValues = new float[0];
             mRefreshDataTimes = 0;
         }
-        mTask = new MyRunnable();
+//        mTask = new MyRunnable();
         mRunning = true;
-        mHandler.post(mTask);
+//        mHandler.post(mTask);
         // start read data task.
         mReadDataTask = new ReadDataRunnable();
         mHandler.post(mReadDataTask);
@@ -298,26 +298,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void refreshView(){
-        refreshData();
+//        refreshData();
         mGraphView.setValues(mValues);
         mGraphView.invalidate();
     }
 
-    private class MyRunnable implements Runnable{
-        @Override
-        public void run() {
-            if(mRunning){
-                refreshView();
-                mHandler.postDelayed(this, 150);
-            }
-        }
-    }
+//    private class MyRunnable implements Runnable{
+//        @Override
+//        public void run() {
+//            if(mRunning){
+//                refreshView();
+//                mHandler.postDelayed(this, 150);
+//            }
+//        }
+//    }
 
     private class ReadDataRunnable implements Runnable{
         @Override
         public void run() {
             if(mRunning){
                 updateData(readRecords());
+                refreshView();
                 // read data from database every second
                 mHandler.postDelayed(this, 1000);
             }
@@ -326,10 +327,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void updateData(ArrayList<SensorData> dataList){
         int length = dataList.size();
+        float[] values = new float[length * 3];
         for(int i = 0; i < length; i++){
             SensorData data = dataList.get(0);
             Log.e("updateData", "X: " + data.x + "  y:" + data.y + "  z: " + data.z);
+            values[i * 3 ] = (float) data.x;
+            values[i * 3 + 1] = (float) data.y;
+            values[i * 3 + 2] = (float) data.z;
         }
+        mValues = values;
     }
 
     private  ArrayList<SensorData>  readRecords() {
@@ -350,14 +356,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 final int INIT_CAPACITY = PRIOR_SECOND + 5;
             ArrayList<SensorData> dataList = new ArrayList<>(INIT_CAPACITY);
             if(cursor.moveToFirst()){
-                double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
-                double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
-                double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
-                SensorData data = new SensorData();
-                data.x = x;
-                data.y = y;
-                data.z = z;
-                dataList.add(data);
+                do{
+                    double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
+                    double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
+                    double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
+                    SensorData data = new SensorData();
+                    data.x = x;
+                    data.y = y;
+                    data.z = z;
+                    dataList.add(data);
+                }while (cursor.moveToNext());
             }
             cursor.close();
             return dataList;
