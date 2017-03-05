@@ -227,14 +227,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="8dp"
                     android:background="#7777ff"
                     android:gravity="center"
                     android:text="Download DB"
                     android:textColor="#000000"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:textSize="13sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
         </LinearLayout>

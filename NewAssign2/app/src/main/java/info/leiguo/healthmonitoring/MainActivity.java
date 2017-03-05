@@ -1,14 +1,9 @@
 package info.leiguo.healthmonitoring;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,10 +19,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Random;
 
 import info.leiguo.healthmonitoring.data.PatientContract;
-import info.leiguo.healthmonitoring.data.PatientContract.PatientEntry;
 import info.leiguo.healthmonitoring.data.PatientDbHelper;
 
 ;import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.COLUMN_TIME_STEMP;
@@ -47,7 +40,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private float[] mValues;
     private boolean mRunning = true;
     private Handler mHandler = new Handler();
-//    private MyRunnable mTask;
     private ReadDataRunnable mReadDataTask;
     // Used to control when will we add a large value to the array
     private int mRefreshDataTimes = 0;
@@ -59,14 +51,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private EditText mPatientIdEditText;
     private EditText mPatientAgeEditText;
     private RadioButton mPatientSexRadioButton;
-
-//    private float mTimeStamp;
-//    private float xValue;
-//    private float yValue;
-//    private float zValue;
-//    private SensorManager mSensorManager;
-//    private int sampleRate = 1000000;
-//    private double lastSampleTime = System.currentTimeMillis();
     private String CREATE_TABLE_SQL;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,37 +244,37 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mHandler.post(mReadDataTask);
     }
 
-    private void refreshData(){
-        Random myRandom = new Random();
-        final int N = 50;
-        float[] temp = new float[N];
-        final int MIN_VALUE_SEED = 3;
-        final int MAX_VALUE_BASE = 9;
-        if(mValues == null || mValues.length == 0){
-            // Initializing
-            for(int i = 0; i < N - 1; i++){
-                temp[i] = myRandom.nextInt(MIN_VALUE_SEED);
-            }
-            temp[N - 1] = myRandom.nextInt(MIN_VALUE_SEED) + MAX_VALUE_BASE;
-        }else{
-            // The amount of data to be updated.
-            final int UPDATE_AMOUNT = 3;
-            for(int i = 0; i < N - UPDATE_AMOUNT; i++){
-                temp[i] = mValues[i + UPDATE_AMOUNT];
-            }
-            for(int i = N - UPDATE_AMOUNT; i< N - 1; i++){
-                temp[i] = myRandom.nextInt(MIN_VALUE_SEED);
-            }
-            if(mRefreshDataTimes % INSERT_SUMMIT_INTERVAL == 0){
-                temp[N - 1] = myRandom.nextInt(MIN_VALUE_SEED) + MAX_VALUE_BASE;
-                mRefreshDataTimes = 0;
-            }else{
-                temp[N - 1] = myRandom.nextInt(1);
-            }
-        }
-        mValues = temp;
-        mRefreshDataTimes++;
-    }
+//    private void refreshData(){
+//        Random myRandom = new Random();
+//        final int N = 50;
+//        float[] temp = new float[N];
+//        final int MIN_VALUE_SEED = 3;
+//        final int MAX_VALUE_BASE = 9;
+//        if(mValues == null || mValues.length == 0){
+//            // Initializing
+//            for(int i = 0; i < N - 1; i++){
+//                temp[i] = myRandom.nextInt(MIN_VALUE_SEED);
+//            }
+//            temp[N - 1] = myRandom.nextInt(MIN_VALUE_SEED) + MAX_VALUE_BASE;
+//        }else{
+//            // The amount of data to be updated.
+//            final int UPDATE_AMOUNT = 3;
+//            for(int i = 0; i < N - UPDATE_AMOUNT; i++){
+//                temp[i] = mValues[i + UPDATE_AMOUNT];
+//            }
+//            for(int i = N - UPDATE_AMOUNT; i< N - 1; i++){
+//                temp[i] = myRandom.nextInt(MIN_VALUE_SEED);
+//            }
+//            if(mRefreshDataTimes % INSERT_SUMMIT_INTERVAL == 0){
+//                temp[N - 1] = myRandom.nextInt(MIN_VALUE_SEED) + MAX_VALUE_BASE;
+//                mRefreshDataTimes = 0;
+//            }else{
+//                temp[N - 1] = myRandom.nextInt(1);
+//            }
+//        }
+//        mValues = temp;
+//        mRefreshDataTimes++;
+//    }
 
     private void clearView(){
         mGraphView.setValues(new float[0]);
@@ -317,10 +301,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         @Override
         public void run() {
             if(mRunning){
-                updateData(readRecords());
-                refreshView();
-                // read data from database every second
-                mHandler.postDelayed(this, 1000);
+//                new ReadDataThread(new ReadDataCallback() {
+//                    @Override
+//                    public void onReadDataFinish(ArrayList<SensorData> dataList) {
+//                        updateData(dataList);
+//                        refreshView();
+//                        // read data from database every second
+//                        mHandler.postDelayed(mReadDataTask, 1000);
+//                    }
+//                }).start();
+                new ReadDataTask().execute();
             }
         }
     }
@@ -338,44 +328,62 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mValues = values;
     }
 
-    private  ArrayList<SensorData>  readRecords() {
-        // Read the prior ten second data
-        final int PRIOR_SECOND = 10;
-        long now = System.currentTimeMillis();
-        long timeBeginPoint = now - PRIOR_SECOND * 1000;
-        Cursor cursor =  mDb.query(
-                mTableName,
-                new String[]{COLUMN_X_VALUE, COLUMN_Y_VALUE, COLUMN_Z_VALUE, COLUMN_TIME_STEMP},
-                COLUMN_TIME_STEMP + ">= ?",
-                new String[]{String.valueOf(timeBeginPoint)},
-                null,
-                null,
-                COLUMN_TIME_STEMP + " ASC"
-        );
-        if(cursor != null){
-                final int INIT_CAPACITY = PRIOR_SECOND + 5;
-            ArrayList<SensorData> dataList = new ArrayList<>(INIT_CAPACITY);
-            if(cursor.moveToFirst()){
-                do{
-                    double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
-                    double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
-                    double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
-                    SensorData data = new SensorData();
-                    data.x = x;
-                    data.y = y;
-                    data.z = z;
-                    dataList.add(data);
-                }while (cursor.moveToNext());
-            }
-            cursor.close();
-            return dataList;
-        }
-        return new ArrayList<>(0);
-    }
-
     private static class SensorData{
         public double x;
         public double y;
         public double z;
     }
+
+    private class ReadDataTask extends AsyncTask<Void, Void, ArrayList<SensorData>>{
+        @Override
+        protected ArrayList<SensorData> doInBackground(Void... params) {
+            return readRecords();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<SensorData> sensorDatas) {
+//            super.onPostExecute(sensorDatas);
+            updateData(sensorDatas);
+            refreshView();
+            // read data from database every second
+            mHandler.postDelayed(mReadDataTask, 1000);
+        }
+
+        private  ArrayList<SensorData>  readRecords() {
+            // Read the prior ten second data
+            final int PRIOR_SECOND = 10;
+            long now = System.currentTimeMillis();
+            long timeBeginPoint = now - PRIOR_SECOND * 1000;
+            Cursor cursor =  mDb.query(
+                    mTableName,
+                    new String[]{COLUMN_X_VALUE, COLUMN_Y_VALUE, COLUMN_Z_VALUE, COLUMN_TIME_STEMP},
+                    COLUMN_TIME_STEMP + "> ?",
+                    new String[]{String.valueOf(timeBeginPoint)},
+                    null,
+                    null,
+                    COLUMN_TIME_STEMP
+            );
+            if(cursor != null){
+                final int INIT_CAPACITY = PRIOR_SECOND + 5;
+                ArrayList<SensorData> dataList = new ArrayList<>(INIT_CAPACITY);
+                if(cursor.moveToFirst()){
+                    do{
+                        double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
+                        double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
+                        double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
+                        SensorData data = new SensorData();
+                        data.x = x;
+                        data.y = y;
+                        data.z = z;
+                        dataList.add(data);
+                    }while (cursor.moveToNext());
+                }
+                cursor.close();
+                return dataList;
+            }
+            return new ArrayList<>(0);
+        }
+
+    }
+
 }
