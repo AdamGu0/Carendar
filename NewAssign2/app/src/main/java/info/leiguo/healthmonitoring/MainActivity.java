@@ -68,6 +68,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.btn_run).setOnClickListener(this);
         findViewById(R.id.btn_stop).setOnClickListener(this);
         findViewById(R.id.btn_download).setOnClickListener(this);
+        findViewById(R.id.btn_save).setOnClickListener(this);
+        findViewById(R.id.btn_upload).setOnClickListener(this);
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_group);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
@@ -92,6 +94,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         PatientDbHelper dbHelper = new PatientDbHelper(this, getTableName());
         mDb = dbHelper.getWritableDatabase();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopDataService();
     }
 
     private String getTableName() {
@@ -143,21 +151,29 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void onSaveClicked(){
         createTableAndMarkTheName();
+        beginDataService();
     }
 
     private void createTableAndMarkTheName(){
         // mTableName will be saved during createTable()
         createTable();
         mCreatedTableName = mTableName;
-        beginDataService();
     }
 
     private void beginDataService(){
-        Intent intent = new Intent(this, MyService.class);
+        // Stop the data service if it is running.
+        stopDataService();
+        // Start the data service
+        Intent intent = new Intent(MyService.MY_ACTION);
+        intent.setPackage(getPackageName());
         intent.putExtra(MyService.KEY_TABLE_NAME, mTableName);
         startService(intent);
     }
 
+    private void stopDataService(){
+        Intent intent = new Intent(this, MyService.class);
+        stopService(intent);
+    }
 
     private void onRunClicked(){
         initializeData();

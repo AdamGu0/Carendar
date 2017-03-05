@@ -17,7 +17,11 @@
         </intent-filter>
         </activity>
 
-        <service android:name=".MyService"/>
+        <service android:name=".MyService">
+            <intent-filter android:label="my_service" >
+                <action android:name="info.leiguo.healthmonitoring.MY_SERVICE"/>
+            </intent-filter>
+            </service>
 
     </application>
     <uses-permission android:name="android.permission.INTERNET" />

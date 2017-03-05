@@ -9,7 +9,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
-import android.util.Log;
 
 import info.leiguo.healthmonitoring.data.PatientContract;
 import info.leiguo.healthmonitoring.data.PatientDbHelper;
@@ -20,20 +19,17 @@ import info.leiguo.healthmonitoring.data.PatientDbHelper;
 
 public class MyService extends Service implements SensorEventListener {
     public static final String KEY_TABLE_NAME = "table_name";
-    public static final String MY_ACTION = "info.leiguo.healthmonitoring.MY_SERVICE";
     private SQLiteDatabase mDb;
-//    private int sampleRate = 1000000;
+    private int sampleRate = 1000000;
     private float mTimeStamp;
     private float xValue;
     private float yValue;
     private float zValue;
     private String mTableName = "";
-    private SensorManager mSensorManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
     }
 
     @Override
@@ -50,18 +46,10 @@ public class MyService extends Service implements SensorEventListener {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unregisterSensorListener();
-    }
-
     private void registerSensorListener(){
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    private void unregisterSensorListener(){
-        mSensorManager.unregisterListener(this);
+        SensorManager mSensorManager;
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), sampleRate);
     }
 
     @Override
@@ -72,7 +60,6 @@ public class MyService extends Service implements SensorEventListener {
             zValue = sensorEvent.values[2];
             mTimeStamp = System.currentTimeMillis();
             addNewRecords();
-            Log.e("xxx", "data: " + xValue + "++y: " + yValue + "++z: " + zValue);
         }
     }
 
