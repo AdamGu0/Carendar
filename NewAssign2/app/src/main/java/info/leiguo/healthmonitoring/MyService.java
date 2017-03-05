@@ -21,14 +21,15 @@ import info.leiguo.healthmonitoring.data.PatientDbHelper;
 public class MyService extends Service implements SensorEventListener {
     public static final String KEY_TABLE_NAME = "table_name";
     public static final String MY_ACTION = "info.leiguo.healthmonitoring.MY_SERVICE";
+    private static final long ACCE_FILTER_DATA_MIN_TIME = 1000;
     private SQLiteDatabase mDb;
-//    private int sampleRate = 1000000;
     private float mTimeStamp;
     private float xValue;
     private float yValue;
     private float zValue;
     private String mTableName = "";
     private SensorManager mSensorManager;
+    private  long mLastSaved = -1;
 
     @Override
     public void onCreate() {
@@ -67,12 +68,14 @@ public class MyService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            xValue = sensorEvent.values[0];
-            yValue = sensorEvent.values[1];
-            zValue = sensorEvent.values[2];
-            mTimeStamp = System.currentTimeMillis();
-            addNewRecords();
-            Log.e("xxx", "data: " + xValue + "++y: " + yValue + "++z: " + zValue);
+            if ((System.currentTimeMillis() - mLastSaved) >= ACCE_FILTER_DATA_MIN_TIME) {
+                xValue = sensorEvent.values[0];
+                yValue = sensorEvent.values[1];
+                zValue = sensorEvent.values[2];
+                mTimeStamp = System.currentTimeMillis();
+                addNewRecords();
+//                Log.e("xxx", "data: " + xValue + "++y: " + yValue + "++z: " + zValue);
+            }
         }
     }
 

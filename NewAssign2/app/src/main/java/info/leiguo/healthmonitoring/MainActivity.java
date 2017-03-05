@@ -12,6 +12,7 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -22,12 +23,17 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Random;
 
 import info.leiguo.healthmonitoring.data.PatientContract;
+import info.leiguo.healthmonitoring.data.PatientContract.PatientEntry;
 import info.leiguo.healthmonitoring.data.PatientDbHelper;
 
-;
+;import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.COLUMN_TIME_STEMP;
+import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.COLUMN_X_VALUE;
+import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.COLUMN_Y_VALUE;
+import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.COLUMN_Z_VALUE;
 
 /**
  * All the code in this class are written by Group 15.
@@ -42,6 +48,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private boolean mRunning = true;
     private Handler mHandler = new Handler();
     private MyRunnable mTask;
+    private ReadDataRunnable mReadDataTask;
     // Used to control when will we add a large value to the array
     private int mRefreshDataTimes = 0;
     private final int INSERT_SUMMIT_INTERVAL = 8;
@@ -59,7 +66,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //    private float zValue;
 //    private SensorManager mSensorManager;
 //    private int sampleRate = 1000000;
-    private double lastSampleTime = System.currentTimeMillis();
+//    private double lastSampleTime = System.currentTimeMillis();
     private String CREATE_TABLE_SQL;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +126,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS " + getTableName() + " (" +
                 PatientContract.PatientEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 PatientContract.PatientEntry.COLUMN_TIME_STEMP + " REAL NOT NULL, " +
-                PatientContract.PatientEntry.COLUMN_X_VALUE + " REAL NOT NULL, " +
+                COLUMN_X_VALUE + " REAL NOT NULL, " +
                 PatientContract.PatientEntry.COLUMN_Y_VALUE + " REAL NOT NULL, " +
                 PatientContract.PatientEntry.COLUMN_Z_VALUE + " REAL NOT NULL" +
                 "); ";
@@ -241,12 +248,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void initializeData(){
         if (mRunning) {
             mHandler.removeCallbacks(mTask);
+            mHandler.removeCallbacks(mReadDataTask);
             mValues = new float[0];
             mRefreshDataTimes = 0;
         }
         mTask = new MyRunnable();
         mRunning = true;
         mHandler.post(mTask);
+        // start read data task.
+        mReadDataTask = new ReadDataRunnable();
+        mHandler.post(mReadDataTask);
     }
 
     private void refreshData(){
@@ -302,15 +313,61 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private Cursor readRecords() {
-        return mDb.query(
-                PatientContract.PatientEntry.TABLE_NAME,
+    private class ReadDataRunnable implements Runnable{
+        @Override
+        public void run() {
+            if(mRunning){
+                updateData(readRecords());
+                // read data from database every second
+                mHandler.postDelayed(this, 1000);
+            }
+        }
+    }
+
+    private void updateData(ArrayList<SensorData> dataList){
+        int length = dataList.size();
+        for(int i = 0; i < length; i++){
+            SensorData data = dataList.get(0);
+            Log.e("updateData", "X: " + data.x + "  y:" + data.y + "  z: " + data.z);
+        }
+    }
+
+    private  ArrayList<SensorData>  readRecords() {
+        // Read the prior ten second data
+        final int PRIOR_SECOND = 10;
+        long now = System.currentTimeMillis();
+        long timeBeginPoint = now - PRIOR_SECOND * 1000;
+        Cursor cursor =  mDb.query(
+                mTableName,
+                new String[]{COLUMN_X_VALUE, COLUMN_Y_VALUE, COLUMN_Z_VALUE, COLUMN_TIME_STEMP},
+                COLUMN_TIME_STEMP + ">= ?",
+                new String[]{String.valueOf(timeBeginPoint)},
                 null,
                 null,
-                null,
-                null,
-                null,
-                PatientContract.PatientEntry.COLUMN_TIME_STEMP
+                COLUMN_TIME_STEMP + " ASC"
         );
+        if(cursor != null){
+                final int INIT_CAPACITY = PRIOR_SECOND + 5;
+            ArrayList<SensorData> dataList = new ArrayList<>(INIT_CAPACITY);
+            if(cursor.moveToFirst()){
+                double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
+                double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
+                double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
+                SensorData data = new SensorData();
+                data.x = x;
+                data.y = y;
+                data.z = z;
+                dataList.add(data);
+            }
+            cursor.close();
+            return dataList;
+        }
+        return new ArrayList<>(0);
+    }
+
+    private static class SensorData{
+        public double x;
+        public double y;
+        public double z;
     }
 }
