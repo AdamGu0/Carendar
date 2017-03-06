@@ -42,8 +42,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Handler mHandler = new Handler();
     private ReadDataRunnable mReadDataTask;
     // Used to control when will we add a large value to the array
-    private int mRefreshDataTimes = 0;
-    private final int INSERT_SUMMIT_INTERVAL = 8;
+//    private int mRefreshDataTimes = 0;
+//    private final int INSERT_SUMMIT_INTERVAL = 8;
     private SQLiteDatabase mDb;
     private String mTableName = "a";
     private String mCreatedTableName = "";
@@ -91,6 +91,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         stopDataService();
+        mRunning = false;
     }
 
     private String getTableName() {
@@ -234,7 +235,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //            mHandler.removeCallbacks(mTask);
             mHandler.removeCallbacks(mReadDataTask);
             mValues = new float[0];
-            mRefreshDataTimes = 0;
+//            mRefreshDataTimes = 0;
         }
 //        mTask = new MyRunnable();
         mRunning = true;
@@ -320,12 +321,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         float[] values = new float[length * 3];
         for(int i = 0; i < length; i++){
             SensorData data = dataList.get(0);
-            Log.e("updateData", "X: " + data.x + "  y:" + data.y + "  z: " + data.z);
+//            Log.e("updateData", "X: " + data.x + "  y:" + data.y + "  z: " + data.z);
             values[i * 3 ] = (float) data.x;
             values[i * 3 + 1] = (float) data.y;
             values[i * 3 + 2] = (float) data.z;
         }
         mValues = values;
+        Log.e("updateData", "X:Y Z");
     }
 
     private static class SensorData{
@@ -376,6 +378,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         data.y = y;
                         data.z = z;
                         dataList.add(data);
+                        if(dataList.size() > 10){
+                            break;
+                        }
                     }while (cursor.moveToNext());
                 }
                 cursor.close();

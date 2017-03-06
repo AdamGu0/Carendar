@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -30,11 +31,13 @@ public class MyService extends Service implements SensorEventListener {
     private String mTableName = "";
     private SensorManager mSensorManager;
     private  long mLastSaved = -1;
+//    private AddRecordTask mAddRecordTask;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+//        mAddRecordTask = new AddRecordTask();
     }
 
     @Override
@@ -73,8 +76,10 @@ public class MyService extends Service implements SensorEventListener {
                 yValue = sensorEvent.values[1];
                 zValue = sensorEvent.values[2];
                 mTimeStamp = System.currentTimeMillis();
-                addNewRecords();
-//                Log.e("xxx", "data: " + xValue + "++y: " + yValue + "++z: " + zValue);
+                unregisterSensorListener();
+                // Add new record on background thread.
+                new AddRecordTask().execute();
+//                addNewRecords();
             }
         }
     }
@@ -91,5 +96,19 @@ public class MyService extends Service implements SensorEventListener {
         cv.put(PatientContract.PatientEntry.COLUMN_Y_VALUE, yValue);
         cv.put(PatientContract.PatientEntry.COLUMN_Z_VALUE, zValue);
         return mDb.insert(mTableName, null, cv);
+    }
+
+    private class AddRecordTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            addNewRecords();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            registerSensorListener();
+            Log.e("MyService", "Insert one row.");
+        }
     }
 }
