@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -43,7 +44,6 @@ import info.leiguo.healthmonitoring.data.PatientDbHelper;
 import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.COLUMN_X_VALUE;
 import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.COLUMN_Y_VALUE;
 import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.COLUMN_Z_VALUE;
-import static java.lang.String.format;
 
 /**
  * All the code in this class are written by Group 15.
@@ -282,35 +282,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         private boolean uploadDb(String urlStr) throws NoSuchAlgorithmException, KeyManagementException, IOException{
-//            final String attachmentName = "database";
-//            final String attachmentFileName = PatientDbHelper.DATABASE_NAME;
-//            final String crlf = "\r\n";
-//            final String twoHyphens = "--";
+            final String boundary =  "********";
             trustAllServer();
-            final String boundary =  "******";
-            final int connectTimeout = 10000;
-            final int readTimeout = 10000;
             URL url = new URL(urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-            connection.setConnectTimeout(connectTimeout);
-            connection.setReadTimeout(readTimeout);
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Connection", "Keep-Alive");
-            connection.setRequestProperty("Cache-Control", "no-cache");
-            connection.setRequestProperty(
-                    "Content-Type", "multipart/form-data;boundary=" + boundary);
+            setupHttpUrlConnection(connection, boundary);
             DataOutputStream upStream = new DataOutputStream(
                     connection.getOutputStream());
             writeContentStartBoundary(upStream, boundary);
             // write database file
-            FileInputStream fis = new FileInputStream(getDatabaseFilePath());
-            byte[] buffer = new byte[1024];
-            int count = -1;
-            while((count = fis.read(buffer)) > 0){
-                upStream.write(buffer, 0, count);
-            }
+            writeContent(upStream);
             writeContentEndBoundary(upStream, boundary);
             upStream.flush();
             upStream.close();
@@ -320,6 +301,29 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 return false;
             }else{
                 return true;
+            }
+        }
+
+        private void setupHttpUrlConnection(HttpURLConnection connection, String boundary) throws ProtocolException{
+            final int connectTimeout = 10000;
+            final int readTimeout = 10000;
+            connection.setUseCaches(false);
+            connection.setDoOutput(true);
+            connection.setConnectTimeout(connectTimeout);
+            connection.setReadTimeout(readTimeout);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Connection", "Keep-Alive");
+            connection.setRequestProperty("Cache-Control", "no-cache");
+            connection.setRequestProperty(
+                    "Content-Type", "multipart/form-data;boundary=" + boundary);
+        }
+
+        private void writeContent(DataOutputStream upStream) throws IOException{
+            FileInputStream fis = new FileInputStream(getDatabaseFilePath());
+            byte[] buffer = new byte[1024];
+            int count = -1;
+            while((count = fis.read(buffer)) > 0){
+                upStream.write(buffer, 0, count);
             }
         }
 
