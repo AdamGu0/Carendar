@@ -62,6 +62,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //    private int mRefreshDataTimes = 0;
 //    private final int INSERT_SUMMIT_INTERVAL = 8;
     private SQLiteDatabase mDb;
+    private SQLiteDatabase mDownloadDb;
     private String mTableName = "a";
     private String mCreatedTableName = "";
     private EditText mPatientNameEditText;
@@ -286,7 +287,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             trustAllServer();
             URL url = new URL(urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            setupHttpUrlConnection(connection, boundary);
+            setupConnection(connection, boundary);
             DataOutputStream upStream = new DataOutputStream(
                     connection.getOutputStream());
             writeContentStartBoundary(upStream, boundary);
@@ -304,7 +305,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         }
 
-        private void setupHttpUrlConnection(HttpURLConnection connection, String boundary) throws ProtocolException{
+        private void setupConnection(HttpURLConnection connection, String boundary) throws ProtocolException{
             final int connectTimeout = 10000;
             final int readTimeout = 10000;
             connection.setUseCaches(false);
@@ -386,8 +387,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void showData(){
         String filePath = getFilesFolder() + PatientDbHelper.DATABASE_NAME;
-        // TODO: may not use mDb, use a new Db reference?
-        mDb = SQLiteDatabase.openDatabase(filePath, null, SQLiteDatabase.OPEN_READWRITE);
+        mDownloadDb = SQLiteDatabase.openDatabase(filePath, null, SQLiteDatabase.OPEN_READWRITE);
+        plotDownloadData();
+    }
+
+    private void plotDownloadData(){
+        if(mDownloadDb != null){
+            new PlotDownloadedDataTask().execute();
+        }
     }
 
     private class DownloadDBTask extends AsyncTask<String, Void, Boolean> {
@@ -506,7 +513,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(ArrayList<SensorData> sensorDatas) {
-//            super.onPostExecute(sensorDatas);
             updateData(sensorDatas);
             refreshView();
             // read data from database every second
@@ -532,24 +538,77 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 ArrayList<SensorData> dataList = new ArrayList<>(INIT_CAPACITY);
                 if(cursor.moveToFirst()){
                     do{
-                        double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
-                        double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
-                        double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
-//                        long timeStamp = cursor.getLong(cursor.getColumnIndex(COLUMN_TIME_STEMP));
-//                        Log.e("ReadData", "timeStamp ： timeBeginPoint:  " + timeStamp + " : " + timeBeginPoint);
-//                        if(timeStamp < timeBeginPoint){
-//                            Log.e("ReadData", "timeStamp - timeBeginPoint:  " + (timeStamp - timeBeginPoint));
-//                            continue;
-//                        }
-                        SensorData data = new SensorData();
-                        data.x = x;
-                        data.y = y;
-                        data.z = z;
+//                        double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
+//                        double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
+//                        double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
+                        SensorData data = readARecord(cursor);
+//                        data.x = x;
+//                        data.y = y;
+//                        data.z = z;
                         dataList.add(data);
                     }while (cursor.moveToNext());
                 }
                 cursor.close();
                 Log.e("ReadData", "data size:  " + dataList.size());
+                return dataList;
+            }
+            return new ArrayList<>(0);
+        }
+
+    }
+
+    private static SensorData readARecord(Cursor cursor){
+        double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
+        double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
+        double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
+        SensorData data = new SensorData();
+        data.x = x;
+        data.y = y;
+        data.z = z;
+        return data;
+    }
+
+    private class PlotDownloadedDataTask extends AsyncTask<Void, Void, ArrayList<SensorData>>{
+        @Override
+        protected ArrayList<SensorData> doInBackground(Void... params) {
+            return readRecords();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<SensorData> sensorDatas) {
+            updateData(sensorDatas);
+            refreshView();
+        }
+
+        private  ArrayList<SensorData>  readRecords() {
+            Cursor cursor =  mDownloadDb.query(
+                    mTableName,
+                    new String[]{COLUMN_X_VALUE, COLUMN_Y_VALUE, COLUMN_Z_VALUE, COLUMN_TIME_STEMP},
+                    null,
+                    null,
+                    null,
+                    null,
+                    COLUMN_TIME_STEMP + " DESC"
+            );
+            if(cursor != null){
+                ArrayList<SensorData> dataList = new ArrayList<>(15);
+                if(cursor.moveToFirst()){
+                    final long latestTimeStamp = cursor.getLong(cursor.getColumnIndex(COLUMN_TIME_STEMP));
+                    SensorData data = readARecord(cursor);
+                    dataList.add(data);
+                    // The start time of the last 10 second
+                    long startTime = latestTimeStamp - 10 * 1000;
+                    while (cursor.moveToNext()){
+                        long timeStamp = cursor.getLong(cursor.getColumnIndex(COLUMN_TIME_STEMP));
+                        if(timeStamp < startTime){
+                            break;
+                        }
+                        data = readARecord(cursor);
+                        dataList.add(data);
+                    }
+                }
+                cursor.close();
+                Log.e("ReadData", "download: data size:  " + dataList.size());
                 return dataList;
             }
             return new ArrayList<>(0);
