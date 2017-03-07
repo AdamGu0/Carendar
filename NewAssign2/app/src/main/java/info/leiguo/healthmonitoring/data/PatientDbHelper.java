@@ -30,7 +30,7 @@ public class PatientDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String SQL_CREATE_PATIENT_TABLE = "CREATE TABLE " + mTableName + " (" +
                 PatientContract.PatientEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                PatientContract.PatientEntry.COLUMN_TIME_STEMP + " REAL NOT NULL, " +
+                PatientContract.PatientEntry.COLUMN_TIME_STEMP + " INTEGER NOT NULL, " +
                 PatientContract.PatientEntry.COLUMN_X_VALUE + " REAL NOT NULL, " +
                 PatientContract.PatientEntry.COLUMN_Y_VALUE + " REAL NOT NULL, " +
                 PatientContract.PatientEntry.COLUMN_Z_VALUE + " REAL NOT NULL" +

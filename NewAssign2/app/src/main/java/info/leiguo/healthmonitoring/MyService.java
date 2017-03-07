@@ -23,20 +23,23 @@ public class MyService extends Service implements SensorEventListener {
     public static final String KEY_TABLE_NAME = "table_name";
     public static final String MY_ACTION = "info.leiguo.healthmonitoring.MY_SERVICE";
     private static final long ACCE_FILTER_DATA_MIN_TIME = 1000;
+    private static final int SAMPLING_PERIOD = 1000000; // Micro second
     private SQLiteDatabase mDb;
-    private float mTimeStamp;
+    private long mTimeStamp;
     private float xValue;
     private float yValue;
     private float zValue;
     private String mTableName = "";
     private SensorManager mSensorManager;
     private  long mLastSaved = -1;
+    private boolean mIsDestroyed = false;
 //    private AddRecordTask mAddRecordTask;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mIsDestroyed = false;
 //        mAddRecordTask = new AddRecordTask();
     }
 
@@ -57,11 +60,12 @@ public class MyService extends Service implements SensorEventListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mIsDestroyed = true;
         unregisterSensorListener();
     }
 
     private void registerSensorListener(){
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SAMPLING_PERIOD);
     }
 
     private void unregisterSensorListener(){
@@ -71,16 +75,19 @@ public class MyService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            if ((System.currentTimeMillis() - mLastSaved) >= ACCE_FILTER_DATA_MIN_TIME) {
+            final long now = System.currentTimeMillis();
+//            if ((now - mLastSaved) >= ACCE_FILTER_DATA_MIN_TIME) {
                 xValue = sensorEvent.values[0];
                 yValue = sensorEvent.values[1];
                 zValue = sensorEvent.values[2];
-                mTimeStamp = System.currentTimeMillis();
-                unregisterSensorListener();
+                Log.e("MyService", "Time Interval: " + (now - mLastSaved));
+                mTimeStamp = mLastSaved = now;
+                Log.e("MyService", "Time Stamp: " + mTimeStamp);
+//                unregisterSensorListener();
                 // Add new record on background thread.
                 new AddRecordTask().execute();
 //                addNewRecords();
-            }
+//            }
         }
     }
 
@@ -107,8 +114,10 @@ public class MyService extends Service implements SensorEventListener {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            registerSensorListener();
-            Log.e("MyService", "Insert one row.");
+//            if(!mIsDestroyed){
+//                registerSensorListener();
+//            }
+//            Log.e("MyService", "Insert one row.");
         }
     }
 }

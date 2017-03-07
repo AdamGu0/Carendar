@@ -110,7 +110,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void createTable() {
         CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS " + getTableName() + " (" +
                 PatientContract.PatientEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                PatientContract.PatientEntry.COLUMN_TIME_STEMP + " REAL NOT NULL, " +
+                PatientContract.PatientEntry.COLUMN_TIME_STEMP + " INTEGER NOT NULL, " +
                 COLUMN_X_VALUE + " REAL NOT NULL, " +
                 PatientContract.PatientEntry.COLUMN_Y_VALUE + " REAL NOT NULL, " +
                 PatientContract.PatientEntry.COLUMN_Z_VALUE + " REAL NOT NULL" +
@@ -325,9 +325,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
             values[i * 3 ] = (float) data.x;
             values[i * 3 + 1] = (float) data.y;
             values[i * 3 + 2] = (float) data.z;
+            // normalization
+//            double total = data.x + data.y + data.z;
+//            values[i * 3 ] = (float) (data.x / total);
+//            values[i * 3 + 1] = (float) (data.y / total);
+//            values[i * 3 + 2] = (float) (data.z / total);
         }
         mValues = values;
-        Log.e("updateData", "X:Y Z");
+        if(length > 0){
+            Log.e("updateData", "X:Y Z");
+        }else{
+            Log.e("updateData", "No data");
+        }
     }
 
     private static class SensorData{
@@ -355,15 +364,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             // Read the prior ten second data
             final int PRIOR_SECOND = 10;
             long now = System.currentTimeMillis();
-            long timeBeginPoint = now - PRIOR_SECOND * 1000;
+            final long timeBeginPoint = now - PRIOR_SECOND * 1000;
             Cursor cursor =  mDb.query(
                     mTableName,
                     new String[]{COLUMN_X_VALUE, COLUMN_Y_VALUE, COLUMN_Z_VALUE, COLUMN_TIME_STEMP},
-                    COLUMN_TIME_STEMP + "> ?",
+                    COLUMN_TIME_STEMP + " >= ?",
                     new String[]{String.valueOf(timeBeginPoint)},
                     null,
                     null,
-                    COLUMN_TIME_STEMP
+                    COLUMN_TIME_STEMP + " ASC"
             );
             if(cursor != null){
                 final int INIT_CAPACITY = PRIOR_SECOND + 5;
@@ -373,17 +382,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
                         double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
                         double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
+//                        long timeStamp = cursor.getLong(cursor.getColumnIndex(COLUMN_TIME_STEMP));
+//                        Log.e("ReadData", "timeStamp ： timeBeginPoint:  " + timeStamp + " : " + timeBeginPoint);
+//                        if(timeStamp < timeBeginPoint){
+//                            Log.e("ReadData", "timeStamp - timeBeginPoint:  " + (timeStamp - timeBeginPoint));
+//                            continue;
+//                        }
                         SensorData data = new SensorData();
                         data.x = x;
                         data.y = y;
                         data.z = z;
                         dataList.add(data);
-                        if(dataList.size() > 10){
-                            break;
-                        }
                     }while (cursor.moveToNext());
                 }
                 cursor.close();
+                Log.e("ReadData", "data size:  " + dataList.size());
                 return dataList;
             }
             return new ArrayList<>(0);
