@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="info.leiguo.healthmonitoring">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +20,11 @@
         </intent-filter>
         </activity>
 
+        <service android:name=".MyService">
+            <intent-filter android:label="my_service" >
+                <action android:name="info.leiguo.healthmonitoring.MY_SERVICE"/>
+            </intent-filter>
+            </service>
+
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
