@@ -136,7 +136,7 @@
                         android:textColor="#000000"
                         android:text="Save Infomation"/>
                 </LinearLayout>
-                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                <RadioGroup
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="bottom"
@@ -179,7 +179,7 @@
                     android:layout_height="35dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="13dp"
-                    android:background="#00ff00"
+                    android:background="@drawable/button_bg_run"
                     android:gravity="center"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
@@ -193,7 +193,7 @@
                     android:layout_height="35dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="12dp"
-                    android:background="#ff0000"
+                    android:background="@drawable/button_bg_stop"
                     android:gravity="center"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
@@ -208,29 +208,29 @@
 
                 <Button
                     android:id="@+id/btn_upload"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="12dp"
-                    android:background="#4444ff"
+                    android:background="@drawable/button_bg_upload"
                     android:gravity="center"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
-                    android:text="Upload DB"
+                    android:text="Upload"
                     android:textColor="#000000"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:textSize="13sp" />
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/btn_download"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="8dp"
-                    android:background="#7777ff"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/button_bg_download"
                     android:gravity="center"
-                    android:text="Download DB"
+                    android:text="Download"
                     android:textColor="#000000"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
