@@ -75,9 +75,9 @@ public class MyService extends Service implements SensorEventListener {
                 xValue = sensorEvent.values[0];
                 yValue = sensorEvent.values[1];
                 zValue = sensorEvent.values[2];
-                Log.e("MyService", "Time Interval: " + (now - mLastSaved));
+//                Log.e("MyService", "Time Interval: " + (now - mLastSaved));
                 mTimeStamp = mLastSaved = now;
-                Log.e("MyService", "Time Stamp: " + mTimeStamp);
+//                Log.e("MyService", "Time Stamp: " + mTimeStamp);
                 // Add new record on background thread.
                 new AddRecordTask().execute();
         }

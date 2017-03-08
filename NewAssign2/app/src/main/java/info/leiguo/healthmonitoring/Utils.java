@@ -21,6 +21,11 @@ import javax.net.ssl.X509TrustManager;
  */
 
 public class Utils {
+    /**
+     *  Check whether the network is available or not.
+     * @param context
+     * @return
+     */
     public static boolean checkNetwork(Context context){
         if(context == null){
             return false;
@@ -40,6 +45,7 @@ public class Utils {
     // This code is used to trust the https server for the assignment 2. I think it's ok to do things
     // in such a way for an assignment. I will not use the same code for a production application, because
     // it's not secure
+    // The code is borrowed from StackOverflow
     public static void trustAllServer() throws NoSuchAlgorithmException, KeyManagementException {
         HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier(){
             public boolean verify(String hostname, SSLSession session) {

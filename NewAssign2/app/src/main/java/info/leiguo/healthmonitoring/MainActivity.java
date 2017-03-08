@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -17,15 +19,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -67,6 +66,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private boolean mIsDownloading = false;
     private boolean mIsUploading = false;
     private AlertDialog mAlertDialog;
+    private boolean mIsPatientNameValid = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +91,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
             }
         });
-
+        mPatientIdEditText = (EditText) findViewById(R.id.et_patientid);
+        mPatientAgeEditText = (EditText) findViewById(R.id.et_age);
+        RadioGroup sexRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
+        mPatientSexRadioButton = (RadioButton) findViewById(sexRadioGroup.getCheckedRadioButtonId());
+        mPatientNameEditText = (EditText) findViewById(R.id.et_patientName);
+        // The patient name should not begin with a digit because the table name should not
+        // start with a digit.
+        setTextWatcherForName();
         FrameLayout container = (FrameLayout)findViewById(R.id.container);
         mValues = new float[50];
         String[] horlabels = new String[]{"100", "200", "300", "400", "500"};
@@ -110,16 +117,36 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mRunning = false;
     }
 
-    private String getTableName() {
-        mPatientNameEditText = (EditText) findViewById(R.id.et_patientName);
-        mPatientIdEditText = (EditText) findViewById(R.id.et_patientid);
-        mPatientAgeEditText = (EditText) findViewById(R.id.et_age);
-        RadioGroup sexRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
-        mPatientSexRadioButton = (RadioButton) findViewById(sexRadioGroup.getCheckedRadioButtonId());
-
+    private String getTableName(){
         mTableName = mPatientNameEditText.getText().toString() + "_" + mPatientIdEditText.getText().toString()
                 + "_" + mPatientAgeEditText.getText().toString() + "_" + mPatientSexRadioButton.getText().toString();
         return mTableName;
+    }
+
+    private void setTextWatcherForName(){
+        mPatientNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // The patient name cannot start with a digit because the patient name will be the begging part of
+                // the sqlite table name which cannot begin with a digit.
+                if(s != null && s.length() > 0 && Character.isDigit(s.charAt(0))){
+                    mIsPatientNameValid = false;
+                    longToast("The patient name should NOT begin with a digit or you cannot create the patient information table.");
+                }else{
+                    mIsPatientNameValid = true;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
 
@@ -158,6 +185,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onSaveClicked(){
+        if(!mIsPatientNameValid){
+            longToast("Invalid patient name--the patient name should not begin with a digit!");
+            return;
+        }
         createTableAndMarkTheName();
         beginDataService();
     }
@@ -184,6 +215,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onRunClicked(){
+        if(!mIsPatientNameValid){
+            longToast("Invalid patient name--the patient name should not begin with a digit!");
+            return;
+        }
         initializeData();
         getTableName();
         if(!mCreatedTableName.equals(mTableName)){
@@ -206,8 +241,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
             shortToast("No network.");
             return;
         }
+        if(!isDatabaseFileExists()){
+            longToast("Database is not created yet, please press \"SAVE INFOMATION\" or \"RUN\" button to create database.");
+            return;
+        }
         mIsUploading = true;
         new UploadDBTask().execute(UPLOAD_URL);
+    }
+
+    private boolean isDatabaseFileExists(){
+        File file = new File(getDatabaseFilePath());
+        if(file.exists()){
+            Log.d("MainActivity", "file exists: " + getDatabaseFilePath());
+            return true;
+        }else{
+            Log.d("MainActivity", "file NOT exists");
+            return false;
+        }
     }
 
     private void onDownloadClicked() {
@@ -288,8 +338,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             upStream.flush();
             upStream.close();
             final int status = connection.getResponseCode();
-            String response = getResponse(connection);
-            Log.e("uploadDb", "The response content: " + response);
+//            String response = getResponse(connection);
+//            Log.e("uploadDb", "The response content: " + response);
             if (status != HttpURLConnection.HTTP_OK) {
                 Log.e("uploadDb", "Failed with http status: " + status);
                 return false;
@@ -314,12 +364,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         private void writeContent(DataOutputStream upStream) throws IOException{
-            File file = new File(getDatabaseFilePath());
-            if(file.exists()){
-                Log.d("writeContent", "file exists: " + getDatabaseFilePath());
-            }else{
-                Log.d("writeContent", "file NOT exists");
-            }
             FileInputStream fis = new FileInputStream(getDatabaseFilePath());
             byte[] buffer = new byte[1024];
             int count = -1;
@@ -343,20 +387,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
             upStream.writeBytes("--" + boundary + "--\r\n");;
         }
 
-        private String getResponse(HttpURLConnection connection)throws IOException{
-            InputStream responseStream = new
-                    BufferedInputStream(connection.getInputStream());
-            BufferedReader responseStreamReader =
-                    new BufferedReader(new InputStreamReader(responseStream));
-            String line = "";
-            StringBuilder stringBuilder = new StringBuilder();
-            while ((line = responseStreamReader.readLine()) != null) {
-                stringBuilder.append(line).append("\n");
-            }
-            responseStreamReader.close();
-            String response = stringBuilder.toString();
-            return response;
-        }
+//        private String getResponse(HttpURLConnection connection)throws IOException{
+//            InputStream responseStream = new
+//                    BufferedInputStream(connection.getInputStream());
+//            BufferedReader responseStreamReader =
+//                    new BufferedReader(new InputStreamReader(responseStream));
+//            String line = "";
+//            StringBuilder stringBuilder = new StringBuilder();
+//            while ((line = responseStreamReader.readLine()) != null) {
+//                stringBuilder.append(line).append("\n");
+//            }
+//            responseStreamReader.close();
+//            String response = stringBuilder.toString();
+//            return response;
+//        }
 
     }
 
@@ -429,20 +473,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(true);
                 connection.connect();
+//                File dir = new File(getFilesFolder());
 
-                File dir = new File(getFilesFolder());
-                File file = new File(dir, PatientDbHelper.DATABASE_NAME);
-
-                FileOutputStream fileOutput = new FileOutputStream(file);
-                InputStream inputStream = connection.getInputStream();
+                File file = new File(getFilesFolder(), PatientDbHelper.DATABASE_NAME);
+                FileOutputStream fos = new FileOutputStream(file);
+                InputStream is = connection.getInputStream();
 
                 byte[] buffer = new byte[1024];
                 int length = -1;
-
-                while ((length = inputStream.read(buffer)) > 0) {
-                    fileOutput.write(buffer, 0, length);
+                while ((length = is.read(buffer)) > 0) {
+                    fos.write(buffer, 0, length);
                 }
-                fileOutput.close();
+                fos.close();
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -490,15 +532,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         float[] values = new float[length * 3];
         for(int i = 0; i < length; i++){
             SensorData data = dataList.get(0);
-//            Log.e("updateData", "X: " + data.x + "  y:" + data.y + "  z: " + data.z);
             values[i * 3 ] = (float) data.x;
             values[i * 3 + 1] = (float) data.y;
             values[i * 3 + 2] = (float) data.z;
-            // normalization
-//            double total = data.x + data.y + data.z;
-//            values[i * 3 ] = (float) (data.x / total);
-//            values[i * 3 + 1] = (float) (data.y / total);
-//            values[i * 3 + 2] = (float) (data.z / total);
         }
         mValues = values;
     }
@@ -547,7 +583,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     }while (cursor.moveToNext());
                 }
                 cursor.close();
-                Log.e("ReadData", "data size:  " + dataList.size());
+//                Log.e("ReadData", "data size:  " + dataList.size());
                 return dataList;
             }
             return new ArrayList<>(0);
@@ -611,7 +647,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     }
                 }
                 cursor.close();
-                Log.e("ReadData", "download: data size:  " + dataList.size());
+                Log.d("ReadData", "download: data size:  " + dataList.size());
                 return dataList;
             }
             return new ArrayList<>(0);
