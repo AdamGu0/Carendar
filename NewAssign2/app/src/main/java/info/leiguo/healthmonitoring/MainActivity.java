@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,26 +17,21 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.X509TrustManager;
 
 import info.leiguo.healthmonitoring.data.PatientContract;
 import info.leiguo.healthmonitoring.data.PatientDbHelper;
@@ -53,14 +49,12 @@ import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.COL
 
 public class MainActivity extends Activity implements View.OnClickListener {
     private final String SERVER_URL = "https://impact.asu.edu/CSE535Spring17Folder/";
+    private final String UPLOAD_URL = SERVER_URL + "UploadToServer.php";
     private GraphView mGraphView;
     private float[] mValues;
     private boolean mRunning = true;
     private Handler mHandler = new Handler();
     private ReadDataRunnable mReadDataTask;
-    // Used to control when will we add a large value to the array
-//    private int mRefreshDataTimes = 0;
-//    private final int INSERT_SUMMIT_INTERVAL = 8;
     private SQLiteDatabase mDb;
     private SQLiteDatabase mDownloadDb;
     private String mTableName = "a";
@@ -213,7 +207,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             return;
         }
         mIsUploading = true;
-        new UploadDBTask().execute(SERVER_URL);
+        new UploadDBTask().execute(UPLOAD_URL);
     }
 
     private void onDownloadClicked() {
@@ -225,12 +219,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             return;
         }
         mIsDownloading = true;
-//        String tableName = getTableName();
-//        Toast.makeText(this, "Downloading database: " + tableName, Toast.LENGTH_LONG).show();
         final String dbName = PatientDbHelper.DATABASE_NAME;
         //download in background
-//        new DownloadDBTask().execute("https://impact.asu.edu/CSE535Spring17Folder/" + dbName);
-        new DownloadDBTask().execute("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png");
+        new DownloadDBTask().execute(SERVER_URL + dbName);
     }
 
     private void showLoadingDialog(String msg){
@@ -283,8 +274,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         private boolean uploadDb(String urlStr) throws NoSuchAlgorithmException, KeyManagementException, IOException{
-            final String boundary =  "********";
-            trustAllServer();
+            final String boundary =  "*****";
+            Utils.trustAllServer();
             URL url = new URL(urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             setupConnection(connection, boundary);
@@ -297,6 +288,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             upStream.flush();
             upStream.close();
             final int status = connection.getResponseCode();
+            String response = getResponse(connection);
+            Log.e("uploadDb", "The response content: " + response);
             if (status != HttpURLConnection.HTTP_OK) {
                 Log.e("uploadDb", "Failed with http status: " + status);
                 return false;
@@ -309,6 +302,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             final int connectTimeout = 10000;
             final int readTimeout = 10000;
             connection.setUseCaches(false);
+            connection.setDoInput(true);
             connection.setDoOutput(true);
             connection.setConnectTimeout(connectTimeout);
             connection.setReadTimeout(readTimeout);
@@ -320,6 +314,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         private void writeContent(DataOutputStream upStream) throws IOException{
+            File file = new File(getDatabaseFilePath());
+            if(file.exists()){
+                Log.d("writeContent", "file exists: " + getDatabaseFilePath());
+            }else{
+                Log.d("writeContent", "file NOT exists");
+            }
             FileInputStream fis = new FileInputStream(getDatabaseFilePath());
             byte[] buffer = new byte[1024];
             int count = -1;
@@ -329,7 +329,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         private void writeContentStartBoundary(DataOutputStream upStream, String boundary) throws IOException{
-            final String attachmentName = "database";
+            final String attachmentName = "uploaded_file";
             final String attachmentFileName = PatientDbHelper.DATABASE_NAME;
             upStream.writeBytes("--" + boundary + "\r\n");
             upStream.writeBytes("Content-Disposition: form-data; name=\"" +
@@ -339,28 +339,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         private void writeContentEndBoundary(DataOutputStream upStream, String boundary) throws IOException{
-            upStream.writeBytes("\r\n--" + boundary + "--\r\n");;
+            upStream.writeBytes("\r\n");
+            upStream.writeBytes("--" + boundary + "--\r\n");;
         }
 
-        // This code is used to trust the https server for the assignment 2. I think it's ok to do things
-        // in such a way for an assignment. I will not use the same code for a production application, because
-        // it's not secure
-        private void trustAllServer() throws NoSuchAlgorithmException, KeyManagementException{
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier(){
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }});
-            SSLContext context = SSLContext.getInstance("TLS");
-            context.init(null, new X509TrustManager[]{new X509TrustManager(){
-                public void checkClientTrusted(X509Certificate[] chain,
-                                               String authType) throws CertificateException {}
-                public void checkServerTrusted(X509Certificate[] chain,
-                                               String authType) throws CertificateException {}
-                public X509Certificate[] getAcceptedIssuers() {
-                    return new X509Certificate[0];
-                }}}, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(
-                    context.getSocketFactory());
+        private String getResponse(HttpURLConnection connection)throws IOException{
+            InputStream responseStream = new
+                    BufferedInputStream(connection.getInputStream());
+            BufferedReader responseStreamReader =
+                    new BufferedReader(new InputStreamReader(responseStream));
+            String line = "";
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((line = responseStreamReader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            responseStreamReader.close();
+            String response = stringBuilder.toString();
+            return response;
         }
 
     }
@@ -374,7 +369,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private String getFilesFolder(){
-        return getAppFolder() + "files/";
+        return getAppFolder() + "/files/";
     }
 
     private void shortToast(String msg){
@@ -387,7 +382,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void showData(){
         String filePath = getFilesFolder() + PatientDbHelper.DATABASE_NAME;
-        mDownloadDb = SQLiteDatabase.openDatabase(filePath, null, SQLiteDatabase.OPEN_READWRITE);
+        try{
+            mDownloadDb = SQLiteDatabase.openDatabase(filePath, null, SQLiteDatabase.OPEN_READWRITE);
+        }catch (SQLiteException e){
+            e.printStackTrace();
+            return;
+        }
         plotDownloadData();
     }
 
@@ -406,7 +406,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            return download(params[0]);
+            String url = params[0];
+            return downloadDb(url);
         }
 
         protected void onPostExecute(Boolean result) {
@@ -420,39 +421,47 @@ public class MainActivity extends Activity implements View.OnClickListener {
             hideLoadingDialog();
         }
 
-        private boolean download(String s) {
+        private boolean downloadDb(String urlStr) {
             try {
-                URL url = new URL(s);
-                InputStream is = url.openStream();
-//                String filename = s.substring(s.lastIndexOf("/") + 1);
-                String fileName = PatientDbHelper.DATABASE_NAME;
-                OutputStream os = openFileOutput(fileName, MODE_PRIVATE);
+                Utils.trustAllServer();
+                URL url = new URL(urlStr);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setDoOutput(true);
+                connection.connect();
+
+                File dir = new File(getFilesFolder());
+                File file = new File(dir, PatientDbHelper.DATABASE_NAME);
+
+                FileOutputStream fileOutput = new FileOutputStream(file);
+                InputStream inputStream = connection.getInputStream();
+
                 byte[] buffer = new byte[1024];
-                int len = 0;
-                while ((len = is.read(buffer)) > 0) {
-                    os.write(buffer, 0, len);
+                int length = -1;
+
+                while ((length = inputStream.read(buffer)) > 0) {
+                    fileOutput.write(buffer, 0, length);
                 }
-                is.close();
-                os.close();
+                fileOutput.close();
                 return true;
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-                return false;
+            } catch (KeyManagementException e){
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e){
+                e.printStackTrace();
             }
+            return false;
         }
+
     }
 
     private void initializeData(){
         if (mRunning) {
-//            mHandler.removeCallbacks(mTask);
             mHandler.removeCallbacks(mReadDataTask);
             mValues = new float[0];
-//            mRefreshDataTimes = 0;
         }
-//        mTask = new MyRunnable();
         mRunning = true;
-//        mHandler.post(mTask);
-        // start read data task.
         mReadDataTask = new ReadDataRunnable();
         mHandler.post(mReadDataTask);
     }
@@ -492,11 +501,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //            values[i * 3 + 2] = (float) (data.z / total);
         }
         mValues = values;
-        if(length > 0){
-            Log.e("updateData", "X:Y Z");
-        }else{
-            Log.e("updateData", "No data");
-        }
     }
 
     private static class SensorData{
@@ -538,13 +542,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 ArrayList<SensorData> dataList = new ArrayList<>(INIT_CAPACITY);
                 if(cursor.moveToFirst()){
                     do{
-//                        double x = cursor.getDouble(cursor.getColumnIndex(COLUMN_X_VALUE));
-//                        double y = cursor.getDouble(cursor.getColumnIndex(COLUMN_Y_VALUE));
-//                        double z = cursor.getDouble(cursor.getColumnIndex(COLUMN_Z_VALUE));
                         SensorData data = readARecord(cursor);
-//                        data.x = x;
-//                        data.y = y;
-//                        data.z = z;
                         dataList.add(data);
                     }while (cursor.moveToNext());
                 }
@@ -576,11 +574,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(ArrayList<SensorData> sensorDatas) {
+            // Stop the current display firstly.
+            onStopClicked();
+            // Read the latest ten second data from the downloaded database and update the data for GraphView.
             updateData(sensorDatas);
+            // Refresh the GraphView
             refreshView();
         }
 
         private  ArrayList<SensorData>  readRecords() {
+            // Query the database for all the records in the descending order of the time stamp.
             Cursor cursor =  mDownloadDb.query(
                     mTableName,
                     new String[]{COLUMN_X_VALUE, COLUMN_Y_VALUE, COLUMN_Z_VALUE, COLUMN_TIME_STEMP},
