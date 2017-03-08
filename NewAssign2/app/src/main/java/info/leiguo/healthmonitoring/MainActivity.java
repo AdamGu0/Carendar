@@ -118,7 +118,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private String getTableName(){
-        mTableName = mPatientNameEditText.getText().toString() + "_" + mPatientIdEditText.getText().toString()
+        String name = mPatientNameEditText.getText().toString();
+        if(name != null && name.length() > 0){
+            name = name.replace(" ", "");
+        }
+        mTableName = name + "_" + mPatientIdEditText.getText().toString()
                 + "_" + mPatientAgeEditText.getText().toString() + "_" + mPatientSexRadioButton.getText().toString();
         return mTableName;
     }
@@ -134,9 +138,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // The patient name cannot start with a digit because the patient name will be the begging part of
                 // the sqlite table name which cannot begin with a digit.
-                if(s != null && s.length() > 0 && Character.isDigit(s.charAt(0))){
-                    mIsPatientNameValid = false;
-                    longToast("The patient name should NOT begin with a digit or you cannot create the patient information table.");
+                if(s != null && s.length() > 0 ){
+                    if(s.toString().matches("[a-zA-Z ]+")){
+                        mIsPatientNameValid = true;
+                    }else{
+                        mIsPatientNameValid = false;
+                        longToast("Only letters and space are allowed in the patient name.");
+                    }
                 }else{
                     mIsPatientNameValid = true;
                 }
@@ -186,7 +194,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void onSaveClicked(){
         if(!mIsPatientNameValid){
-            longToast("Invalid patient name--the patient name should not begin with a digit!");
+            toastInvalidPatientName();
             return;
         }
         createTableAndMarkTheName();
@@ -214,9 +222,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         stopService(intent);
     }
 
+    private void toastInvalidPatientName(){
+        longToast("Invalid patient name--Only letters and space are allowed in the patient name!");
+    }
+
     private void onRunClicked(){
         if(!mIsPatientNameValid){
-            longToast("Invalid patient name--the patient name should not begin with a digit!");
+            toastInvalidPatientName();
             return;
         }
         initializeData();
@@ -386,21 +398,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             upStream.writeBytes("\r\n");
             upStream.writeBytes("--" + boundary + "--\r\n");;
         }
-
-//        private String getResponse(HttpURLConnection connection)throws IOException{
-//            InputStream responseStream = new
-//                    BufferedInputStream(connection.getInputStream());
-//            BufferedReader responseStreamReader =
-//                    new BufferedReader(new InputStreamReader(responseStream));
-//            String line = "";
-//            StringBuilder stringBuilder = new StringBuilder();
-//            while ((line = responseStreamReader.readLine()) != null) {
-//                stringBuilder.append(line).append("\n");
-//            }
-//            responseStreamReader.close();
-//            String response = stringBuilder.toString();
-//            return response;
-//        }
 
     }
 
