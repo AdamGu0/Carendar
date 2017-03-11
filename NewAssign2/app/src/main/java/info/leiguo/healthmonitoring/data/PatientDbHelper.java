@@ -13,7 +13,7 @@ import static info.leiguo.healthmonitoring.data.PatientContract.PatientEntry.TAB
 public class PatientDbHelper extends SQLiteOpenHelper {
 
     // The database name
-    public static final String DATABASE_NAME = "assgn2_group15.db";
+    public static final String DATABASE_NAME = "Group15.db";
 
     private String mTableName;
 
