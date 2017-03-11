@@ -34,7 +34,7 @@ def var = dependencies {
     compile 'com.github.alamkanak:android-week-view:1.2.6'
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:25.2.0'
-
+    compile 'com.google.android.gms:play-services-gcm:9.6.0'
 
 
 }
