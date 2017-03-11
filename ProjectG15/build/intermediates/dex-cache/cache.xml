@@ -3,39 +3,21 @@
 
     <item
         is-multidex="true"
-        jar="/Users/Neo/ASU Courses/CSE535/ProjectG15/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="a1d03a1e2fa4a84a7dc19da2ef3c21496438dce2">
-        <dex dex="/Users/Neo/ASU Courses/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_5a587a313be70547884b33131dd9945b8dc4fc37/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="ce50e1e495b0908c7c780bf52aa1a60b7421e1cd">
-        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_f6431eb51dee1034b29b46a21b8f42524519c023/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/Neo/ASU Courses/CSE535/ProjectG15/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jar="/Users/changchu/Downloads/CSE535/ProjectG15/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
         sha1="c82741bc129dd5f99f11a4ab8666ae24262053b6">
-        <dex dex="/Users/Neo/ASU Courses/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_dad0775d0125d6852a046d6a81d79a0ce6cd9b41/classes.dex" />
+        <dex dex="/Users/changchu/Downloads/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_231d6e6170abf0dd72de421fdfa3c1c69c7e679b/classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jar="/Users/changchu/Downloads/CSE535/ProjectG15/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="c82741bc129dd5f99f11a4ab8666ae24262053b6">
-        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_500a37d18069ac71298ab51ff419c690f443650d/classes.dex" />
+        sha1="d34693321df21ad4491591dc093d4d5bbd7db1cc">
+        <dex dex="/Users/changchu/Downloads/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_b7824ba307ad96d22ec8a7df303f0dae7bda3aa9/classes.dex" />
     </item>
 
 </items>

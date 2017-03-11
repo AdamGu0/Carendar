@@ -39,6 +39,8 @@ public class MainActivity extends BaseActivity {
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private ImageButton mFloatingActionButton;
+    private ImageButton mTesting;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,16 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+        mTesting = (ImageButton) findViewById(R.id.map_showing);
+        mTesting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MapShowingActivity.class);
                 startActivity(intent);
 
             }
