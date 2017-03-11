@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/c1fc285a42b95bbcbd90b8707ecfa85b8af419da/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="152de8da301561dcb0946471697a420d8f7a68c5">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_1cefec3a69e67d455264aeaa9aa83b263dcd2c27/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/da732b8544810086d86bafbcc097eb3d47b69b2f/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="cb454b52545859ed2f24a6c01366805b0fa04b22">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_eed1695db4168fa3061c72361aefcbe57675a40e/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/d4cbdea29d0c1ac085ef3260da0bde7d130c8c7e/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="8fe8a8f77d651982ce5e18f6187dc4daf914ac57">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_cdaedbbe56d5d7b165e92c7aae7421aace601011/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/678514c46b3b6764ff4a30bb5fce82a611338b09/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="74d1712880eb2b4ab37ddf3c6a3232c883756726">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_436a033bdebb9725eea42f87fea2e31255407a5e/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/cf302c94b40b8a37e40d317b25bd41e9657c3457/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1f4bb2577a30d0b3268fed038ed59230709ad593">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_91f8cbab729c611d13be42d8b165ab9c95e99f0d/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-tasks/1.4.0/d85884acf6810a3bbbecb587f239005cbc846dc4/bolts-tasks-1.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d85884acf6810a3bbbecb587f239005cbc846dc4">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/bolts-tasks-1.4.0_607060e6f6f16f3f48fa1a2f065460e500a1df64/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/7b17dcbca5e92f42e9d59b9b48ff6acc47649cf0/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="93a0248fe0524b4fa2d16f5f7c3cff8452796454">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_fc022f10b8c17483ab625f825a66499018d31d8e/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/3602e9bb38439c91bb77b642b89f4c45498a214d/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ea6a989b83d19b1b461281e0475a6cd6514897f8">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_7075a584f963f642c384275b72af2315561ae41c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/07b2e02da5a7042613a476374b5d9a24b49cf92c/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="bd11b3899f275668a9355f19cea2c2320f5f9d14">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_a861f5e70caa48a2eaf273343a175512562be6be/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/fbe035cb9641a2d6baba096a8efc94da36c5daf7/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d9ecde39b460470e655de6e47c05573d2d5a8bfb">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_8840a15c41930a7900f8b3ca1338d482141625dd/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/818e2098b165530b7cfbed611ebc16a87e772fb6/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="614b2ffd04818e865e1c02cc149c6b92e518e862">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_e35d2d0e6a8dad92724b03513732348119e503b9/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/4db8d924d3f14271d27627e42c31f675ab41ddc0/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_9ddcea59ac8fc23dbd745c446dabb7ffe5f9f178/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/ab9edd3c1e0315cefaf4df6ecd4d7c75a4397707/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="67eb33110dbacb46a48175b08ae0c96761d2c17d">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_72e332f31b01c31ba73bcc3e693d3e01d1b9cb1c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/cd8144819b2a0221728bce266e8978ea18990653/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ee394a892dd21c03a528139c1e8d4e0e1264ac84">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_f7703c9261c78e05c9abcdfb9f9a6ce98a53d973/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d9608745d98f021bc98107dfb346415aab5ce797">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_f6431eb51dee1034b29b46a21b8f42524519c023/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-applinks/1.4.0/8ad21bf21784dacce5f2043afb97218cc377e835/bolts-applinks-1.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="8ad21bf21784dacce5f2043afb97218cc377e835">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/bolts-applinks-1.4.0_9899350e1fbb896b28606c5ea38b0dc6cc162bf4/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/18a5d4a4d4d78109877da8ad8abf5266a5c5d68c/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7a343e17f154f513a09c12946fae0f172be079ec">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_dccaba083e1efde7c0bd7dc3fafee19aed004e9a/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/6a493cf605f4ff74d2282088de3702d5eab22e8c/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="42a3ae86dd3ae2876d3e95c2e6e104ae57a50a65">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_a3c5afb7b09fae82b6b6e88ffcae7a4306e3483d/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/2db95fa38c183c81070d9dc004eaf4f8c1b603e9/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="702d339bc0a81d21354cd7e2cf2b67225fa4a16c">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_516082e4a977e059b1ba735afb59908a0bee60c5/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/43c8344eebd20e30832935ca68a2859e944c423d/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e51c2f662bb72419632af5192553c37e33890a99">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_5d89df63aac04e09354e8bcd93545b58b1886679/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/25.2.0/support-annotations-25.2.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="4a5a82a027706397fff621b22fd6fa796e91d7c5">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-25.2.0_d063930787cc7131b16ec7981620eced9ec29f90/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/1ad758c7985dc33f818152c33172b3143d31b8bd/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f6afcfbf1989631424f9ceaae6ee24777d3cf6ba">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_6d487e410307993092e7da2906e8cd1275ce80ea/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/e74c80756d2aec6e47aebbd37ee503a048f81ffa/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="db0a4170961a16af6d7a5222bf90a5876eea4227">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_05cb750eef39d83b24854997d7b15307673c8a2a/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/3a1fd090113436b3bdeee5f6600c896e7f87a47e/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="8ac09931704b91e7b4d281f5e34b3b006b628c22">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_2a146ea194548401f9e41169262c4dd39550d1b0/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/f4c6f6aea321d5b9b163f683dc87f5988c33656c/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d39f676be8400123523882d189a1d84040d34339">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_4ebe77b23d8388d0a82242be6f040e2f2f368449/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.gradle/caches/modules-2/files-2.1/com.github.bumptech.glide/glide/3.6.1/86b122e640af09b0723e1fa44083c354ba6d9089/glide-3.6.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="86b122e640af09b0723e1fa44083c354ba6d9089">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/glide-3.6.1_080eb12fe9d9aadf081bb07e33b13a7cad5d84a8/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/5e7f98b6a6a5dcbf138bc56efef228e5a7ba67c5/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e820b7be8c035dd522da4bc822e8a76c8e27921a">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_46c9ab8f3aabd0e74a4a2d051b0fd83dbbdd4a27/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="c82741bc129dd5f99f11a4ab8666ae24262053b6">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_500a37d18069ac71298ab51ff419c690f443650d/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/1e454a3245b5c78bf468b7a95bac5a6ad8dc0a57/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="a9f41e6463de88c3f979d796382fc24fb7e9cd41">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_eade3d32ff04b77653cd3c5e41f7a1fd48c0df07/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/d8ff52b96dee05a62488f9a014b4c2a5989b7297/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="fa0446a14ed5dd3725047d6399ffea771a564b30">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_62345ca1767b5efe11fe07c5d2c102dc6a7e917c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/223bddc15ea8c6e75c3dcdb003f217d9a2b7c726/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="580fa73d5bf63ffd04b9d66d0e75a2ed21842702">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_79f2cbfc5dca8500cda515f4589304f5461c3f29/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/a93efe9b2ecd9211ee815d5ee4d6caa1f1c5d90a/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="810f41e5b7fd99f196ebeabe865ba2c54e7e76dc">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_c2207ba01f9acee7db6ab3ce4abaf312203efbe3/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/011fa46626597664c189e8a7a945866b12b20a6b/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0ef21408e3142ffbfbd4a7ec1762c3325c6c386c">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_927131439fd552350d3063a9c5d64010833a8231/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/5a80102ee383f01384ecadb880d5f420aeaf7fd0/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="393eb85d65baa2c3702efdf699832498f8b51bf1">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_60865705b5909e140f6994a708d8f32a4fc3745b/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/44907cb6f78699b3c8b67f1b999ed6f7affbedf5/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f861fce2e9fa167e7fe8d8558cf2cbb910b9fb34">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_e7f5d1cfe9d8c4798df0ccaa072484a8212ce1cd/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/bf291bb8c98d57e5cbcb9a6c5412bb3a64c23d0b/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="5243af50631020511cf2403789678149b1a319e6">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_4f71d2eea5e269380211dd450e09319a120d1e22/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Neo/.android/build-cache/d52bedbf6f4cfdb53a59d3bcbe42f1e803a054db/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="2d1eaa9e0b98f8fc4c2b989d9b30d4f1480648ac">
+        <dex dex="/Users/Neo/ASU Courses/535/CSE535/ProjectG15/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_79e5d1da34110ed2da4c4916c0d63df994fae23c/classes.dex" />
+    </item>
+
+</items>
