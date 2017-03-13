@@ -140,8 +140,6 @@ public class AddEventActivity extends AppCompatActivity implements
         return true;
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -175,6 +173,7 @@ public class AddEventActivity extends AppCompatActivity implements
                 returnIntent.putExtra("title", mTitle);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
+                // User chose the "Settings" item, show the app settings UI...
                 return true;
 
             default:

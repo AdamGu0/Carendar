@@ -42,8 +42,15 @@ public class MainActivity extends AppCompatActivity implements MonthChangeListen
     private WeekView mWeekView;
     private ArrayList<WeekViewEvent> mNewEvents;
     private MyWeekViewEvent myWeekViewEvent;
-//    private int mWeekViewType = TYPE_THREE_DAY_VIEW;
+
+    private static final int TYPE_DAY_VIEW = 1;
+    private static final int TYPE_THREE_DAY_VIEW = 2;
+    private static final int TYPE_WEEK_VIEW = 3;
+    private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private ImageButton mFloatingActionButton;
+    private ImageButton mTesting;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +110,30 @@ public class MainActivity extends AppCompatActivity implements MonthChangeListen
         mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
         mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
 
+        // Set up a date time interpreter to interpret how the date and time will be formatted in
+        // the week view. This is optional.
+        setupDateTimeInterpreter(false);
+
+        mFloatingActionButton = (ImageButton) findViewById(R.id.fab_add);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+        mTesting = (ImageButton) findViewById(R.id.map_showing);
+        mTesting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MapShowingActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
     }
 
 
@@ -148,45 +179,46 @@ public class MainActivity extends AppCompatActivity implements MonthChangeListen
 //                int[] startAndDateTime = bundle.getIntArray("startDateAndTime");
 //                int[] endDateAndTime= bundle.getIntArray("endDateAndTime");
 
-                int mStartYear = data.getIntExtra("mStartYear", 0);
-                int mStartMonth = data.getIntExtra("mStartMonth", 0);
-                int mStartDay = data.getIntExtra("mStartDay", 0);
-                int mStartHour = data.getIntExtra("mStartHour", 0);
-                int mStartMinute = data.getIntExtra("mEndMinute", 0);
-//
-
-                int mEndYear = data.getIntExtra("mEndYear", 0);
-                int mEndMonth = data.getIntExtra("mEndMonth", 0);
-                int mEndDay = data.getIntExtra("mEndDay", 0);
-                int mEndHour = data.getIntExtra("mEndHour", 0);
-                int mEndMinute = data.getIntExtra("mEndMinute", 0);
-
-//                Calendar startTime = Calendar.getInstance();
-//                startTime.set(Calendar.YEAR, 2017);
-//                startTime.set(Calendar.MONTH, 3);
-//                startTime.set(Calendar.DATE, 13);
-//                startTime.set(Calendar.HOUR_OF_DAY, 2);
-//                startTime.set(Calendar.MINUTE, 1);
+//                int mStartYear = data.getIntExtra("mStartYear", 0);
+//                int mStartMonth = data.getIntExtra("mStartMonth", 0);
+//                int mStartDay = data.getIntExtra("mStartDay", 0);
+//                int mStartHour = data.getIntExtra("mStartHour", 0);
+//                int mStartMinute = data.getIntExtra("mEndMinute", 0);
 ////
-//                Calendar endTime = (Calendar) startTime.clone();
-//                endTime.set(Calendar.YEAR, 2018);
-//                endTime.set(Calendar.MONTH, 3);
-//                endTime.set(Calendar.DATE, 13);
-//                endTime.set(Calendar.HOUR_OF_DAY, 4);
-//                endTime.set(Calendar.MINUTE, 3);
-//                WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
-//                event.setColor(getResources().getColor(R.color.event_color_01));
+//
+//                int mEndYear = data.getIntExtra("mEndYear", 0);
+//                int mEndMonth = data.getIntExtra("mEndMonth", 0);
+//                int mEndDay = data.getIntExtra("mEndDay", 0);
+//                int mEndHour = data.getIntExtra("mEndHour", 0);
+//                int mEndMinute = data.getIntExtra("mEndMinute", 0);
 
-            Calendar startTime = Calendar.getInstance();
-            startTime.set(Calendar.HOUR_OF_DAY, 3);
-            startTime.set(Calendar.MINUTE, 0);
-            startTime.set(Calendar.MONTH, 3 - 1);
-            startTime.set(Calendar.YEAR, 2017);
-            Calendar endTime = (Calendar) startTime.clone();
-            endTime.set(Calendar.HOUR_OF_DAY, 4);
-            endTime.set(Calendar.MONTH, 3 - 1);
-            WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
-            event.setColor(getResources().getColor(R.color.event_color_01));
+                Calendar startTime = Calendar.getInstance();
+                startTime.set(Calendar.YEAR, 2017);
+                startTime.set(Calendar.MONTH, 3);
+                startTime.set(Calendar.DATE, 13);
+                startTime.set(Calendar.HOUR_OF_DAY, 2);
+                startTime.set(Calendar.MINUTE, 1);
+//
+                Calendar endTime = (Calendar) startTime.clone();
+                endTime.set(Calendar.YEAR, 2017);
+                endTime.set(Calendar.MONTH, 3);
+                endTime.set(Calendar.DATE, 13);
+                endTime.set(Calendar.HOUR_OF_DAY, 4);
+                endTime.set(Calendar.MINUTE, 3);
+                WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
+                event.setColor(getResources().getColor(R.color.event_color_01));
+//                            Calendar startTime = Calendar.getInstance();
+
+//            Calendar startTime = Calendar.getInstance();
+//            startTime.set(Calendar.HOUR_OF_DAY, 3);
+//            startTime.set(Calendar.MINUTE, 0);
+//            startTime.set(Calendar.MONTH, 3 - 1);
+//            startTime.set(Calendar.YEAR, 2017);
+//            Calendar endTime = (Calendar) startTime.clone();
+//            endTime.add(Calendar.HOUR, 4);
+//            endTime.set(Calendar.MONTH, 3 - 1);
+//            WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
+//            event.setColor(getResources().getColor(R.color.event_color_01));
 
 //                Calendar startTime = Calendar.getInstance();
 //

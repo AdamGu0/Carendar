@@ -19,7 +19,7 @@ android {
     }
 }
 
-dependencies {
+def var = dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -36,6 +36,10 @@ dependencies {
     compile 'com.github.alamkanak:android-week-view:1.2.6'
     compile 'com.google.android.gms:play-services:9.6.0'
 
+    compile 'com.google.android.gms:play-services-gcm:9.6.0'
+    compile 'com.google.android.gms:play-services-maps:9.6.0'
+
 
 }
+var
 apply plugin: 'com.google.gms.google-services'

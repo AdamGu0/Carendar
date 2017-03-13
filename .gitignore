@@ -1,2 +1,5 @@
 
 *.rawproto
+*.log
+build/
+temp-*

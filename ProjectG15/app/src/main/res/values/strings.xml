@@ -10,5 +10,4 @@
     <string name="async_error">Could not download events from the internet</string>
     <string name="action_save">Save</string>
     <string name="pick_time">Set the time</string>
-
 </resources>
