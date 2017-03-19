@@ -2,20 +2,22 @@ package com.group15.apps.carendar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.alamkanak.weekview.DateTimeInterpreter;
-import com.alamkanak.weekview.MonthLoader.MonthChangeListener;
-import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,14 +25,17 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity implements MonthChangeListener {
+public class MainActivity extends AppCompatActivity {
+
+    private DrawerLayout mDrawer;
+    private Toolbar toolbar;
+    private NavigationView nvDrawer;
+    private ActionBarDrawerToggle drawerToggle;
+    private Handler mHandler;
+
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseMessageReference;
@@ -39,22 +44,28 @@ public class MainActivity extends AppCompatActivity implements MonthChangeListen
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
     static final int RC_ADD_EVENT = 2;
-    private WeekView mWeekView;
-    private ArrayList<WeekViewEvent> mNewEvents;
-    private MyWeekViewEvent myWeekViewEvent;
 
-    private static final int TYPE_DAY_VIEW = 1;
-    private static final int TYPE_THREE_DAY_VIEW = 2;
-    private static final int TYPE_WEEK_VIEW = 3;
-    private int mWeekViewType = TYPE_THREE_DAY_VIEW;
-    private ImageButton mFloatingActionButton;
-    private ImageButton mTesting;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mHandler = new Handler();
+
+        // Set a Toolbar to replace the ActionBar.
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Find our drawer view
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        // Find our drawer view
+        nvDrawer = (NavigationView) findViewById(R.id.nvView);
+        // Setup drawer view
+        setupDrawerContent(nvDrawer);
+
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -76,65 +87,91 @@ public class MainActivity extends AppCompatActivity implements MonthChangeListen
             }
         };
 
-        mFloatingActionButton = (ImageButton) findViewById(R.id.fab_add);
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
-                startActivityForResult(intent, RC_ADD_EVENT);
-
-            }
-        });
-
-        // Get a reference for the week view in the layout.
-        mWeekView = (WeekView) findViewById(R.id.weekView);
-
-        // Show a toast message about the touched event.
-//        mWeekView.setOnEventClickListener(mEventClickListener);
-
-        // The week view has infinite scrolling horizontally. We have to provide the events of a
-        // month every time the month changes on the week view.
-        mWeekView.setMonthChangeListener(this);
-        mNewEvents = new ArrayList<WeekViewEvent>();
+        // Begin the transaction
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        // Replace the contents of the container with the new fragment
+        ft.replace(R.id.flContent, new CalendarFragment());
+    // or ft.add(R.id.your_placeholder, new FooFragment());
+    // Complete the changes added above
+        ft.commit();
 
 
-        // Set long press listener for events.
-//        mWeekView.setEventLongPressListener(this);
-
-        // Set long press listener for empty view
-//        mWeekView.setEmptyViewLongPressListener(this);
-        setupDateTimeInterpreter(true);
-
-        mWeekView.setNumberOfVisibleDays(7);
-        mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
-        mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
-        mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
-
-        // Set up a date time interpreter to interpret how the date and time will be formatted in
-        // the week view. This is optional.
-        setupDateTimeInterpreter(false);
-
-        mFloatingActionButton = (ImageButton) findViewById(R.id.fab_add);
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
-                startActivity(intent);
-
-            }
-        });
-
-        mTesting = (ImageButton) findViewById(R.id.map_showing);
-        mTesting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MapShowingActivity.class);
-                startActivity(intent);
-
-            }
-        });
 
     }
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
+    private Fragment getFragment(MenuItem menuItem) {
+        switch(menuItem.getItemId()) {
+            case R.id.nav_account_fragment:
+                return AccountFragment.newInstance();
+//                break;
+            case R.id.nav_map_fragment:
+                return MapShowingFragment.newInstance();
+//                break;
+            case R.id.nav_calendar_fragment:
+                return CalendarFragment.newInstance();
+//                break;
+            default:
+                return CalendarFragment.newInstance();
+        }
+
+    }
+
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        // Create a new fragment and specify the fragment to show based on nav item clicked
+        final MenuItem item = menuItem;
+        Runnable mPendingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // update the main content by replacing fragments
+//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+//                        android.R.anim.fade_out);
+                Fragment fragment = getFragment(item);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+//                fragmentTransaction.commitAllowingStateLoss();
+            }
+        };
+//        try {
+//            fragment = (Fragment) fragmentClass.newInstance();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        // Insert the fragment by replacing any existing fragment
+
+//            final Fragment f = fragment;
+
+
+        // If mPendingRunnable is not null, then add to the message queue
+        if (mPendingRunnable != null) {
+            mHandler.post(mPendingRunnable);
+        }
+
+
+
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+        // Highlight the selected item has been done by NavigationView
+        menuItem.setChecked(true);
+        // Set action bar title
+        setTitle(menuItem.getTitle());
+        // Close the navigation drawer
+        mDrawer.closeDrawers();
+    }
+
 
 
     @Override
@@ -192,23 +229,22 @@ public class MainActivity extends AppCompatActivity implements MonthChangeListen
 //                int mEndHour = data.getIntExtra("mEndHour", 0);
 //                int mEndMinute = data.getIntExtra("mEndMinute", 0);
 
-                Calendar startTime = Calendar.getInstance();
-                startTime.set(Calendar.YEAR, 2017);
-                startTime.set(Calendar.MONTH, 3);
-                startTime.set(Calendar.DATE, 13);
-                startTime.set(Calendar.HOUR_OF_DAY, 2);
-                startTime.set(Calendar.MINUTE, 1);
-//
-                Calendar endTime = (Calendar) startTime.clone();
-                endTime.set(Calendar.YEAR, 2017);
-                endTime.set(Calendar.MONTH, 3);
-                endTime.set(Calendar.DATE, 13);
-                endTime.set(Calendar.HOUR_OF_DAY, 4);
-                endTime.set(Calendar.MINUTE, 3);
-                WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
-                event.setColor(getResources().getColor(R.color.event_color_01));
+//                Calendar startTime = Calendar.getInstance();
+//                startTime.set(Calendar.YEAR, 2017);
+//                startTime.set(Calendar.MONTH, 3);
+//                startTime.set(Calendar.DATE, 18);
+//                startTime.set(Calendar.HOUR_OF_DAY, 2);
+//                startTime.set(Calendar.MINUTE, 1);
+////
+//                Calendar endTime = (Calendar) startTime.clone();
+//                endTime.set(Calendar.YEAR, 2017);
+//                endTime.set(Calendar.MONTH, 3);
+//                endTime.set(Calendar.DATE, 18);
+//                endTime.set(Calendar.HOUR_OF_DAY, 4);
+//                endTime.set(Calendar.MINUTE, 40);
+//                WeekViewEvent event = new WeekViewEvent(1, "kkk", startTime, endTime);
+//                event.setColor(getResources().getColor(R.color.event_color_01));
 //                            Calendar startTime = Calendar.getInstance();
-
 //            Calendar startTime = Calendar.getInstance();
 //            startTime.set(Calendar.HOUR_OF_DAY, 3);
 //            startTime.set(Calendar.MINUTE, 0);
@@ -231,9 +267,10 @@ public class MainActivity extends AppCompatActivity implements MonthChangeListen
 //                        data.getIntExtra("mEndHour", 0), data.getIntExtra("mEndMinute", 0));
 //                WeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime);
 //                event.setColor(getResources().getColor(R.color.event_color_01));
-                mNewEvents.add(event);
+//                mNewEvents.add(event);
+
                 // Refresh the week view. onMonthChange will be called again.
-                mWeekView.notifyDatasetChanged();
+//                mWeekView.notifyDatasetChanged();
             }
         }
     }
@@ -246,41 +283,16 @@ public class MainActivity extends AppCompatActivity implements MonthChangeListen
                 case R.id.sign_out_menu:
                     AuthUI.getInstance().signOut(this);
                     return true;
-                default:
-                    return super.onOptionsItemSelected(item);
+                case android.R.id.home:
+                    mDrawer.openDrawer(GravityCompat.START);
+                    return true;
             }
 
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Set up a date time interpreter which will show short date values when in week view and long
-     * date values otherwise.
-     * @param shortDate True if the date values should be short.
-     */
-    private void setupDateTimeInterpreter(final boolean shortDate) {
-        mWeekView.setDateTimeInterpreter(new DateTimeInterpreter() {
-            @Override
-            public String interpretDate(Calendar date) {
-                SimpleDateFormat weekdayNameFormat = new SimpleDateFormat("EEE", Locale.getDefault());
-                String weekday = weekdayNameFormat.format(date.getTime());
-                SimpleDateFormat format = new SimpleDateFormat(" M/d", Locale.getDefault());
 
-                // All android api level do not have a standard way of getting the first letter of
-                // the week day name. Hence we get the first char programmatically.
-                // Details: http://stackoverflow.com/questions/16959502/get-one-letter-abbreviation-of-week-day-of-a-date-in-java#answer-16959657
-                if (shortDate)
-                    weekday = String.valueOf(weekday.charAt(0));
-                return weekday.toUpperCase() + format.format(date.getTime());
-            }
-
-            @Override
-            public String interpretTime(int hour) {
-                return hour > 11 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : hour + " AM");
-            }
-        });
-    }
 
     protected String getEventTitle(Calendar time) {
         return String.format("Event of %02d:%02d %s/%d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), time.get(Calendar.MONTH)+1, time.get(Calendar.DAY_OF_MONTH));
@@ -301,29 +313,7 @@ public class MainActivity extends AppCompatActivity implements MonthChangeListen
 
 //    MonthLoader.MonthChangeListener mMonthChangeListener = new MonthLoader.MonthChangeListener() {
 //        @Override
-        public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
-            // Populate the week view with some events.
-            List<WeekViewEvent> events = new ArrayList<>();
 
-//            Calendar startTime = Calendar.getInstance();
-//            startTime.set(Calendar.HOUR_OF_DAY, 3);
-//            startTime.set(Calendar.MINUTE, 0);
-//            startTime.set(Calendar.MONTH, newMonth - 1);
-//            startTime.set(Calendar.YEAR, newYear);
-//            Calendar endTime = (Calendar) startTime.clone();
-//            endTime.add(Calendar.HOUR, 1);
-//            endTime.set(Calendar.MONTH, newMonth - 1);
-//            WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
-//            event.setColor(getResources().getColor(R.color.event_color_01));
-//
-//            Log.v("Test", "before: " + events.size());
-//            if (myWeekViewEvent != null) {
-            events.addAll(mNewEvents);
-//                Log.v("Test", "size: " + events.size());
-
-
-            return events;
-        }
 //    };
 
 }

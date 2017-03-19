@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_account_fragment"
+            android:icon="@drawable/ic_account_circle_black_48dp"
+            android:title="account" />
+        <item
+            android:id="@+id/nav_calendar_fragment"
+            android:icon="@drawable/ic_calendar_black_48dp"
+            android:checked="true"
+            android:title="calendar" />
+        <item
+            android:id="@+id/nav_map_fragment"
+            android:icon="@drawable/ic_map_black_48dp"
+            android:title="map" />
+    </group>
+
+</menu>

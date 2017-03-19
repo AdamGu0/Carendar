@@ -27,7 +27,7 @@ public class MapShowingActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_showing);
+        setContentView(R.layout.fragment_map_showing);
 
         Button btnMap = (Button) findViewById(R.id.btnMap);
         Button btnSatellite = (Button) findViewById(R.id.btnSatellite);
