@@ -2,7 +2,8 @@
 *.rawproto
 *.log
 *.iml
-.gradle
+/*.gradle/*
+.gradle/*
 */local.properties
 */.idea/workspace.xml
 */.idea/libraries
@@ -46,3 +47,9 @@ build/
 
 #NDK
 obj/
+
+*.lock
+
+*.bin
+
+*.bin

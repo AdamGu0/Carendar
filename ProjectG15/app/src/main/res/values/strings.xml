@@ -10,4 +10,7 @@
     <string name="async_error">Could not download events from the internet</string>
     <string name="action_save">Save</string>
     <string name="pick_time">Set the time</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
 </resources>

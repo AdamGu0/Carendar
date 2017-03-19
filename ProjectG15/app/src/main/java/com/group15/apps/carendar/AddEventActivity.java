@@ -24,7 +24,7 @@ import java.util.Calendar;
 public class AddEventActivity extends AppCompatActivity implements
         View.OnClickListener {
 
-    Button btnStartDatePicker, btnStartTimePicker, btnEndDatePicker, btnEndTimePicker;
+    Button btnStartDatePicker, btnStartTimePicker, btnEndDatePicker, btnEndTimePicker, btnSave;
     EditText etStartDate, etStartTime, etEndDate, etEndTime, etLocation, etTitle;
     private int mStartYear, mStartMonth, mStartDay, mStartHour, mStartMinute;
     private int mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute;
@@ -37,6 +37,8 @@ public class AddEventActivity extends AppCompatActivity implements
 
         btnStartDatePicker = (Button) findViewById(R.id.btn_start_date);
         btnStartTimePicker = (Button) findViewById(R.id.btn_start_time);
+        btnSave = (Button) findViewById(R.id.btn_save);
+
         etStartDate = (EditText) findViewById(R.id.in_start_date);
         etStartTime = (EditText) findViewById(R.id.in_start_time);
         etTitle = (EditText) findViewById(R.id.et_title);
@@ -52,7 +54,7 @@ public class AddEventActivity extends AppCompatActivity implements
 
         btnEndDatePicker.setOnClickListener(this);
         btnEndTimePicker.setOnClickListener(this);
-
+        btnSave.setOnClickListener(this);
 
     }
 
@@ -131,6 +133,37 @@ public class AddEventActivity extends AppCompatActivity implements
                     }, mEndHour, mEndMinute, false);
             timePickerDialog.show();
         }
+        if (v == btnSave) {
+            Intent returnIntent = new Intent(AddEventActivity.this, MainActivity.class);
+            mLocation = etLocation.getText().toString();
+            mTitle = etTitle.getText().toString();
+
+            int[] startDateAndTime = {mStartYear, mStartMonth, mStartDay,
+                    mStartHour, mStartMinute};
+            int[] endDateAndTime = {mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute};
+
+            returnIntent.putExtra("mStartYear", mStartYear);
+            returnIntent.putExtra("mStartMonth", mStartMonth);
+            returnIntent.putExtra("mStartDay", mStartDay);
+            returnIntent.putExtra("mStartHour", mStartHour);
+            returnIntent.putExtra("mStartMinute", mStartMinute);
+
+            returnIntent.putExtra("mEndYear", mStartYear);
+            returnIntent.putExtra("mEndMonth", mStartMonth);
+            returnIntent.putExtra("mEndDay", mStartDay);
+            returnIntent.putExtra("mEndHour", mStartHour);
+            returnIntent.putExtra("mEndMinute", mEndMinute);
+
+//                returnIntent.putExtra("startDateAndTIme", startDateAndTime);
+//                returnIntent.putExtra("endDateAndTIme", endDateAndTime);
+            returnIntent.putExtra("location", mLocation);
+            returnIntent.putExtra("title", mTitle);
+            setResult(Activity.RESULT_OK,returnIntent);
+            finish();
+            // User chose the "Settings" item, show the app settings UI...
+//            return true;
+        }
+
     }
 
     @Override
@@ -153,7 +186,6 @@ public class AddEventActivity extends AppCompatActivity implements
                 int[] startDateAndTime = {mStartYear, mStartMonth, mStartDay,
                     mStartHour, mStartMinute};
                 int[] endDateAndTime = {mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute};
-
 
                 returnIntent.putExtra("mStartYear", mStartYear);
                 returnIntent.putExtra("mStartMonth", mStartMonth);

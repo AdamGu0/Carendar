@@ -1,6 +1,7 @@
 package com.group15.apps.carendar;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
     static final int RC_ADD_EVENT = 2;
+    static final int RC_MAP_FINISH = 3;
 
 
 
@@ -66,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(nvDrawer);
 
 
+        // Find our drawer view
+        drawerToggle = setupDrawerToggle();
+
+        // Tie DrawerLayout events to the ActionBarToggle
+        mDrawer.addDrawerListener(drawerToggle);
+
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -74,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    Toast.makeText(MainActivity.this, "You're are now signed in. Welcome to FriendlyChat.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "You're are now signed in. Welcome to Calendar.", Toast.LENGTH_SHORT).show();
                 } else {
                     startActivityForResult(AuthUI.getInstance()
                             .createSignInIntentBuilder()
@@ -97,6 +106,31 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
+        // and will not render the hamburger icon without it.
+        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
+    }
+
+
+    // `onPostCreate` called when activity start-up is complete after `onStart()`
+    // NOTE 1: Make sure to override the method with only a single `Bundle` argument
+    // Note 2: Make sure you implement the correct `onPostCreate(Bundle savedInstanceState)` method.
+    // There are 2 signatures and only `onPostCreate(Bundle state)` shows the hamburger icon.
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggles
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -113,7 +147,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_account_fragment:
                 return AccountFragment.newInstance();
             case R.id.nav_map_fragment:
-                startActivity(new Intent(MainActivity.this, MapShowingActivity.class));
+                Intent intent = new Intent(MainActivity.this, MapShowingActivity.class);
+                startActivityForResult(intent, RC_MAP_FINISH);
                 mDrawer.closeDrawers();
                 return null;
             case R.id.nav_calendar_fragment:
@@ -213,6 +248,11 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         }
+
+        if (requestCode == RC_MAP_FINISH) {
+
+        }
+
         if (requestCode == RC_ADD_EVENT) {
             if (resultCode == RESULT_OK) {
                 String location = data.getStringExtra("location");
@@ -296,6 +336,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
