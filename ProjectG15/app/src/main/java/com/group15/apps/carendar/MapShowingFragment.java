@@ -2,6 +2,7 @@ package com.group15.apps.carendar;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class MapShowingFragment extends SupportMapFragment implements OnMapReady
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_map_showing, container, false);
+        return inflater.inflate(R.layout.activity_map_showing, container, false);
     }
 
     @Override
@@ -63,7 +64,10 @@ public class MapShowingFragment extends SupportMapFragment implements OnMapReady
             }
         });
 //
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
+        FragmentManager fm = getChildFragmentManager();
+        SupportMapFragment mapFragment =  SupportMapFragment.newInstance();
+        fm.beginTransaction().replace(R.id.map, mapFragment).commit();
+//        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.flContent);
         mapFragment.getMapAsync(this);
     }
 

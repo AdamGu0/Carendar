@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -113,13 +112,12 @@ public class MainActivity extends AppCompatActivity {
         switch(menuItem.getItemId()) {
             case R.id.nav_account_fragment:
                 return AccountFragment.newInstance();
-//                break;
             case R.id.nav_map_fragment:
-                return MapShowingFragment.newInstance();
-//                break;
+                startActivity(new Intent(MainActivity.this, MapShowingActivity.class));
+                mDrawer.closeDrawers();
+                return null;
             case R.id.nav_calendar_fragment:
                 return CalendarFragment.newInstance();
-//                break;
             default:
                 return CalendarFragment.newInstance();
         }
@@ -138,8 +136,17 @@ public class MainActivity extends AppCompatActivity {
 //                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
 //                        android.R.anim.fade_out);
                 Fragment fragment = getFragment(item);
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                if (fragment == null) {
+                    return;
+                }
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                        android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.flContent, fragment);
+                fragmentTransaction.commitAllowingStateLoss();
+
+//                fragmentTransaction.beginTransaction().replace(R.id.flContent, fragment).commit();
 //                fragmentTransaction.commitAllowingStateLoss();
             }
         };

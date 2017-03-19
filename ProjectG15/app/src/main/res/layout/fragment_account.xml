@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <fragment
-        android:id="@+id/account_fragment"
-        class="com.group15.apps.carendar.AccountFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <!--<fragment-->
+        <!--android:id="@+id/account_fragment"-->
+        <!--class="com.group15.apps.carendar.AccountFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"/>-->
 </FrameLayout>
