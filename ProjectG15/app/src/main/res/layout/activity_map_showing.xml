@@ -1,15 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp"
+    android:paddingTop="25dp"
     tools:context=".MapShowingActivity"
     android:orientation="vertical">
+
+    <fragment
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:layout_gravity="end|bottom"
+            android:background="@drawable/ic_gps_fixed_black_48dp"
+            android:id="@+id/btnMyLocation"
+            android:layout_marginTop="50dp"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:paddingRight="30dp"
+            android:paddingBottom="30dp"/>
+    </fragment>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -39,13 +53,6 @@
                 android:layout_weight="1"/>
         </LinearLayout>
 
-        <fragment
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:map="http://schemas.android.com/apk/res-auto"
-            class="com.google.android.gms.maps.SupportMapFragment"
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            />
 
-</LinearLayout>
+
+</RelativeLayout>
