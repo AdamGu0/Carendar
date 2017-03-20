@@ -1,27 +1,25 @@
 package com.group15.apps.carendar;
 
-import android.support.v4.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import com.alamkanak.weekview.DateTimeInterpreter;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import static com.group15.apps.carendar.MainActivity.RC_ADD_EVENT;
+import java.util.Map;
 
 /**
  * Created by Neo on 3/18/17.
@@ -33,14 +31,19 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
-    private ImageButton mFloatingActionButton;
     private WeekView mWeekView;
-    private ArrayList<WeekViewEvent> mNewEvents;
+    private ArrayList<MyWeekViewEvent> mNewEvents;
     private MyWeekViewEvent myWeekViewEvent;
-
+    private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsList = new HashMap<>();
 
     public static CalendarFragment newInstance() {
         return new CalendarFragment();
+    }
+
+
+    public void updatePersonalEventList(Map<Integer, List<MyWeekViewEvent>> list) {
+        mPersonalEventsList = list;
+        Log.v("test", " " + mPersonalEventsList.isEmpty());
     }
 
 
@@ -64,8 +67,7 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         // The week view has infinite scrolling horizontally. We have to provide the events of a
         // month every time the month changes on the week view.
         mWeekView.setMonthChangeListener(this);
-        mNewEvents = new ArrayList<WeekViewEvent>();
-
+//        mNewEvents = new ArrayList<WeekViewEvent>();
 
         // Set long press listener for events.
 //        mWeekView.setEventLongPressListener(this);
@@ -83,26 +85,21 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         // the week view. This is optional.
         setupDateTimeInterpreter(false);
 
-        mFloatingActionButton = (ImageButton) v.findViewById(R.id.fab_add);
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddEventActivity.class);
-                startActivity(intent);
+//        mFloatingActionButton = (ImageButton) v.findViewById(R.id.fab_add);
+//        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), AddEventActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
 
-            }
-        });
 
+    }
 
-        mFloatingActionButton = (ImageButton) v.findViewById(R.id.fab_add);
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddEventActivity.class);
-                startActivityForResult(intent, RC_ADD_EVENT);
-
-            }
-        });
+    public void notifyChange() {
+        mWeekView.notifyDatasetChanged();
     }
 
     /**
@@ -133,27 +130,40 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         });
     }
 
-    public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
+    private List<MyWeekViewEvent> getDatatoDisPlay(int newMonth) {
+        if (mPersonalEventsList.isEmpty() || mPersonalEventsList.get(newMonth - 1) == null) {
+            return null;
+        }
+        for (MyWeekViewEvent event : mPersonalEventsList.get(newMonth - 1)) {
+            Log.v("test: title = ", event.getTitle());
+            Log.v("test: location = ", event.getLocation());
+            Log.v("test: month = ",  " " + event.getStartTime().get(Calendar.MONTH));
+        }
+
+        return mPersonalEventsList.get(newMonth - 1);
+    }
+
+
+
+    public List<MyWeekViewEvent> onMonthChange(int newYear, int newMonth) {
+        if (getDatatoDisPlay(newMonth - 1) == null) {
+            return new ArrayList<>();
+        }
         // Populate the week view with some events.
-        List<WeekViewEvent> events = new ArrayList<>();
-
-        Calendar startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, 3);
-        startTime.set(Calendar.MINUTE, 0);
-        startTime.set(Calendar.MONTH, newMonth - 1);
-        startTime.set(Calendar.YEAR, newYear);
-        Calendar endTime = (Calendar) startTime.clone();
-        endTime.add(Calendar.HOUR, 1);
-        endTime.set(Calendar.MONTH, newMonth - 1);
-        WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
-        event.setColor(getResources().getColor(R.color.event_color_01));
+        return getDatatoDisPlay(newMonth - 1);
+//        Calendar startTime = Calendar.getInstance();
+//        startTime.set(Calendar.HOUR_OF_DAY, 3);
+//        startTime.set(Calendar.MINUTE, 0);
+//        startTime.set(Calendar.MONTH, newMonth - 1);
+//        startTime.set(Calendar.YEAR, newYear);
+//        Calendar endTime = (Calendar) startTime.clone();
+//        endTime.add(Calendar.HOUR, 1);
+//        endTime.set(Calendar.MONTH, newMonth - 1);
+//        WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
+//        event.setColor(getResources().getColor(R.color.event_color_01));
 //
-//            Log.v("Test", "before: " + events.size());
-//            if (myWeekViewEvent != null) {
-        events.add(event);
-//                Log.v("Test", "size: " + events.size());
+//        events.add(event);
 
 
-        return events;
     }
 }

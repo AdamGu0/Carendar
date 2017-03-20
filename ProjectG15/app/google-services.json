@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "732556566569-5j8ef6busrt458lbmpjepepjoean5b5j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.group15.apps.carendar",
+            "certificate_hash": "63712121e573d53d6063954de7cb0a9e15366867"
+          }
+        },
+        {
           "client_id": "732556566569-3l91cbhe0h3qal0a7o6doro8213d4tl5.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "732556566569-3l91cbhe0h3qal0a7o6doro8213d4tl5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

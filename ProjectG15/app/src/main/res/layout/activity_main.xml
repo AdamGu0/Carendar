@@ -59,18 +59,15 @@
             app:menu="@menu/drawer_view"
             app:headerLayout="@layout/nav_header"/>
     </android.support.v4.widget.DrawerLayout>
-
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/map_showing"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|left"-->
-        <!--android:layout_margin="16dp"-->
-        <!--android:src="@drawable/ic_add_white"-->
-        <!--app:layout_anchor="@id/weekView"-->
-        <!--app:layout_anchorGravity="bottom|left|end" />-->
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_white"
+        app:layout_anchor="@id/flContent"
+        app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>
 

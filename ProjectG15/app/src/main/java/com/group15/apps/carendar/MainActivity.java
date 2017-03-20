@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -25,7 +27,11 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,10 +41,13 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
     private Handler mHandler;
+    // index to identify current nav menu item
+    public static int navItemIndex = 0;
 
+    private FloatingActionButton mFloatingActionButton;
 
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseMessageReference;
+    private DatabaseReference mEventDatabaseReference;
     private ChildEventListener mChildEventListener;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -46,8 +55,17 @@ public class MainActivity extends AppCompatActivity {
     static final int RC_ADD_EVENT = 2;
     static final int RC_MAP_FINISH = 3;
 
+    private static final String TAG_CALENDAR = "calendar";
+    private static final String TAG_ACCOUNT = "account";
+    private static final String TAG_MAP = "map";
+    public static String CURRENT_TAG = TAG_CALENDAR;
+    private String[] activityTitles;
 
+//    private List<MyWeekViewEvent> mPersonalMonthEventList = new ArrayList<>();
+    private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsList = new HashMap<>();
 
+    // flag to load home fragment when user presses back key
+    private boolean shouldLoadHomeFragOnBackPress = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +73,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mHandler = new Handler();
-
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         // Find our drawer view
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         // Find our drawer view
@@ -67,15 +83,32 @@ public class MainActivity extends AppCompatActivity {
         // Setup drawer view
         setupDrawerContent(nvDrawer);
 
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab_add);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
+                MainActivity.this.startActivityForResult(intent, RC_ADD_EVENT);
 
+            }
+        });
+        // load toolbar titles from string resources
+        activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
         // Find our drawer view
         drawerToggle = setupDrawerToggle();
 
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle);
 
+        if (savedInstanceState == null) {
+            navItemIndex = 0;
+            CURRENT_TAG = TAG_CALENDAR;
+            loadHomeFragment();
+        }
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mEventDatabaseReference = mFirebaseDatabase.getReference().child("events");
+
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -98,13 +131,61 @@ public class MainActivity extends AppCompatActivity {
         // Begin the transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment
-        ft.replace(R.id.flContent, new CalendarFragment());
+        CalendarFragment calendarFragment = new CalendarFragment();
+        calendarFragment.updatePersonalEventList(mPersonalEventsList);
+        ft.replace(R.id.flContent, calendarFragment);
     // or ft.add(R.id.your_placeholder, new FooFragment());
     // Complete the changes added above
         ft.commit();
+    }
 
+    private void loadHomeFragment() {
+        nvDrawer.getMenu().getItem(navItemIndex).setChecked(true);
+        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
+        if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
+            mDrawer.closeDrawers();
+            // show or hide the fab button
+            return;
+        }
 
+        Runnable mPendingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // update the main content by replacing fragments
+                Fragment fragment = getHomeFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                        android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.flContent, fragment, CURRENT_TAG);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+        };
 
+        // If mPendingRunnable is not null, then add to the message queue
+        if (mPendingRunnable != null) {
+            mHandler.post(mPendingRunnable);
+        }
+
+        //Closing drawer on item click
+        mDrawer.closeDrawers();
+        toggleFab();
+        // refresh toolbar menu
+        invalidateOptionsMenu();
+    }
+
+    private Fragment getHomeFragment() {
+        switch (navItemIndex) {
+            case 0:
+                // home
+                CalendarFragment calendarFragment = new CalendarFragment();
+                return calendarFragment;
+            case 1:
+                // photos
+                AccountFragment accountFragment = new AccountFragment();
+                return accountFragment;
+            default:
+                return new CalendarFragment();
+        }
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -142,85 +223,107 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private Fragment getFragment(MenuItem menuItem) {
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawers();
+            toggleFab();
+            return;
+        }
+
+        // This code loads home fragment when back key is pressed
+        // when user is in other fragment than home
+        if (shouldLoadHomeFragOnBackPress) {
+            // checking if user is on other navigation menu
+            // rather than home
+            if (navItemIndex != 0) {
+                navItemIndex = 0;
+                CURRENT_TAG = TAG_CALENDAR;
+                loadHomeFragment();
+                return;
+            }
+        }
+
+        super.onBackPressed();
+    }
+
+    public boolean selectDrawerItem(MenuItem menuItem) {
+        // Create a new fragment and specify the fragment to show based on nav item clicked
         switch(menuItem.getItemId()) {
+            case R.id.nav_calendar_fragment:
+                CURRENT_TAG = TAG_CALENDAR;
+                navItemIndex = 0;
+                break;
             case R.id.nav_account_fragment:
-                return AccountFragment.newInstance();
+                CURRENT_TAG = TAG_ACCOUNT;
+                navItemIndex = 1;
+                break;
             case R.id.nav_map_fragment:
+                CURRENT_TAG = TAG_MAP;
+                navItemIndex = 2;
                 Intent intent = new Intent(MainActivity.this, MapShowingActivity.class);
                 startActivityForResult(intent, RC_MAP_FINISH);
                 mDrawer.closeDrawers();
-                return null;
-            case R.id.nav_calendar_fragment:
-                return CalendarFragment.newInstance();
+                return true;
             default:
-                return CalendarFragment.newInstance();
+                navItemIndex = 0;
         }
 
-    }
-
-
-    public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        final MenuItem item = menuItem;
-        Runnable mPendingRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // update the main content by replacing fragments
-//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-//                        android.R.anim.fade_out);
-                Fragment fragment = getFragment(item);
-                if (fragment == null) {
-                    return;
-                }
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                        android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.flContent, fragment);
-                fragmentTransaction.commitAllowingStateLoss();
-
-//                fragmentTransaction.beginTransaction().replace(R.id.flContent, fragment).commit();
-//                fragmentTransaction.commitAllowingStateLoss();
-            }
-        };
-//        try {
-//            fragment = (Fragment) fragmentClass.newInstance();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        // Insert the fragment by replacing any existing fragment
-
-//            final Fragment f = fragment;
-
-
-        // If mPendingRunnable is not null, then add to the message queue
-        if (mPendingRunnable != null) {
-            mHandler.post(mPendingRunnable);
+        if (menuItem.isChecked()) {
+            menuItem.setChecked(false);
+        } else {
+            menuItem.setChecked(true);
         }
-
-
-
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-
-        // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }
 
+        loadHomeFragment();
 
+        return true;
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        mChildEventListener = new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                MyWeekViewEvent event = dataSnapshot.getValue(MyWeekViewEvent.class);
+//                int month = event.getStartTime().get(Calendar.MONTH);
+//                addEventToList(month - 1, event);
+//                Log.v("test", "inside onChildAdded");
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+////                MyWeekViewEvent event = dataSnapshot.getValue(MyWeekViewEvent.class);
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+//        mEventDatabaseReference.addChildEventListener(mChildEventListener);
+
     }
 
     @Override
@@ -249,77 +352,48 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (requestCode == RC_MAP_FINISH) {
-
-        }
-
         if (requestCode == RC_ADD_EVENT) {
             if (resultCode == RESULT_OK) {
                 String location = data.getStringExtra("location");
                 String title = data.getStringExtra("title");
-//                int[] startAndDateTime = data.getIntArrayExtra("startDateAndTime");
-//                int[] endDateAndTime = data.getIntArrayExtra("endDateAndTime");
-//                Bundle bundle = this.getIntent().getExtras();
-//                int[] startAndDateTime = bundle.getIntArray("startDateAndTime");
-//                int[] endDateAndTime= bundle.getIntArray("endDateAndTime");
 
-//                int mStartYear = data.getIntExtra("mStartYear", 0);
-//                int mStartMonth = data.getIntExtra("mStartMonth", 0);
-//                int mStartDay = data.getIntExtra("mStartDay", 0);
-//                int mStartHour = data.getIntExtra("mStartHour", 0);
-//                int mStartMinute = data.getIntExtra("mEndMinute", 0);
-////
-//
-//                int mEndYear = data.getIntExtra("mEndYear", 0);
-//                int mEndMonth = data.getIntExtra("mEndMonth", 0);
-//                int mEndDay = data.getIntExtra("mEndDay", 0);
-//                int mEndHour = data.getIntExtra("mEndHour", 0);
-//                int mEndMinute = data.getIntExtra("mEndMinute", 0);
+                Calendar startTime = Calendar.getInstance();
 
-//                Calendar startTime = Calendar.getInstance();
-//                startTime.set(Calendar.YEAR, 2017);
-//                startTime.set(Calendar.MONTH, 3);
-//                startTime.set(Calendar.DATE, 18);
-//                startTime.set(Calendar.HOUR_OF_DAY, 2);
-//                startTime.set(Calendar.MINUTE, 1);
-////
-//                Calendar endTime = (Calendar) startTime.clone();
-//                endTime.set(Calendar.YEAR, 2017);
-//                endTime.set(Calendar.MONTH, 3);
-//                endTime.set(Calendar.DATE, 18);
-//                endTime.set(Calendar.HOUR_OF_DAY, 4);
-//                endTime.set(Calendar.MINUTE, 40);
-//                WeekViewEvent event = new WeekViewEvent(1, "kkk", startTime, endTime);
-//                event.setColor(getResources().getColor(R.color.event_color_01));
-//                            Calendar startTime = Calendar.getInstance();
-//            Calendar startTime = Calendar.getInstance();
-//            startTime.set(Calendar.HOUR_OF_DAY, 3);
-//            startTime.set(Calendar.MINUTE, 0);
-//            startTime.set(Calendar.MONTH, 3 - 1);
-//            startTime.set(Calendar.YEAR, 2017);
-//            Calendar endTime = (Calendar) startTime.clone();
-//            endTime.add(Calendar.HOUR, 4);
-//            endTime.set(Calendar.MONTH, 3 - 1);
-//            WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
-//            event.setColor(getResources().getColor(R.color.event_color_01));
+                startTime.set(data.getIntExtra("mStartYear", 0), data.getIntExtra("mStartMonth", 0),
+                        data.getIntExtra("mStartDay", 0), data.getIntExtra("mStartHour", 0),
+                        data.getIntExtra("mEndMinute", 0));
 
-//                Calendar startTime = Calendar.getInstance();
-//
-//                startTime.set(data.getIntExtra("mStartYear", 0), data.getIntExtra("mStartMonth", 0),
+                Calendar endTime = Calendar.getInstance();
+                endTime.set(data.getIntExtra("mEndYear", 0), data.getIntExtra("mEndMonth", 0), data.getIntExtra("mEndDay", 0),
+                        data.getIntExtra("mEndHour", 0), data.getIntExtra("mEndMinute", 0));
+                MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime);
+//                MyWeekViewEvent event = new MyWeekViewEvent(title, location, data.getIntExtra("mStartYear", 0), data.getIntExtra("mStartMonth", 0),
 //                        data.getIntExtra("mStartDay", 0), data.getIntExtra("mStartHour", 0),
-//                        data.getIntExtra("mEndMinute", 0));
-//
-//                Calendar endTime = Calendar.getInstance();
-//                endTime.set(data.getIntExtra("mEndYear", 0), data.getIntExtra("mEndMonth", 0), data.getIntExtra("mEndDay", 0),
+//                        data.getIntExtra("mStartMinute", 0), data.getIntExtra("mEndYear", 0), data.getIntExtra("mEndMonth", 0), data.getIntExtra("mEndDay", 0),
 //                        data.getIntExtra("mEndHour", 0), data.getIntExtra("mEndMinute", 0));
-//                WeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime);
-//                event.setColor(getResources().getColor(R.color.event_color_01));
-//                mNewEvents.add(event);
 
-                // Refresh the week view. onMonthChange will be called again.
-//                mWeekView.notifyDatasetChanged();
+                event.setColor(getResources().getColor(R.color.event_color_01));
+
+                addEventToList(data.getIntExtra("mStartMonth", 0), event);
+
+                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
+//                calendarFragment.addNewEvents(event);
+                //mEventDatabaseReference.push().setValue(event);
+                calendarFragment.updatePersonalEventList(mPersonalEventsList);
+                calendarFragment.notifyChange();
+//                 Refresh the week view. onMonthChange will be called again.
             }
         }
+    }
+
+
+    private void addEventToList(int index, MyWeekViewEvent event) {
+        List<MyWeekViewEvent> list = mPersonalEventsList.get(index);
+        if (list == null) {
+            list = new ArrayList<>();
+            list.add(event);
+        }
+        mPersonalEventsList.put(index, list);
     }
 
 
@@ -349,22 +423,12 @@ public class MainActivity extends AppCompatActivity {
         return String.format("Event of %02d:%02d %s/%d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), time.get(Calendar.MONTH)+1, time.get(Calendar.DAY_OF_MONTH));
     }
 
-//    WeekView.EventClickListener mEventClickListener = new WeekView.EventClickListener () {
-//        @Override
-//        public void onEventClick(WeekViewEvent event, RectF eventRect) {
-//            MyWeekViewEvent myWeekViewEvent = (MyWeekViewEvent) event;
-//            String s = myWeekViewEvent.getTitle();
-//
-//            Toast.makeText(MainActivity.class, "Clicked " + s, Toast.LENGTH_SHORT).show();
-//        }
-//    };
-
-
-
-
-//    MonthLoader.MonthChangeListener mMonthChangeListener = new MonthLoader.MonthChangeListener() {
-//        @Override
-
-//    };
+    // show or hide the fab
+    private void toggleFab() {
+        if (navItemIndex == 0)
+             mFloatingActionButton.show();
+        else
+            mFloatingActionButton.hide();
+    }
 
 }
