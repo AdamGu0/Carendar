@@ -1,9 +1,11 @@
 package com.group15.apps.carendar;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +24,8 @@ public class MapShowingActivity extends FragmentActivity
 
     GoogleMap map;
     boolean mapReady = false;
+    GPSTracker mGPS;
+
 
 
     @Override
@@ -32,6 +36,7 @@ public class MapShowingActivity extends FragmentActivity
         Button btnMap = (Button) findViewById(R.id.btnMap);
         Button btnSatellite = (Button) findViewById(R.id.btnSatellite);
         Button btnHybrid = (Button) findViewById(R.id.btnHybrid);
+        ImageButton btnMyLocation = (ImageButton) findViewById(R.id.btnMyLocation);
 
         btnMap.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -49,6 +54,19 @@ public class MapShowingActivity extends FragmentActivity
             public void onClick(View v) {
                 if(mapReady)
                     map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            }
+        });
+
+        btnMyLocation.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+
+                mGPS = new GPSTracker(MapShowingActivity.this);
+
+                if(mGPS.canGetLocation()){
+                    LatLng ASU = new LatLng(33.4242444,-111.9302414);
+                    CameraPosition target = CameraPosition.builder().target(ASU).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                }
             }
         });
 
