@@ -64,43 +64,38 @@ public class AddEventActivity extends AppCompatActivity implements
         if (v == btnStartDatePicker) {
             // Get Current Date
             final Calendar c = Calendar.getInstance();
-            mStartYear = c.get(Calendar.YEAR);
-            mStartMonth = c.get(Calendar.MONTH);
-            mStartDay = c.get(Calendar.DAY_OF_MONTH);
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                     new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
+                            mStartYear = year;
+                            mStartMonth = monthOfYear;
+                            mStartDay = dayOfMonth;
                             etStartDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                         }
-                    }, mStartYear, mStartMonth, mStartDay);
+                    }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show();
-        }
-        if (v == btnEndDatePicker) {
+        } else if (v == btnEndDatePicker) {
             // Get Current Date
             final Calendar c = Calendar.getInstance();
-            mEndYear = c.get(Calendar.YEAR);
-            mEndMonth = c.get(Calendar.MONTH);
-            mEndDay = c.get(Calendar.DAY_OF_MONTH);
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                     new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
+                            mEndYear = year;
+                            mEndMonth = monthOfYear;
+                            mEndDay = dayOfMonth;
                             etEndDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                         }
-                    }, mEndYear, mEndMonth, mEndDay);
+                    }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show();
-        }
-        if (v == btnStartTimePicker) {
-
+        } else if (v == btnStartTimePicker) {
             // Get Current Time
             final Calendar c = Calendar.getInstance();
-            mStartHour = c.get(Calendar.HOUR_OF_DAY);
-            mStartMinute = c.get(Calendar.MINUTE);
 
             // Launch Time Picker Dialog
             TimePickerDialog timePickerDialog = new TimePickerDialog(this,
@@ -109,17 +104,16 @@ public class AddEventActivity extends AppCompatActivity implements
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay,
                                               int minute) {
+                            mStartHour = hourOfDay;
+                            mStartMinute = minute;
                             etStartTime.setText(hourOfDay + ":" + minute);
                         }
-                    }, mStartHour, mStartMinute, false);
+                    }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
             timePickerDialog.show();
-        }
-        if (v == btnEndTimePicker) {
+        } else if (v == btnEndTimePicker) {
 
             // Get Current Time
             final Calendar c = Calendar.getInstance();
-            mEndHour = c.get(Calendar.HOUR_OF_DAY);
-            mEndMinute = c.get(Calendar.MINUTE);
 
             // Launch Time Picker Dialog
             TimePickerDialog timePickerDialog = new TimePickerDialog(this,
@@ -128,19 +122,16 @@ public class AddEventActivity extends AppCompatActivity implements
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay,
                                               int minute) {
+                            mEndHour = hourOfDay;
+                            mEndMinute = minute;
                             etEndTime.setText(hourOfDay + ":" + minute);
                         }
-                    }, mEndHour, mEndMinute, false);
+                    }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
             timePickerDialog.show();
-        }
-        if (v == btnSave) {
+        } else if (v == btnSave) {
             Intent returnIntent = new Intent(AddEventActivity.this, MainActivity.class);
             mLocation = etLocation.getText().toString();
             mTitle = etTitle.getText().toString();
-
-            int[] startDateAndTime = {mStartYear, mStartMonth, mStartDay,
-                    mStartHour, mStartMinute};
-            int[] endDateAndTime = {mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute};
 
             returnIntent.putExtra("mStartYear", mStartYear);
             returnIntent.putExtra("mStartMonth", mStartMonth);
@@ -148,20 +139,17 @@ public class AddEventActivity extends AppCompatActivity implements
             returnIntent.putExtra("mStartHour", mStartHour);
             returnIntent.putExtra("mStartMinute", mStartMinute);
 
-            returnIntent.putExtra("mEndYear", mStartYear);
-            returnIntent.putExtra("mEndMonth", mStartMonth);
-            returnIntent.putExtra("mEndDay", mStartDay);
-            returnIntent.putExtra("mEndHour", mStartHour);
+            returnIntent.putExtra("mEndYear", mEndYear);
+            returnIntent.putExtra("mEndMonth", mEndMonth);
+            returnIntent.putExtra("mEndDay", mEndDay);
+            returnIntent.putExtra("mEndHour", mEndHour);
             returnIntent.putExtra("mEndMinute", mEndMinute);
 
-//                returnIntent.putExtra("startDateAndTIme", startDateAndTime);
-//                returnIntent.putExtra("endDateAndTIme", endDateAndTime);
             returnIntent.putExtra("location", mLocation);
             returnIntent.putExtra("title", mTitle);
             setResult(Activity.RESULT_OK,returnIntent);
             finish();
-            // User chose the "Settings" item, show the app settings UI...
-//            return true;
+
         }
 
     }
@@ -199,8 +187,6 @@ public class AddEventActivity extends AppCompatActivity implements
                 returnIntent.putExtra("mEndHour", mStartHour);
                 returnIntent.putExtra("mEndMinute", mEndMinute);
 
-//                returnIntent.putExtra("startDateAndTIme", startDateAndTime);
-//                returnIntent.putExtra("endDateAndTIme", endDateAndTime);
                 returnIntent.putExtra("location", mLocation);
                 returnIntent.putExtra("title", mTitle);
                 setResult(Activity.RESULT_OK,returnIntent);

@@ -34,16 +34,15 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
     private WeekView mWeekView;
     private ArrayList<MyWeekViewEvent> mNewEvents;
     private MyWeekViewEvent myWeekViewEvent;
-    private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsList = new HashMap<>();
+    private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsMap = new HashMap<>();
 
     public static CalendarFragment newInstance() {
         return new CalendarFragment();
     }
 
 
-    public void updatePersonalEventList(Map<Integer, List<MyWeekViewEvent>> list) {
-        mPersonalEventsList = list;
-        Log.v("test", " " + mPersonalEventsList.isEmpty());
+    public void updatePersonalEventMap(Map<Integer, List<MyWeekViewEvent>> map) {
+        mPersonalEventsMap = map;
     }
 
 
@@ -58,22 +57,10 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         super.onActivityCreated(savedInstanceState);
 
         View v = getView();
-        // Get a reference for the week view in the layout.
         mWeekView = (WeekView) v.findViewById(R.id.weekView);
 
-        // Show a toast message about the touched event.
-//        mWeekView.setOnEventClickListener(mEventClickListener);
-
-        // The week view has infinite scrolling horizontally. We have to provide the events of a
-        // month every time the month changes on the week view.
         mWeekView.setMonthChangeListener(this);
-//        mNewEvents = new ArrayList<WeekViewEvent>();
 
-        // Set long press listener for events.
-//        mWeekView.setEventLongPressListener(this);
-
-        // Set long press listener for empty view
-//        mWeekView.setEmptyViewLongPressListener(this);
         setupDateTimeInterpreter(true);
 
         mWeekView.setNumberOfVisibleDays(7);
@@ -81,21 +68,7 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
         mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
 
-        // Set up a date time interpreter to interpret how the date and time will be formatted in
-        // the week view. This is optional.
         setupDateTimeInterpreter(false);
-
-//        mFloatingActionButton = (ImageButton) v.findViewById(R.id.fab_add);
-//        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), AddEventActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
-
-
     }
 
     public void notifyChange() {
@@ -131,25 +104,35 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
     }
 
     private List<MyWeekViewEvent> getDatatoDisPlay(int newMonth) {
-        if (mPersonalEventsList.isEmpty() || mPersonalEventsList.get(newMonth - 1) == null) {
+        if (mPersonalEventsMap.isEmpty() || mPersonalEventsMap.get(newMonth - 1) == null) {
             return null;
         }
-        for (MyWeekViewEvent event : mPersonalEventsList.get(newMonth - 1)) {
-            Log.v("test: title = ", event.getTitle());
-            Log.v("test: location = ", event.getLocation());
-            Log.v("test: month = ",  " " + event.getStartTime().get(Calendar.MONTH));
+        for (MyWeekViewEvent event : mPersonalEventsMap.get(newMonth - 1)) {
+//            Log.v("test: title = ", event.getTitle());
+//            Log.v("test: location = ", event.getLocation());
+//            Log.v("test: month = ",  " " + event.getStartTime().get(Calendar.MONTH));
+////            Log.v("test: Date = ",  " " + event.getStartTime().get(Calendar.DATE));
+//            Log.v("test: Day of Month = ",  " " + event.getStartTime().get(Calendar.DAY_OF_MONTH));
+//            Log.v("test: Hour = ",  " " + event.getStartTime().get(Calendar.HOUR_OF_DAY));
+
+
         }
 
-        List<MyWeekViewEvent> data = mPersonalEventsList.get(newMonth - 1);
+        List<MyWeekViewEvent> data = mPersonalEventsMap.get(newMonth - 1);
         // TODO: test
         if(data != null && data.size() > 0){
             MyWeekViewEvent event = data.get(0);
             Calendar startTime = event.getStartTime();
-            startTime.set(Calendar.HOUR_OF_DAY, 5);
+            int hour = startTime.get(Calendar.HOUR_OF_DAY);
+            Log.v("test: Start Hour = ",  " " + event.getStartTime().get(Calendar.HOUR_OF_DAY));
+            startTime.set(Calendar.HOUR_OF_DAY, hour);
             Calendar endTime = event.getEndTime();
-            endTime.set(Calendar.HOUR_OF_DAY, 7);
+            hour = endTime.get(Calendar.HOUR_OF_DAY);
+            Log.v("test: End Hour = ",  " " + event.getEndTime().get(Calendar.HOUR_OF_DAY));
+            endTime.set(Calendar.HOUR_OF_DAY, hour);
         }
-
+//
+//        return data;
         return data;
     }
 
@@ -161,24 +144,10 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
             return new ArrayList<>();
         }
         for (MyWeekViewEvent event : list) {
-            Log.v("test: title = ", event.getTitle());
-            Log.v("test: location = ", event.getLocation());
-            Log.v("test: month = ",  " " + event.getStartTime().get(Calendar.MONTH));
+
         }        // Populate the week view with some events.
-//        return getDatatoDisPlay(newMonth - 1);
         return list;
-//        Calendar startTime = Calendar.getInstance();
-//        startTime.set(Calendar.HOUR_OF_DAY, 3);
-//        startTime.set(Calendar.MINUTE, 0);
-//        startTime.set(Calendar.MONTH, newMonth - 1);
-//        startTime.set(Calendar.YEAR, newYear);
-//        Calendar endTime = (Calendar) startTime.clone();
-//        endTime.add(Calendar.HOUR, 1);
-//        endTime.set(Calendar.MONTH, newMonth - 1);
-//        WeekViewEvent event = new MyWeekViewEvent("1", "kkk", startTime, endTime);
-//        event.setColor(getResources().getColor(R.color.event_color_01));
-//
-//        events.add(event);
+
 
 
     }

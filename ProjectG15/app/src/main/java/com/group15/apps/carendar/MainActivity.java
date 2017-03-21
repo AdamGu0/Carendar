@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] activityTitles;
 
 //    private List<MyWeekViewEvent> mPersonalMonthEventList = new ArrayList<>();
-    private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsList = new HashMap<>();
+    private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsMap = new HashMap<>();
 
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment
         CalendarFragment calendarFragment = new CalendarFragment();
-        calendarFragment.updatePersonalEventList(mPersonalEventsList);
+        calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
         ft.replace(R.id.flContent, calendarFragment);
     // or ft.add(R.id.your_placeholder, new FooFragment());
     // Complete the changes added above
@@ -356,16 +357,23 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String location = data.getStringExtra("location");
                 String title = data.getStringExtra("title");
-
                 Calendar startTime = Calendar.getInstance();
-
-                startTime.set(data.getIntExtra("mStartYear", 0), data.getIntExtra("mStartMonth", 0),
-                        data.getIntExtra("mStartDay", 0), data.getIntExtra("mStartHour", 0),
-                        data.getIntExtra("mEndMinute", 0));
+                startTime.set(Calendar.YEAR, data.getIntExtra("mStartYear", 0));
+                startTime.set(Calendar.MONTH, data.getIntExtra("mStartMonth", 0));
+                startTime.set(Calendar.DAY_OF_MONTH,data.getIntExtra("mStartDay", 0));
+                startTime.set(Calendar.HOUR_OF_DAY, data.getIntExtra("mStartHour", 0));
+                int startHour = data.getIntExtra("mStartHour", 0);
+                startTime.set(Calendar.MINUTE, data.getIntExtra("mStartMinute", 0));
 
                 Calendar endTime = Calendar.getInstance();
-                endTime.set(data.getIntExtra("mEndYear", 0), data.getIntExtra("mEndMonth", 0), data.getIntExtra("mEndDay", 0),
-                        data.getIntExtra("mEndHour", 0), data.getIntExtra("mEndMinute", 0));
+                endTime.set(Calendar.YEAR, data.getIntExtra("mEndYear", 0));
+                endTime.set(Calendar.MONTH, data.getIntExtra("mEndMonth", 0));
+                endTime.set(Calendar.DAY_OF_MONTH, data.getIntExtra("mEndDay", 0));
+                int endHour = data.getIntExtra("mEndHour", 0);
+                endTime.set(Calendar.HOUR_OF_DAY, data.getIntExtra("mEndHour", 0));
+                Log.v("test", "in acitvity" + data.getIntExtra("mEndHour", 0));
+                endTime.set(Calendar.MINUTE, data.getIntExtra("mEndMinute", 0));
+
                 MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime);
 //                MyWeekViewEvent event = new MyWeekViewEvent(title, location, data.getIntExtra("mStartYear", 0), data.getIntExtra("mStartMonth", 0),
 //                        data.getIntExtra("mStartDay", 0), data.getIntExtra("mStartHour", 0),
@@ -379,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
                 CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
 //                calendarFragment.addNewEvents(event);
                 //mEventDatabaseReference.push().setValue(event);
-                calendarFragment.updatePersonalEventList(mPersonalEventsList);
+                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
                 calendarFragment.notifyChange();
 //                 Refresh the week view. onMonthChange will be called again.
             }
@@ -388,12 +396,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void addEventToList(int index, MyWeekViewEvent event) {
-        List<MyWeekViewEvent> list = mPersonalEventsList.get(index);
+        List<MyWeekViewEvent> list = mPersonalEventsMap.get(index);
         if (list == null) {
             list = new ArrayList<>();
         }
         list.add(event);
-        mPersonalEventsList.put(index, list);
+        mPersonalEventsMap.put(index, list);
     }
 
 
