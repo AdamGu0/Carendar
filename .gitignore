@@ -53,3 +53,6 @@ obj/
 *.bin
 
 *.bin
+
+ProjectG15/.idea
+ProjectG15/.gradle
