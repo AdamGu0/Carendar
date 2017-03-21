@@ -1,4 +1,4 @@
-package com.group15.apps.carendar;
+package com.group15.apps.carendar.Others;
 
 /**
  * Created by Neo on 3/10/17.

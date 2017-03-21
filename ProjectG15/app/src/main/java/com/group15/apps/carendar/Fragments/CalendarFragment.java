@@ -1,4 +1,4 @@
-package com.group15.apps.carendar;
+package com.group15.apps.carendar.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.alamkanak.weekview.DateTimeInterpreter;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
+import com.group15.apps.carendar.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,7 +24,6 @@ import java.util.Map;
 /**
  * Created by Neo on 3/18/17.
  */
-
 public class CalendarFragment extends Fragment  implements MonthLoader.MonthChangeListener {
 
     private static final int TYPE_DAY_VIEW = 1;
@@ -31,16 +31,16 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
-    private ArrayList<MyWeekViewEvent> mNewEvents;
-    private MyWeekViewEvent myWeekViewEvent;
-    private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsMap = new HashMap<>();
+    private ArrayList<com.group15.apps.carendar.MyWeekViewEvent> mNewEvents;
+    private com.group15.apps.carendar.MyWeekViewEvent myWeekViewEvent;
+    private Map<Integer, List<com.group15.apps.carendar.MyWeekViewEvent>> mPersonalEventsMap = new HashMap<>();
 
     public static CalendarFragment newInstance() {
         return new CalendarFragment();
     }
 
 
-    public void updatePersonalEventMap(Map<Integer, List<MyWeekViewEvent>> map) {
+    public void updatePersonalEventMap(Map<Integer, List<com.group15.apps.carendar.MyWeekViewEvent>> map) {
         mPersonalEventsMap = map;
     }
 
@@ -102,15 +102,15 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         });
     }
 
-    private List<MyWeekViewEvent> getDatatoDisPlay(int newMonth) {
+    private List<com.group15.apps.carendar.MyWeekViewEvent> getDatatoDisPlay(int newMonth) {
         if (mPersonalEventsMap.isEmpty() || mPersonalEventsMap.get(newMonth - 1) == null) {
             return null;
         }
         return mPersonalEventsMap.get(newMonth - 1);
     }
 
-    public List<MyWeekViewEvent> onMonthChange(int newYear, int newMonth) {
-        List<MyWeekViewEvent> list = getDatatoDisPlay(newMonth - 1);
+    public List<com.group15.apps.carendar.MyWeekViewEvent> onMonthChange(int newYear, int newMonth) {
+        List<com.group15.apps.carendar.MyWeekViewEvent> list = getDatatoDisPlay(newMonth - 1);
         if (list == null) {
             return new ArrayList<>();
         }

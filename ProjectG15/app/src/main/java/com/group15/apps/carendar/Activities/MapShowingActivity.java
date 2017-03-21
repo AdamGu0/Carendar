@@ -1,6 +1,5 @@
-package com.group15.apps.carendar;
+package com.group15.apps.carendar.Activities;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -13,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.group15.apps.carendar.R;
 
 
 /**
@@ -24,7 +24,7 @@ public class MapShowingActivity extends FragmentActivity
 
     GoogleMap map;
     boolean mapReady = false;
-    GPSTracker mGPS;
+    com.group15.apps.carendar.GPSTracker mGPS;
 
 
 
@@ -60,7 +60,7 @@ public class MapShowingActivity extends FragmentActivity
         btnMyLocation.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
 
-                mGPS = new GPSTracker(MapShowingActivity.this);
+                mGPS = new com.group15.apps.carendar.GPSTracker(MapShowingActivity.this);
 
                 if(mGPS.canGetLocation()){
                     LatLng ASU = new LatLng(33.4242444,-111.9302414);
