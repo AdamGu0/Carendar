@@ -140,7 +140,17 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
             Log.v("test: month = ",  " " + event.getStartTime().get(Calendar.MONTH));
         }
 
-        return mPersonalEventsList.get(newMonth - 1);
+        List<MyWeekViewEvent> data = mPersonalEventsList.get(newMonth - 1);
+        // TODO: test
+        if(data != null && data.size() > 0){
+            MyWeekViewEvent event = data.get(0);
+            Calendar startTime = event.getStartTime();
+            startTime.set(Calendar.HOUR_OF_DAY, 5);
+            Calendar endTime = event.getEndTime();
+            endTime.set(Calendar.HOUR_OF_DAY, 7);
+        }
+
+        return data;
     }
 
 
