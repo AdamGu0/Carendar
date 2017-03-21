@@ -3,7 +3,6 @@ package com.group15.apps.carendar;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,48 +106,14 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         if (mPersonalEventsMap.isEmpty() || mPersonalEventsMap.get(newMonth - 1) == null) {
             return null;
         }
-        for (MyWeekViewEvent event : mPersonalEventsMap.get(newMonth - 1)) {
-//            Log.v("test: title = ", event.getTitle());
-//            Log.v("test: location = ", event.getLocation());
-//            Log.v("test: month = ",  " " + event.getStartTime().get(Calendar.MONTH));
-////            Log.v("test: Date = ",  " " + event.getStartTime().get(Calendar.DATE));
-//            Log.v("test: Day of Month = ",  " " + event.getStartTime().get(Calendar.DAY_OF_MONTH));
-//            Log.v("test: Hour = ",  " " + event.getStartTime().get(Calendar.HOUR_OF_DAY));
-
-
-        }
-
-        List<MyWeekViewEvent> data = mPersonalEventsMap.get(newMonth - 1);
-        // TODO: test
-        if(data != null && data.size() > 0){
-            MyWeekViewEvent event = data.get(0);
-            Calendar startTime = event.getStartTime();
-            int hour = startTime.get(Calendar.HOUR_OF_DAY);
-            Log.v("test: Start Hour = ",  " " + event.getStartTime().get(Calendar.HOUR_OF_DAY));
-            startTime.set(Calendar.HOUR_OF_DAY, hour);
-            Calendar endTime = event.getEndTime();
-            hour = endTime.get(Calendar.HOUR_OF_DAY);
-            Log.v("test: End Hour = ",  " " + event.getEndTime().get(Calendar.HOUR_OF_DAY));
-            endTime.set(Calendar.HOUR_OF_DAY, hour);
-        }
-//
-//        return data;
-        return data;
+        return mPersonalEventsMap.get(newMonth - 1);
     }
-
-
 
     public List<MyWeekViewEvent> onMonthChange(int newYear, int newMonth) {
         List<MyWeekViewEvent> list = getDatatoDisPlay(newMonth - 1);
         if (list == null) {
             return new ArrayList<>();
         }
-        for (MyWeekViewEvent event : list) {
-
-        }        // Populate the week view with some events.
         return list;
-
-
-
     }
 }

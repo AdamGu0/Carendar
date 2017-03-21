@@ -171,10 +171,6 @@ public class AddEventActivity extends AppCompatActivity implements
                 mLocation = etLocation.getText().toString();
                 mTitle = etTitle.getText().toString();
 
-                int[] startDateAndTime = {mStartYear, mStartMonth, mStartDay,
-                    mStartHour, mStartMinute};
-                int[] endDateAndTime = {mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute};
-
                 returnIntent.putExtra("mStartYear", mStartYear);
                 returnIntent.putExtra("mStartMonth", mStartMonth);
                 returnIntent.putExtra("mStartDay", mStartDay);

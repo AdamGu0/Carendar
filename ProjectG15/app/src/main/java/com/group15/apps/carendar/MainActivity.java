@@ -14,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     public static String CURRENT_TAG = TAG_CALENDAR;
     private String[] activityTitles;
 
-//    private List<MyWeekViewEvent> mPersonalMonthEventList = new ArrayList<>();
     private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsMap = new HashMap<>();
 
     // flag to load home fragment when user presses back key
@@ -135,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
         CalendarFragment calendarFragment = new CalendarFragment();
         calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
         ft.replace(R.id.flContent, calendarFragment);
-    // or ft.add(R.id.your_placeholder, new FooFragment());
     // Complete the changes added above
         ft.commit();
     }
@@ -177,11 +174,9 @@ public class MainActivity extends AppCompatActivity {
     private Fragment getHomeFragment() {
         switch (navItemIndex) {
             case 0:
-                // home
                 CalendarFragment calendarFragment = new CalendarFragment();
                 return calendarFragment;
             case 1:
-                // photos
                 AccountFragment accountFragment = new AccountFragment();
                 return accountFragment;
             default:
@@ -293,38 +288,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        mChildEventListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                MyWeekViewEvent event = dataSnapshot.getValue(MyWeekViewEvent.class);
-//                int month = event.getStartTime().get(Calendar.MONTH);
-//                addEventToList(month - 1, event);
-//                Log.v("test", "inside onChildAdded");
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-////                MyWeekViewEvent event = dataSnapshot.getValue(MyWeekViewEvent.class);
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-//        mEventDatabaseReference.addChildEventListener(mChildEventListener);
-
     }
 
     @Override
@@ -351,9 +314,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Sign in canceled!", Toast.LENGTH_LONG).show();
                 finish();
             }
-        }
-
-        if (requestCode == RC_ADD_EVENT) {
+        } else if (requestCode == RC_ADD_EVENT) {
             if (resultCode == RESULT_OK) {
                 String location = data.getStringExtra("location");
                 String title = data.getStringExtra("title");
@@ -362,34 +323,26 @@ public class MainActivity extends AppCompatActivity {
                 startTime.set(Calendar.MONTH, data.getIntExtra("mStartMonth", 0));
                 startTime.set(Calendar.DAY_OF_MONTH,data.getIntExtra("mStartDay", 0));
                 startTime.set(Calendar.HOUR_OF_DAY, data.getIntExtra("mStartHour", 0));
-                int startHour = data.getIntExtra("mStartHour", 0);
                 startTime.set(Calendar.MINUTE, data.getIntExtra("mStartMinute", 0));
 
                 Calendar endTime = Calendar.getInstance();
                 endTime.set(Calendar.YEAR, data.getIntExtra("mEndYear", 0));
                 endTime.set(Calendar.MONTH, data.getIntExtra("mEndMonth", 0));
                 endTime.set(Calendar.DAY_OF_MONTH, data.getIntExtra("mEndDay", 0));
-                int endHour = data.getIntExtra("mEndHour", 0);
                 endTime.set(Calendar.HOUR_OF_DAY, data.getIntExtra("mEndHour", 0));
-                Log.v("test", "in acitvity" + data.getIntExtra("mEndHour", 0));
                 endTime.set(Calendar.MINUTE, data.getIntExtra("mEndMinute", 0));
 
                 MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime);
-//                MyWeekViewEvent event = new MyWeekViewEvent(title, location, data.getIntExtra("mStartYear", 0), data.getIntExtra("mStartMonth", 0),
-//                        data.getIntExtra("mStartDay", 0), data.getIntExtra("mStartHour", 0),
-//                        data.getIntExtra("mStartMinute", 0), data.getIntExtra("mEndYear", 0), data.getIntExtra("mEndMonth", 0), data.getIntExtra("mEndDay", 0),
-//                        data.getIntExtra("mEndHour", 0), data.getIntExtra("mEndMinute", 0));
+
 
                 event.setColor(getResources().getColor(R.color.event_color_01));
 
                 addEventToList(data.getIntExtra("mStartMonth", 0), event);
 
                 CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
-//                calendarFragment.addNewEvents(event);
-                //mEventDatabaseReference.push().setValue(event);
+
                 calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
                 calendarFragment.notifyChange();
-//                 Refresh the week view. onMonthChange will be called again.
             }
         }
     }
@@ -423,12 +376,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-
-    protected String getEventTitle(Calendar time) {
-        return String.format("Event of %02d:%02d %s/%d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), time.get(Calendar.MONTH)+1, time.get(Calendar.DAY_OF_MONTH));
     }
 
     // show or hide the fab
