@@ -146,11 +146,17 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
 
 
     public List<MyWeekViewEvent> onMonthChange(int newYear, int newMonth) {
-        if (getDatatoDisPlay(newMonth - 1) == null) {
+        List<MyWeekViewEvent> list = getDatatoDisPlay(newMonth - 1);
+        if (list == null) {
             return new ArrayList<>();
         }
-        // Populate the week view with some events.
-        return getDatatoDisPlay(newMonth - 1);
+        for (MyWeekViewEvent event : list) {
+            Log.v("test: title = ", event.getTitle());
+            Log.v("test: location = ", event.getLocation());
+            Log.v("test: month = ",  " " + event.getStartTime().get(Calendar.MONTH));
+        }        // Populate the week view with some events.
+//        return getDatatoDisPlay(newMonth - 1);
+        return list;
 //        Calendar startTime = Calendar.getInstance();
 //        startTime.set(Calendar.HOUR_OF_DAY, 3);
 //        startTime.set(Calendar.MINUTE, 0);

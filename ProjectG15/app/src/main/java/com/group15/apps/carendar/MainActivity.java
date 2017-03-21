@@ -391,8 +391,8 @@ public class MainActivity extends AppCompatActivity {
         List<MyWeekViewEvent> list = mPersonalEventsList.get(index);
         if (list == null) {
             list = new ArrayList<>();
-            list.add(event);
         }
+        list.add(event);
         mPersonalEventsList.put(index, list);
     }
 
