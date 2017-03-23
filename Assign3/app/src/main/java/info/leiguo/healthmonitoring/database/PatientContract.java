@@ -1,4 +1,4 @@
-package info.leiguo.healthmonitoring.data;
+package info.leiguo.healthmonitoring.database;
 
 import android.provider.BaseColumns;
 
@@ -11,11 +11,10 @@ public class PatientContract {
     public PatientContract() {}
 
     public static class PatientEntry implements BaseColumns {
-        public static final String TABLE_NAME = "NAME_ID_SEX_AGE";
+        public static final String TABLE_NAME = "ActivityData";
         public static final String COLUMN_TIME_STEMP = "timeStamp";
-        public static final String COLUMN_X_VALUE = "x";
-        public static final String COLUMN_Y_VALUE = "y";
-        public static final String COLUMN_Z_VALUE = "z";
+        public static final String COLUMN_ACTION_LABEL = "actLabel";
+        public static final String  COLUMN_DATA = "data";
 
     }
 }

@@ -8,15 +8,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="90dp"
+            android:layout_height="match_parent"
             android:background="@drawable/patientinfo_border"
             android:orientation="horizontal"
-            android:layout_marginBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
@@ -27,214 +26,113 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_patientid"
+                    android:id="@+id/tv_act_type"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"
-                    android:text="Patient ID"
+                    android:text="Activity Type"
                     android:textColor="#000000"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
-                <EditText
-                    android:id="@+id/et_patientid"
-                    android:layout_width="69dp"
+                <Spinner
+                    android:id="@+id/spinner_act_type"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:inputType="number"
-                    android:background="@drawable/text_edit_border"
-                    android:textSize="15sp"
-                    android:textColor="#333333"
-                    android:textColorHint="#eeeeee"
-                    android:maxLength="11"
-                    android:hint="ID" />
+                    android:background="#888888" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_age"
+                <Button
+                    android:id="@+id/btn_save"
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Age"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/button_bg"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="Record Data"
                     android:textColor="#000000"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/et_age"
-                    android:layout_width="37dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:inputType="number"
-                    android:background="@drawable/text_edit_border"
-                    android:textSize="15sp"
-                    android:textColor="#333333"
-                    android:textColorHint="#eeeeee"
-                    android:maxLength="3"
-                    android:hint="Age" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_patientName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Patient Name"
-                    android:textSize="15sp"
-                    android:textColor="#000000" />
-
-                <EditText
-                    android:id="@+id/et_patientName"
-                    android:layout_width="93dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/text_edit_border"
-                    android:textSize="15sp"
-                    android:textColor="#333333"
-                    android:textColorHint="#eeeeee"
-                    android:inputType="textPersonName"
-                    android:maxLength="50"
-                    android:hint="Name" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/tv_sex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="6dp"
-                        android:text="Sex"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
-                    <Button
-                        android:id="@+id/btn_save"
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:background="@drawable/button_bg"
-                        android:layout_marginLeft="20dp"
-                        android:textSize="12sp"
-                        android:layout_marginTop="8dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:textColor="#000000"
-                        android:text="Save Infomation"/>
-                </LinearLayout>
-                <RadioGroup
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="bottom"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    android:id="@+id/radio_group">
-                    <RadioButton
-                        android:id="@+id/btn_male"
-                        android:text="@string/sex_male"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:textColor="#333333"
-                        android:layout_gravity="center_horizontal" />
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:id="@+id/btn_female"
-                        android:text="@string/sex_female"
-                        android:checked="false"
-                        android:textColor="#333333"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_height="wrap_content" />
-            </RadioGroup>
-
-            </LinearLayout>
+                    android:textSize="12sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:background="#ff666666"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
+                <RadioGroup
+                    android:id="@+id/radio_data_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radio_btn_saved_data"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="true"
+                        android:text="@string/sample_data"
+                        android:textColor="#eeeeee" />
+
+                    <RadioButton
+                        android:id="@+id/rd_btn_new_data"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="10dp"
+                        android:checked="false"
+                        android:text="@string/new_data"
+                        android:textColor="#eeeeee" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <Button
-                    android:id="@+id/btn_run"
+                    android:id="@+id/btn_analyzing"
                     android:layout_width="70dp"
                     android:layout_height="35dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="13dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/button_bg_run"
                     android:gravity="center"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
-                    android:text="Run"
+                    android:text="Analyze"
                     android:textColor="#000000"
                     android:textSize="13sp" />
 
                 <Button
-                    android:id="@+id/btn_stop"
+                    android:id="@+id/btn_plotting"
                     android:layout_width="70dp"
                     android:layout_height="35dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/button_bg_stop"
                     android:gravity="center"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
-                    android:text="Stop"
+                    android:text="Plot"
                     android:textColor="#000000"
                     android:textSize="13sp" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_upload"
-                    android:layout_width="70dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/button_bg_upload"
-                    android:gravity="center"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
-                    android:text="Upload"
-                    android:textColor="#000000"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:textSize="12sp" />
-
-                <Button
-                    android:id="@+id/btn_download"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/button_bg_download"
-                    android:gravity="center"
-                    android:text="Download"
-                    android:textColor="#000000"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:textSize="12sp" />
 
             </LinearLayout>
         </LinearLayout>

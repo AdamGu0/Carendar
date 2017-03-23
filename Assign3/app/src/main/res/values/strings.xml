@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Group15</string>
-    <string name="sex_male">Male</string>
-    <string name="sex_female">Female</string>
+    <string name="new_data">New Data</string>
+    <string name="sample_data">Sample Data</string>
 </resources>

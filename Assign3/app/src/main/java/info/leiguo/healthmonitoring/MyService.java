@@ -10,10 +10,15 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.util.Log;
 
-import info.leiguo.healthmonitoring.data.PatientContract;
-import info.leiguo.healthmonitoring.data.PatientDbHelper;
+import java.util.ArrayList;
+import java.util.List;
+
+import info.leiguo.healthmonitoring.data.ActivityData;
+import info.leiguo.healthmonitoring.data.PointData;
+import info.leiguo.healthmonitoring.database.DBAccess;
+import info.leiguo.healthmonitoring.database.PatientContract;
+import info.leiguo.healthmonitoring.database.PatientDbHelper;
 
 /**
  * Created by Lei on 3/4/2017.
@@ -21,18 +26,19 @@ import info.leiguo.healthmonitoring.data.PatientDbHelper;
 
 public class MyService extends Service implements SensorEventListener {
     public static final String KEY_TABLE_NAME = "table_name";
+    public static final String KEY_ACTIVITY_TYPE = "activity_type";
     public static final String MY_ACTION = "info.leiguo.healthmonitoring.MY_SERVICE";
-//    private static final long ACCE_FILTER_DATA_MIN_TIME = 1000;
+    //    private static final long ACCE_FILTER_DATA_MIN_TIME = 1000;
     // There is no way to make sure that the sampling rate is 1Hz which means one record per second.
-    private static final int SAMPLING_PERIOD = 1000000; // Micro second
-    private SQLiteDatabase mDb;
-    private long mTimeStamp;
-    private float xValue;
-    private float yValue;
-    private float zValue;
+    private static final int SAMPLING_PERIOD = 100000; // Micro second
+    private DBAccess mDBAccess;
     private String mTableName = "";
+    private int mActivityType = 0;
     private SensorManager mSensorManager;
-    private  long mLastSaved = -1;
+    private long mStartTime = -1;
+    private long mLastTime = -1;
+    private List<PointData> dataList = new ArrayList<>();
+    private final int POINTS_COUNT_IN_AN_ACTIVITY = 50;
 
     @Override
     public void onCreate() {
@@ -48,8 +54,10 @@ public class MyService extends Service implements SensorEventListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mTableName = intent.getStringExtra(KEY_TABLE_NAME);
-        PatientDbHelper dbHelper = new PatientDbHelper(this, mTableName);
-        mDb = dbHelper.getWritableDatabase();
+        mActivityType = intent.getIntExtra(KEY_ACTIVITY_TYPE, 0);
+        mDBAccess = new DBAccess(getApplicationContext());
+        mStartTime = System.currentTimeMillis();
+        dataList = new ArrayList<>();
         registerSensorListener();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -60,26 +68,31 @@ public class MyService extends Service implements SensorEventListener {
         unregisterSensorListener();
     }
 
-    private void registerSensorListener(){
+    private void registerSensorListener() {
+        // TODO: fix the sampling rate 10 Hz
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SAMPLING_PERIOD);
     }
 
-    private void unregisterSensorListener(){
+    private void unregisterSensorListener() {
         mSensorManager.unregisterListener(this);
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            final long now = System.currentTimeMillis();
-                xValue = sensorEvent.values[0];
-                yValue = sensorEvent.values[1];
-                zValue = sensorEvent.values[2];
-//                Log.e("MyService", "Time Interval: " + (now - mLastSaved));
-                mTimeStamp = mLastSaved = now;
-//                Log.e("MyService", "Time Stamp: " + mTimeStamp);
-                // Add new record on background thread.
-                new AddRecordTask().execute();
+            PointData data = new PointData();
+            data.x = sensorEvent.values[0];
+            data.y = sensorEvent.values[1];
+            data.z = sensorEvent.values[2];
+            dataList.add(data);
+            long now = System.currentTimeMillis();
+            // TODO: Can we fix the samping rate?
+            if(dataList.size() >= POINTS_COUNT_IN_AN_ACTIVITY && now - mLastTime >= 5000){
+                long timeStamp = System.currentTimeMillis();
+                new AddRecordTask(dataList, timeStamp, mActivityType).execute();
+                dataList = new ArrayList<>();
+                mLastTime = timeStamp;
+            }
         }
     }
 
@@ -88,16 +101,18 @@ public class MyService extends Service implements SensorEventListener {
 
     }
 
-    private long addNewRecords() {
-        ContentValues cv = new ContentValues();
-        cv.put(PatientContract.PatientEntry.COLUMN_TIME_STEMP, mTimeStamp);
-        cv.put(PatientContract.PatientEntry.COLUMN_X_VALUE, xValue);
-        cv.put(PatientContract.PatientEntry.COLUMN_Y_VALUE, yValue);
-        cv.put(PatientContract.PatientEntry.COLUMN_Z_VALUE, zValue);
-        return mDb.insert(mTableName, null, cv);
-    }
 
     private class AddRecordTask extends AsyncTask<Void, Void, Void> {
+        private List<PointData> dataList;
+        private long timeStamp;
+        private int activityType;
+
+        AddRecordTask(List<PointData> dataList, long timeStamp, int activityType) {
+            this.dataList = dataList;
+            this.timeStamp = timeStamp;
+            this.activityType = activityType;
+        }
+
         @Override
         protected Void doInBackground(Void... params) {
             addNewRecords();
@@ -107,6 +122,11 @@ public class MyService extends Service implements SensorEventListener {
         @Override
         protected void onPostExecute(Void aVoid) {
 
+        }
+
+        private void addNewRecords() {
+            String data = new ActivityData(dataList).toString();
+            mDBAccess.addNewRecords(timeStamp, data, mActivityType);
         }
     }
 }
