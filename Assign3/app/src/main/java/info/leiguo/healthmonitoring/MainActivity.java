@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,11 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,7 +140,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onPlottingClicked(){
-
+        new TestDataTask().execute();
     }
 
     private void onSaveClicked(){
@@ -197,6 +203,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    private AlertDialog mMsgDialog;
+    private void showMessageDialog(String msg){
+        AlertDialog.Builder adBuilder = new AlertDialog.Builder(this);
+        adBuilder.setMessage(msg);
+        adBuilder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                hidMessageDialog();
+            }
+        });
+        mMsgDialog = adBuilder.create();
+        mMsgDialog.show();
+    }
+    private void hidMessageDialog(){
+        if(mMsgDialog != null){
+            mMsgDialog.dismiss();
+        }
+    }
 
     // TODO: use android provided method instead
     private String getDatabaseFilePath(){
@@ -207,10 +231,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         return "/data/data/" + getPackageName();
     }
 
-    // TODO: use get internal files folder instead
-    private String getFilesFolder(){
-        return getAppFolder() + "/files/";
-    }
 
     private void shortToast(String msg){
         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
@@ -221,7 +241,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void showData(){
-        String filePath = getFilesFolder() + PatientDbHelper.DATABASE_NAME;
+        String filePath = getFilesDir().getAbsolutePath() + "/" +PatientDbHelper.DATABASE_NAME;
         try{
 //            mDownloadDb = SQLiteDatabase.openDatabase(filePath, null, SQLiteDatabase.OPEN_READWRITE);
         }catch (SQLiteException e){
@@ -270,9 +290,76 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         private  ArrayList<PointData>  readRecords() {
             // Query the database for all the records in the descending order of the time stamp.
+            if(mDBAccess != null){
+                int actEatingCount = 0;
+                int actWalkingCount = 0;
+                int actRunningCount = 0;
+                int action = ActType.ACTION_EATING;
+                List<List<PointData>>  activities = mDBAccess.readRecords(action);
+                if(activities != null){
+                    actEatingCount = activities.size();
+                }
+
+            }
             return null;
         }
 
+
+    }
+
+    /**
+     * Heavy task, should run on background thread
+     * @param activityType
+     * @return
+     */
+    private int getActivityDataCount(int activityType){
+        List<List<PointData>>  activities = mDBAccess.readRecords(activityType);
+        if(activities != null){
+            return activities.size();
+        }
+        return 0;
+    }
+
+    private class TestDataTask extends AsyncTask<Void, Void, int[]>{
+
+        @Override
+        protected int[] doInBackground(Void... voids) {
+            copyDbToSdcard();
+            int eatingCount = getActivityDataCount(ActType.ACTION_EATING);
+            int walkingCount = getActivityDataCount(ActType.ACTION_WALKING);
+            int runningCount = getActivityDataCount(ActType.ACTION_RUNNING);
+            return new int[]{eatingCount, walkingCount, runningCount};
+        }
+
+        @Override
+        protected void onPostExecute(int[] ints) {
+            String msg = String.format("Activities Data count: [Eating: %d] [Walking: %d] [Running: %d]", ints[0], ints[1], ints[2]);
+            showMessageDialog(msg);
+        }
+
+
+        private void copyDbToSdcard(){
+            File path = getExternalFilesDir(null);
+            String fileName = System.currentTimeMillis() + ".db";
+            File outputFile = new File(path, fileName);
+            File dbFile = new File(getDatabaseFilePath());
+            try {
+                FileInputStream fileInputStream = new FileInputStream(dbFile);
+                FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+                byte[] buffer = new byte[4096];
+                int count;
+                while((count = fileInputStream.read(buffer)) > 0){
+                    fileOutputStream.write(buffer, 0, count);
+                }
+                fileInputStream.close();
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 
 }

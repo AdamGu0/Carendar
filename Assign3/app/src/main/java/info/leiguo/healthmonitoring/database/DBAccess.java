@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import info.leiguo.healthmonitoring.data.ActivityData;
 import info.leiguo.healthmonitoring.data.PointData;
 
 import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry.COLUMN_ACTION_LABEL;
@@ -51,25 +53,33 @@ public class DBAccess {
         mDb.execSQL(CREATE_TABLE_SQL);
     }
 
-    private ArrayList<PointData> readRecords(int actionType) {
-        // Query the database for all the records in the descending order of the time stamp.
+    /**
+     * Read activities data of the type actionType
+     * @param actionType the activity type to be read
+     * @return A list of activity data, each activity data is a list of PointData.
+     */
+    public List<List<PointData>> readRecords(int actionType) {
+        // Query the database for all the records of actionType.
         Cursor cursor =  mDb.query(
                 mDefaultTableName,
                 new String[]{COLUMN_DATA, COLUMN_TIME_STEMP},
-                null,
-                null,
+                COLUMN_ACTION_LABEL + "=?",
+                new String[]{String.valueOf(actionType)},
                 null,
                 null,
                 null
         );
         if(cursor != null){
-            ArrayList<PointData> dataList = new ArrayList<>();
+            List<List<PointData>> activities = new ArrayList<>();
             if(cursor.moveToFirst()){
-
+                do{
+                    String data = cursor.getString(cursor.getColumnIndex(COLUMN_DATA));
+                    activities.add(ActivityData.fromString(data).getDataList());
+                }while (cursor.moveToNext());
             }
             cursor.close();
-            Log.d("ReadData", "download: data size:  " + dataList.size());
-            return dataList;
+            Log.d("DBAccess", "data size:  " + activities.size());
+            return activities;
         }
         return new ArrayList<>(0);
     }
