@@ -1,4 +1,4 @@
-package com.group15.apps.carendar.Activities;
+package com.group15.apps.carendar;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -26,11 +26,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.group15.apps.carendar.AccountFragment;
-import com.group15.apps.carendar.AddEventActivity;
-import com.group15.apps.carendar.Fragments.CalendarFragment;
-import com.group15.apps.carendar.MyWeekViewEvent;
-import com.group15.apps.carendar.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -1,4 +1,4 @@
-package com.group15.apps.carendar.Activities;
+package com.group15.apps.carendar;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -12,7 +12,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.group15.apps.carendar.R;
 
 
 /**
@@ -24,7 +23,7 @@ public class MapShowingActivity extends FragmentActivity
 
     GoogleMap map;
     boolean mapReady = false;
-    com.group15.apps.carendar.GPSTracker mGPS;
+    GPSTracker mGPS;
 
 
 

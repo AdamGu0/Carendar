@@ -1,4 +1,4 @@
-package com.group15.apps.carendar.Fragments;
+package com.group15.apps.carendar;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.alamkanak.weekview.DateTimeInterpreter;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
-import com.group15.apps.carendar.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,9 +30,9 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
-    private ArrayList<com.group15.apps.carendar.MyWeekViewEvent> mNewEvents;
-    private com.group15.apps.carendar.MyWeekViewEvent myWeekViewEvent;
-    private Map<Integer, List<com.group15.apps.carendar.MyWeekViewEvent>> mPersonalEventsMap = new HashMap<>();
+    private ArrayList<MyWeekViewEvent> mNewEvents;
+    private MyWeekViewEvent myWeekViewEvent;
+    private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsMap = new HashMap<>();
 
     public static CalendarFragment newInstance() {
         return new CalendarFragment();

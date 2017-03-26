@@ -1,4 +1,4 @@
-package com.group15.apps.carendar.Fragments;
+package com.group15.apps.carendar;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
