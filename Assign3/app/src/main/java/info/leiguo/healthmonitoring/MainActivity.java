@@ -135,9 +135,38 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private void onAnalyzingClicked(){
+    private void onAnalyzingClicked() {
         // TODO: copy the database file to SDcard for part B
+        String sd_card = Environment.getExternalStorageDirectory().toString();
+        String path = sd_card + "/Log/Mei";
+
+        String train_path = path + "/train.txt";
+        String test_path = path + "/test.txt";
+        String output_path = path + "/result.txt";
+        String model_name = path + "/my_model.txt";
+
+        String[] trainArgs = {train_path, model_name};
+        String[] testArgs = {test_path, model_name, output_path};
+        svm_train train = new svm_train();
+        svm_predict predict = new svm_predict();
+        try {
+            long start_train_time = System.nanoTime();
+            train.main(trainArgs);
+            long end_train_time = System.nanoTime();
+            Toast.makeText(this, "LibSVM has finished Training. The Training time is: \n", Toast.LENGTH_LONG);
+            long train_time = (end_train_time - start_train_time) / 1000000;//get milliseconds
+            Toast.makeText(this, String.valueOf(train_time) + "ms", Toast.LENGTH_LONG);
+            long start_test_time = System.nanoTime();
+            predict.main(testArgs);
+            long end_test_time = System.nanoTime();
+            Toast.makeText(this, "\nLibSVM has finished Testing. The Testing time is: \n", Toast.LENGTH_LONG);
+            long test_time = (end_test_time - start_test_time) / 1000000;//get milliseconds
+            Toast.makeText(this, String.valueOf(test_time) + "ms", Toast.LENGTH_LONG);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     private void onPlottingClicked(){
         new TestDataTask().execute();
