@@ -49,8 +49,6 @@ import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry
  */
 
 public class MainActivity extends Activity implements View.OnClickListener {
-    private final String SERVER_URL = "https://impact.asu.edu/CSE535Spring17Folder/";
-    private final String UPLOAD_URL = SERVER_URL + "UploadToServer.php";
     private GraphView mGraphView;
     private float[] mValues;
     private boolean mRunning = true;
@@ -150,6 +148,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 //        readDBFile();
 //        // TODO: copy the database file to SDcard for part B
+        // Use copyRawToPath()
         File path = getExternalFilesDir(null);
 //        String sd_card = Environment.getExternalStorageDirectory().toString();
 //        String path1 = sd_card;
@@ -477,6 +476,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
             return activities.size();
         }
         return 0;
+    }
+
+    private void copyRawToPath(int id, String path){
+        InputStream is = getResources().openRawResource(id);
+        try {
+            FileOutputStream fileOuputString = new FileOutputStream(path);
+            int count = 0;
+            byte[] buffer = new byte[1024];
+            while((count = is.read(buffer)) > 0){
+                fileOuputString.write(buffer, 0, count);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private class TestDataTask extends AsyncTask<Void, Void, int[]>{
