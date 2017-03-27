@@ -26,7 +26,7 @@ class svm_train {
     private File model_file; //I changed
 	private String error_msg;
 	private int cross_validation;
-	private int nr_fold;
+	private int nr_fold = 10;
 
 	private static svm_print_interface svm_print_null = new svm_print_interface()
 	{
@@ -91,6 +91,7 @@ class svm_train {
 				sumyy += y*y;
 				sumvy += v*y;
 			}
+			Log.v("test", "Cross Validation Squared correlation coefficient = "+
 					((prob.l*sumvy-sumv*sumy)*(prob.l*sumvy-sumv*sumy))/
 							((prob.l*sumvv-sumv*sumv)*(prob.l*sumyy-sumy*sumy))+"\n");
 
@@ -229,6 +230,7 @@ class svm_train {
 					Log.v("test", "inside v");
 					cross_validation = 1;
 					nr_fold = atoi(argv[i]);
+					Log.v("test", "fold: " + nr_fold);
 					if(nr_fold < 2)
 					{
 						System.err.print("n-fold cross validation: n must >= 2\n");

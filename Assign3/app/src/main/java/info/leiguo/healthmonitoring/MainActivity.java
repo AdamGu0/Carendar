@@ -148,7 +148,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void onAnalyzingClicked() {
 
-        readDBFile();
+//        readDBFile();
 //        // TODO: copy the database file to SDcard for part B
         File path = getExternalFilesDir(null);
 //        String sd_card = Environment.getExternalStorageDirectory().toString();
