@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -23,14 +24,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import info.leiguo.healthmonitoring.data.ActType;
+import info.leiguo.healthmonitoring.data.ActivityData;
 import info.leiguo.healthmonitoring.data.PointData;
 import info.leiguo.healthmonitoring.database.DBAccess;
 import info.leiguo.healthmonitoring.database.PatientContract;
 import info.leiguo.healthmonitoring.database.PatientDbHelper;
+
+import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry.COLUMN_ACTION_LABEL;
+import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry.COLUMN_DATA;
+import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry.COLUMN_TIME_STEMP;
 
 /**
  * All the code in this class are written by Group 15.
@@ -136,34 +143,89 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onAnalyzingClicked() {
-        // TODO: copy the database file to SDcard for part B
-        String sd_card = Environment.getExternalStorageDirectory().toString();
-        String path = sd_card + "/Log/Mei";
 
-        String train_path = path + "/train.txt";
-        String test_path = path + "/test.txt";
-        String output_path = path + "/result.txt";
-        String model_name = path + "/my_model.txt";
+        readDBFile();
 
-        String[] trainArgs = {train_path, model_name};
-        String[] testArgs = {test_path, model_name, output_path};
-        svm_train train = new svm_train();
-        svm_predict predict = new svm_predict();
+//        // TODO: copy the database file to SDcard for part B
+//        String sd_card = Environment.getExternalStorageDirectory().toString();
+//        String path = sd_card + "/Log/Mei";
+//
+//        String train_path = path + "/train.txt";
+//        String test_path = path + "/test.txt";
+//        String output_path = path + "/result.txt";
+//        String model_name = path + "/my_model.txt";
+//
+//        String[] trainArgs = {train_path, model_name};
+//        String[] testArgs = {test_path, model_name, output_path};
+//        svm_train train = new svm_train();
+//        svm_predict predict = new svm_predict();
+//        try {
+//            long start_train_time = System.nanoTime();
+//            train.main(trainArgs);
+//            long end_train_time = System.nanoTime();
+//            Toast.makeText(this, "LibSVM has finished Training. The Training time is: \n", Toast.LENGTH_LONG);
+//            long train_time = (end_train_time - start_train_time) / 1000000;//get milliseconds
+//            Toast.makeText(this, String.valueOf(train_time) + "ms", Toast.LENGTH_LONG);
+//            long start_test_time = System.nanoTime();
+//            predict.main(testArgs);
+//            long end_test_time = System.nanoTime();
+//            Toast.makeText(this, "\nLibSVM has finished Testing. The Testing time is: \n", Toast.LENGTH_LONG);
+//            long test_time = (end_test_time - start_test_time) / 1000000;//get milliseconds
+//            Toast.makeText(this, String.valueOf(test_time) + "ms", Toast.LENGTH_LONG);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    private void readDBFile() {
+        File path = getExternalFilesDir(null);
+        String fileName = "learn.db";
+        File outputFile = new File(path, fileName);
         try {
-            long start_train_time = System.nanoTime();
-            train.main(trainArgs);
-            long end_train_time = System.nanoTime();
-            Toast.makeText(this, "LibSVM has finished Training. The Training time is: \n", Toast.LENGTH_LONG);
-            long train_time = (end_train_time - start_train_time) / 1000000;//get milliseconds
-            Toast.makeText(this, String.valueOf(train_time) + "ms", Toast.LENGTH_LONG);
-            long start_test_time = System.nanoTime();
-            predict.main(testArgs);
-            long end_test_time = System.nanoTime();
-            Toast.makeText(this, "\nLibSVM has finished Testing. The Testing time is: \n", Toast.LENGTH_LONG);
-            long test_time = (end_test_time - start_test_time) / 1000000;//get milliseconds
-            Toast.makeText(this, String.valueOf(test_time) + "ms", Toast.LENGTH_LONG);
-        } catch (IOException e) {
+            InputStream is = getResources().openRawResource(R.raw.train);
+            FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+            byte[] buffer = new byte[4096];
+            int count;
+            while((count = is.read(buffer)) > 0){
+                fileOutputStream.write(buffer, 0, count);
+            }
+            is.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        SQLiteDatabase db = null;
+        try{
+            db = SQLiteDatabase.openDatabase(outputFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
+            Log.v("tag",db.toString());
+        } catch (SQLiteException e){
+            e.printStackTrace();
+        }
+
+        Cursor cursor =  db.query(
+                "ActivityData",
+                new String[]{COLUMN_DATA, COLUMN_TIME_STEMP},
+                COLUMN_ACTION_LABEL + "=?",
+                new String[]{String.valueOf(0)},
+                null,
+                null,
+                null
+        );
+        if(cursor != null){
+            List<List<PointData>> activities = new ArrayList<>();
+            if(cursor.moveToFirst()){
+                do{
+                    String data = cursor.getString(cursor.getColumnIndex(COLUMN_DATA));
+                    activities.add(ActivityData.fromString(data).getDataList());
+                }while (cursor.moveToNext());
+            }
+            cursor.close();
+            Log.d("DBAccess", "data size:  " + activities.size());
+
         }
     }
 
