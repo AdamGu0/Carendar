@@ -1,5 +1,7 @@
 package info.leiguo.healthmonitoring;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -77,6 +79,7 @@ class svm_train {
 		if(param.svm_type == svm_parameter.EPSILON_SVR ||
 		   param.svm_type == svm_parameter.NU_SVR)
 		{
+			Log.v("test", "vvvvv");
 			for(i=0;i<prob.l;i++)
 			{
 				double y = prob.y[i];
@@ -88,8 +91,11 @@ class svm_train {
 				sumyy += y*y;
 				sumvy += v*y;
 			}
+					((prob.l*sumvy-sumv*sumy)*(prob.l*sumvy-sumv*sumy))/
+							((prob.l*sumvv-sumv*sumv)*(prob.l*sumyy-sumy*sumy))+"\n");
+
 			System.out.print("Cross Validation Mean squared error = "+total_error/prob.l+"\n");
-			System.out.print("Cross Validation Squared correlation coefficient = "+
+            System.out.print("Cross Validation Squared correlation coefficient = "+
 				((prob.l*sumvy-sumv*sumy)*(prob.l*sumvy-sumv*sumy))/
 				((prob.l*sumvv-sumv*sumv)*(prob.l*sumyy-sumy*sumy))+"\n"
 				);
@@ -114,7 +120,7 @@ class svm_train {
 			System.err.print("ERROR: "+error_msg+"\n");
 			System.exit(1);
 		}
-
+		Log.v("test", "cross: " + cross_validation);
 		if(cross_validation != 0)
 		{
 			do_cross_validation();
@@ -170,8 +176,7 @@ class svm_train {
 		param.nr_weight = 0;
 		param.weight_label = new int[0];
 		param.weight = new double[0];
-		cross_validation = 0;
-
+		cross_validation = 10;
 		// parse options
 		for(i=0;i<argv.length;i++)
 		{
@@ -221,6 +226,7 @@ class svm_train {
 					i--;
 					break;
 				case 'v':
+					Log.v("test", "inside v");
 					cross_validation = 1;
 					nr_fold = atoi(argv[i]);
 					if(nr_fold < 2)

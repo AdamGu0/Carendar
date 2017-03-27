@@ -19,12 +19,14 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,7 @@ import info.leiguo.healthmonitoring.database.DBAccess;
 import info.leiguo.healthmonitoring.database.PatientContract;
 import info.leiguo.healthmonitoring.database.PatientDbHelper;
 
+import static info.leiguo.healthmonitoring.R.raw.train;
 import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry.COLUMN_ACTION_LABEL;
 import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry.COLUMN_DATA;
 import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry.COLUMN_TIME_STEMP;
@@ -59,6 +62,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private String CREATE_TABLE_SQL;
     private AlertDialog mAlertDialog;
     private boolean mIsPatientNameValid = true;
+    SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,36 +149,36 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void onAnalyzingClicked() {
 
         readDBFile();
-
 //        // TODO: copy the database file to SDcard for part B
+        File path = getExternalFilesDir(null);
 //        String sd_card = Environment.getExternalStorageDirectory().toString();
-//        String path = sd_card + "/Log/Mei";
-//
-//        String train_path = path + "/train.txt";
+//        String path1 = sd_card;
+
+        String train_path = path + "/train.txt";
 //        String test_path = path + "/test.txt";
 //        String output_path = path + "/result.txt";
-//        String model_name = path + "/my_model.txt";
-//
-//        String[] trainArgs = {train_path, model_name};
+        String model_name = path + "/my_model.txt";
+
+        String[] trainArgs = {train_path, model_name};
 //        String[] testArgs = {test_path, model_name, output_path};
-//        svm_train train = new svm_train();
+        svm_train train = new svm_train();
 //        svm_predict predict = new svm_predict();
-//        try {
-//            long start_train_time = System.nanoTime();
-//            train.main(trainArgs);
-//            long end_train_time = System.nanoTime();
-//            Toast.makeText(this, "LibSVM has finished Training. The Training time is: \n", Toast.LENGTH_LONG);
-//            long train_time = (end_train_time - start_train_time) / 1000000;//get milliseconds
-//            Toast.makeText(this, String.valueOf(train_time) + "ms", Toast.LENGTH_LONG);
+        try {
+            long start_train_time = System.nanoTime();
+            train.main(trainArgs);
+            long end_train_time = System.nanoTime();
+            Toast.makeText(this, "LibSVM has finished Training. The Training time is: \n", Toast.LENGTH_LONG).show();
+            long train_time = (end_train_time - start_train_time) / 1000000;//get milliseconds
+            Toast.makeText(this, String.valueOf(train_time) + "ms", Toast.LENGTH_LONG);
 //            long start_test_time = System.nanoTime();
 //            predict.main(testArgs);
 //            long end_test_time = System.nanoTime();
 //            Toast.makeText(this, "\nLibSVM has finished Testing. The Testing time is: \n", Toast.LENGTH_LONG);
 //            long test_time = (end_test_time - start_test_time) / 1000000;//get milliseconds
 //            Toast.makeText(this, String.valueOf(test_time) + "ms", Toast.LENGTH_LONG);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void readDBFile() {
@@ -182,7 +186,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         String fileName = "learn.db";
         File outputFile = new File(path, fileName);
         try {
-            InputStream is = getResources().openRawResource(R.raw.train);
+            InputStream is = getResources().openRawResource(train);
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
             byte[] buffer = new byte[4096];
             int count;
@@ -198,19 +202,85 @@ public class MainActivity extends Activity implements View.OnClickListener {
             e.printStackTrace();
         }
 
-        SQLiteDatabase db = null;
+        db = null;
         try{
             db = SQLiteDatabase.openDatabase(outputFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
             Log.v("tag",db.toString());
         } catch (SQLiteException e){
             e.printStackTrace();
         }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 3; i++) {
+            List<List<PointData>> lists = readRecords(i);
+            List<PointData> list = lists.get(i);
+            Log.v("size: ", list.size() + "");
+            for (int j = 0; j < list.size(); j++) {
+                PointData pointData = list.get(j);
+                //Format data
+                String s = i + " 1:" + pointData.x + " 2:" + pointData.y +
+                        " 3:" + pointData.z;
+                sb.append(s).append("\n");
+            }
+        }
+        writeToFile("train.txt", sb.toString());
+    }
 
+    private void writeToFile(String fileName, String data) {
+        File path = getExternalFilesDir(null);
+        File outputFile = new File(path, fileName);
+        if (outputFile.exists()) {
+            try {
+                outputFile.createNewFile();
+                InputStream is = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
+                FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+                byte[] buffer = new byte[4096];
+                int count;
+                while((count = is.read(buffer)) > 0){
+                    fileOutputStream.write(buffer, 0, count);
+                }
+                is.close();
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        } else {
+            try{
+                outputFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+//
+//            File path = getExternalFilesDir(null);
+//            File file = new File(path, fileName);
+//            try {
+//                InputStream stream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
+//                FileOutputStream fileOutputStream = new FileOutputStream(file);
+//                byte[] buffer = new byte[4096];
+//                int count;
+//                while((count = stream.read(buffer)) > 0){
+//                    fileOutputStream.write(buffer, 0, count);
+//                }
+//                stream.close();
+//                fileOutputStream.flush();
+//                fileOutputStream.close();
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (IOException e){
+//                e.printStackTrace();
+//            }
+    }
+
+    private List<List<PointData>> readRecords(int actionType) {
         Cursor cursor =  db.query(
-                "ActivityData",
+                PatientContract.PatientEntry.TABLE_NAME,
                 new String[]{COLUMN_DATA, COLUMN_TIME_STEMP},
                 COLUMN_ACTION_LABEL + "=?",
-                new String[]{String.valueOf(0)},
+                new String[]{String.valueOf(actionType)},
                 null,
                 null,
                 null
@@ -225,10 +295,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
             cursor.close();
             Log.d("DBAccess", "data size:  " + activities.size());
-
+            return activities;
         }
+        return new ArrayList<>();
     }
-
 
     private void onPlottingClicked(){
         new TestDataTask().execute();
@@ -394,8 +464,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
             return null;
         }
-
-
     }
 
     /**
