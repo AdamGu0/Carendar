@@ -148,7 +148,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 //        readDBFile();
 //        // TODO: copy the database file to SDcard for part B
-        // Use copyRawToPath()
+        // TODO: Use copyRawToPath()
         File path = getExternalFilesDir(null);
 //        String sd_card = Environment.getExternalStorageDirectory().toString();
 //        String path1 = sd_card;
@@ -478,15 +478,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
         return 0;
     }
 
+    /**
+     * Copy a raw file to the given output file.
+     * @param id
+     * @param path The absolute path and name of the output file
+     */
     private void copyRawToPath(int id, String path){
         InputStream is = getResources().openRawResource(id);
         try {
-            FileOutputStream fileOuputString = new FileOutputStream(path);
+            FileOutputStream fileOuputStream = new FileOutputStream(path);
             int count = 0;
             byte[] buffer = new byte[1024];
             while((count = is.read(buffer)) > 0){
-                fileOuputString.write(buffer, 0, count);
+                fileOuputStream.write(buffer, 0, count);
             }
+            is.close();
+            fileOuputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e){
