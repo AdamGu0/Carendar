@@ -23,6 +23,9 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Provides drawing instructions for a GLSurfaceView object. This class
  * must override the OpenGL ES drawing lifecycle methods:
@@ -35,9 +38,9 @@ import android.util.Log;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private static final String TAG = "MyGLRenderer";
-//    private Triangle mTriangle;
-//    private Square   mSquare;
+
     private Line mLine;
+    private List<Line> lines = new ArrayList<>();
 
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
@@ -53,11 +56,36 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-//        mTriangle = new Triangle();
-//        mSquare   = new Square();
         mLine = new Line();
         mLine.SetVerts(-0.5f, 0.5f, 0f, -0.5f, -0.5f, 0f);
         mLine.SetColor(1.f, 0f, 0f, 1.0f);
+        initLines();
+    }
+
+    private void initLines(){
+        // Lines are not in the viewport
+        Line eastHorz = new Line();
+        eastHorz.SetVerts(1f, 1f, 1f, 1f, -1f, -1f);
+        eastHorz.SetColor(.8f, .8f, 0f, 1.0f);
+        Line northHorz = new Line();
+        northHorz.SetVerts(-1f, 1f, -1f, 1f, 1f, 1f);
+        northHorz.SetColor(0.8f, 0.8f, 0f, 1.0f);
+        Line westHorz = new Line();
+        westHorz.SetVerts(-1f, -1f, 1f, -1f, 1f, -1f);
+        westHorz.SetColor(0.8f, 0.8f, 0f, 1.0f);
+        Line southHorz = new Line();
+        southHorz.SetVerts(-1f, -1f, -1f, 1f, -1f, 1f);
+        southHorz.SetColor(0.8f, 0.8f, 0f, 1.0f);
+        lines.add(eastHorz);
+        lines.add(northHorz);
+        lines.add(westHorz);
+        lines.add(southHorz);
+    }
+
+    private void drawLines(float[] mMVPMatrix){
+        for(Line line : lines){
+            line.draw(mMVPMatrix);
+        }
     }
 
     @Override
@@ -73,9 +101,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        // Draw square
-//        mSquare.draw(mMVPMatrix);
+        // Draw lines
         mLine.draw(mMVPMatrix);
+        drawLines(mMVPMatrix);
 
         // Create a rotation for the triangle
 
