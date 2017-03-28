@@ -26,7 +26,7 @@ class svm_train {
     private File model_file; //I changed
 	private String error_msg;
 	private int cross_validation;
-	private int nr_fold = 10;
+	private int nr_fold = 20;
 	public static double accuracy = 0;
 	private static svm_print_interface svm_print_null = new svm_print_interface()
 	{
@@ -121,7 +121,6 @@ class svm_train {
 			System.err.print("ERROR: "+error_msg+"\n");
 			System.exit(1);
 		}
-		Log.v("test", "cross: " + cross_validation);
 		if(cross_validation != 0)
 		{
 			do_cross_validation();
@@ -177,7 +176,7 @@ class svm_train {
 		param.nr_weight = 0;
 		param.weight_label = new int[0];
 		param.weight = new double[0];
-		cross_validation = 10;
+		cross_validation = 20;
 		// parse options
 		for(i=0;i<argv.length;i++)
 		{

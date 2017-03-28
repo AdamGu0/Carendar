@@ -159,34 +159,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void onAnalyzingClicked() {
 
-        readDBFile();
-//        // TODO: copy the database file to SDcard for part B
-        File path = getExternalFilesDir(null);
-        
-        String train_path = path + "/train.txt";
-//        String test_path = path + "/test.txt";
-//        String output_path = path + "/result.txt";
-        String model_name = path + "/my_model.txt";
+        new TrainTask().execute();
+        Toast.makeText(MainActivity.this, "K-Fold Cross Validation Accuracy: + " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
 
-        String[] trainArgs = {train_path, model_name};
-        String[] scaleArgs = {train_path};
-
-//        String[] testArgs = {test_path, model_name, output_path};
-        svm_train train = new svm_train();
-        svm_scale scale = new svm_scale();
-        try {
-            scale.main(scaleArgs);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            train.main(trainArgs);
-            Toast.makeText(this, "K-Fold Cross Validation Accuracy: + " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void readDBFile() {
@@ -430,6 +405,41 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void updateData(List<PointData> dataList){
+
+    }
+
+    private class TrainTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            readDBFile();
+//        // TODO: copy the database file to SDcard for part B
+            File path = getExternalFilesDir(null);
+
+            String train_path = path + "/train.txt";
+//        String test_path = path + "/test.txt";
+//        String output_path = path + "/result.txt";
+            String model_name = path + "/my_model.txt";
+
+            String[] trainArgs = {train_path, model_name};
+            String[] scaleArgs = {train_path};
+
+//        String[] testArgs = {test_path, model_name, output_path};
+            svm_train train = new svm_train();
+            svm_scale scale = new svm_scale();
+            try {
+                scale.main(scaleArgs);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                train.main(trainArgs);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
     }
 
