@@ -36,6 +36,7 @@ import info.leiguo.healthmonitoring.data.PointData;
 import info.leiguo.healthmonitoring.database.DBAccess;
 import info.leiguo.healthmonitoring.database.PatientContract;
 import info.leiguo.healthmonitoring.database.PatientDbHelper;
+import info.leiguo.healthmonitoring.opengl.MyGLSurfaceView;
 
 import static info.leiguo.healthmonitoring.R.raw.train;
 import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry.COLUMN_ACTION_LABEL;
@@ -49,7 +50,6 @@ import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry
  */
 
 public class MainActivity extends Activity implements View.OnClickListener {
-    private GraphView mGraphView;
     private float[] mValues;
     private boolean mRunning = true;
     private Handler mHandler = new Handler();
@@ -61,6 +61,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private AlertDialog mAlertDialog;
     private boolean mIsPatientNameValid = true;
     SQLiteDatabase db;
+    private MyGLSurfaceView mSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,10 +94,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mValues = new float[50];
         String[] horlabels = new String[]{"100", "200", "300", "400", "500"};
         String[] verlabels = new String[]{"100", "200", "300", "400", "500"};
-        mGraphView = new GraphView(this, mValues, "Monitor--By Group 15", horlabels, verlabels, true);
-        container.addView(mGraphView);
+        mSurfaceView = new MyGLSurfaceView(this);
+        container.addView(mSurfaceView);
 
         mDBAccess = new DBAccess(getApplicationContext());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSurfaceView.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSurfaceView.onResume();
     }
 
     @Override
@@ -417,13 +430,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void clearView(){
-        mGraphView.setValues(new float[0]);
-        mGraphView.invalidate();
+//        mGraphView.setValues(new float[0]);
+//        mGraphView.invalidate();
     }
 
     private void refreshView(){
-        mGraphView.setValues(mValues);
-        mGraphView.invalidate();
+//        mGraphView.setValues(mValues);
+//        mGraphView.invalidate();
     }
 
 
