@@ -178,9 +178,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             long start_train_time = System.nanoTime();
             train.main(trainArgs);
             long end_train_time = System.nanoTime();
-            Toast.makeText(this, "LibSVM has finished Training. The Training time is: \n", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "K-Fold Cross Validation Accuracy: + " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
             long train_time = (end_train_time - start_train_time) / 1000000;//get milliseconds
-            Toast.makeText(this, String.valueOf(train_time) + "ms", Toast.LENGTH_LONG);
+//            Toast.makeText(this, String.valueOf(train_time) + "ms", Toast.LENGTH_LONG);
 //            long start_test_time = System.nanoTime();
 //            predict.main(testArgs);
 //            long end_test_time = System.nanoTime();
@@ -223,14 +223,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 3; i++) {
             List<List<PointData>> lists = readRecords(i);
-            List<PointData> list = lists.get(i);
-            Log.v("size: ", list.size() + "");
-            for (int j = 0; j < list.size(); j++) {
-                PointData pointData = list.get(j);
-                //Format data
-                String s = i + " 1:" + pointData.x + " 2:" + pointData.y +
-                        " 3:" + pointData.z;
-                sb.append(s).append("\n");
+            for (int j = 0; j < lists.size(); j++) {
+                List<PointData> list = lists.get(j);
+                Log.v("test", " " + j);
+                for (int k = 0; k < list.size(); k++) {
+                    PointData pointData = list.get(k);
+                    //Format data
+                    if (k >= 50) break;
+                    int x = 3*(k+1) - 2;
+                    int y = 3*(k+1) - 1;
+                    int z = 3*(k+1);
+
+                    String s = i + " " + x + ":" + pointData.x +
+                            " " + y + ":" + pointData.y +
+                            " " + z + ":" + pointData.z + "";
+                    sb.append(s);
+                }
+                sb.append("\n");
+
+
             }
         }
         writeToFile("train.txt", sb.toString());
@@ -265,25 +276,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         }
 
-//
-//            File path = getExternalFilesDir(null);
-//            File file = new File(path, fileName);
-//            try {
-//                InputStream stream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
-//                FileOutputStream fileOutputStream = new FileOutputStream(file);
-//                byte[] buffer = new byte[4096];
-//                int count;
-//                while((count = stream.read(buffer)) > 0){
-//                    fileOutputStream.write(buffer, 0, count);
-//                }
-//                stream.close();
-//                fileOutputStream.flush();
-//                fileOutputStream.close();
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            } catch (IOException e){
-//                e.printStackTrace();
-//            }
     }
 
     private List<List<PointData>> readRecords(int actionType) {

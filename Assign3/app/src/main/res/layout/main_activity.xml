@@ -145,7 +145,53 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:visibility="gone">
-
     </FrameLayout>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="@string/parameter1"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:textColor="#fff"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/parameter2"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:textColor="#fff"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/parameter3"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:textColor="#fff"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/parameter4"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:textColor="#fff"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/parameter5"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:textColor="#fff"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/parameter6"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:textColor="#fff"/>
 </LinearLayout>

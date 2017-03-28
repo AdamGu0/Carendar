@@ -27,7 +27,7 @@ class svm_train {
 	private String error_msg;
 	private int cross_validation;
 	private int nr_fold = 10;
-
+	public static double accuracy = 0;
 	private static svm_print_interface svm_print_null = new svm_print_interface()
 	{
 		public void print(String s) {}
@@ -79,7 +79,6 @@ class svm_train {
 		if(param.svm_type == svm_parameter.EPSILON_SVR ||
 		   param.svm_type == svm_parameter.NU_SVR)
 		{
-			Log.v("test", "vvvvv");
 			for(i=0;i<prob.l;i++)
 			{
 				double y = prob.y[i];
@@ -106,7 +105,8 @@ class svm_train {
 			for(i=0;i<prob.l;i++)
 				if(target[i] == prob.y[i])
 					++total_correct;
-			System.out.print("Cross Validation Accuracy = "+100.0*total_correct/prob.l+"%\n");
+			accuracy = 100.0*total_correct/prob.l;
+			System.out.print("Cross Validation Accuracy = "+accuracy+"%\n");
 		}
 	}
 	
@@ -227,10 +227,8 @@ class svm_train {
 					i--;
 					break;
 				case 'v':
-					Log.v("test", "inside v");
 					cross_validation = 1;
 					nr_fold = atoi(argv[i]);
-					Log.v("test", "fold: " + nr_fold);
 					if(nr_fold < 2)
 					{
 						System.err.print("n-fold cross validation: n must >= 2\n");
