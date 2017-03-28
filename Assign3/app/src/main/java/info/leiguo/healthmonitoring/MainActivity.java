@@ -159,34 +159,31 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void onAnalyzingClicked() {
 
-//        readDBFile();
+        readDBFile();
 //        // TODO: copy the database file to SDcard for part B
         File path = getExternalFilesDir(null);
-//        String sd_card = Environment.getExternalStorageDirectory().toString();
-//        String path1 = sd_card;
-
+        
         String train_path = path + "/train.txt";
 //        String test_path = path + "/test.txt";
 //        String output_path = path + "/result.txt";
         String model_name = path + "/my_model.txt";
 
         String[] trainArgs = {train_path, model_name};
+        String[] scaleArgs = {train_path};
+
 //        String[] testArgs = {test_path, model_name, output_path};
         svm_train train = new svm_train();
-//        svm_predict predict = new svm_predict();
+        svm_scale scale = new svm_scale();
         try {
-            long start_train_time = System.nanoTime();
+            scale.main(scaleArgs);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
             train.main(trainArgs);
-            long end_train_time = System.nanoTime();
             Toast.makeText(this, "K-Fold Cross Validation Accuracy: + " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
-            long train_time = (end_train_time - start_train_time) / 1000000;//get milliseconds
-//            Toast.makeText(this, String.valueOf(train_time) + "ms", Toast.LENGTH_LONG);
-//            long start_test_time = System.nanoTime();
-//            predict.main(testArgs);
-//            long end_test_time = System.nanoTime();
-//            Toast.makeText(this, "\nLibSVM has finished Testing. The Testing time is: \n", Toast.LENGTH_LONG);
-//            long test_time = (end_test_time - start_test_time) / 1000000;//get milliseconds
-//            Toast.makeText(this, String.valueOf(test_time) + "ms", Toast.LENGTH_LONG);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -225,7 +222,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             List<List<PointData>> lists = readRecords(i);
             for (int j = 0; j < lists.size(); j++) {
                 List<PointData> list = lists.get(j);
-                Log.v("test", " " + j);
+                if (j >= 25) break;
                 for (int k = 0; k < list.size(); k++) {
                     PointData pointData = list.get(k);
                     //Format data
