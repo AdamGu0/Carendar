@@ -158,9 +158,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onAnalyzingClicked() {
+        Toast.makeText(this, "Begin Training Please Wait ", Toast.LENGTH_LONG).show();
 
         new TrainTask().execute();
-        Toast.makeText(MainActivity.this, "K-Fold Cross Validation Accuracy: + " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
+
 
     }
 
@@ -197,7 +198,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             List<List<PointData>> lists = readRecords(i);
             for (int j = 0; j < lists.size(); j++) {
                 List<PointData> list = lists.get(j);
-                if (j >= 25) break;
+                if (j >= 75) break;
                 for (int k = 0; k < list.size(); k++) {
                     PointData pointData = list.get(k);
                     //Format data
@@ -441,6 +442,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
             return null;
         }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Toast.makeText(MainActivity.this, "K-Fold Cross Validation Accuracy: " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
+
+        }
     }
 
     private class PlotDownloadedDataTask extends AsyncTask<Void, Void, ArrayList<PointData>>{
