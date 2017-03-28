@@ -9,13 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -50,16 +47,10 @@ import static info.leiguo.healthmonitoring.database.PatientContract.PatientEntry
  */
 
 public class MainActivity extends Activity implements View.OnClickListener {
-    private float[] mValues;
-    private boolean mRunning = true;
-    private Handler mHandler = new Handler();
     private DBAccess mDBAccess;
     private String mTableName = "a";
     private int mActivityType = 0;
-    private RadioButton mPatientSexRadioButton;
-    private String CREATE_TABLE_SQL;
     private AlertDialog mAlertDialog;
-    private boolean mIsPatientNameValid = true;
     SQLiteDatabase db;
     private MyGLSurfaceView mSurfaceView;
 
@@ -70,30 +61,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.btn_analyzing).setOnClickListener(this);
         findViewById(R.id.btn_plotting).setOnClickListener(this);
         findViewById(R.id.btn_save).setOnClickListener(this);
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_data_type);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                View radioButton = radioGroup.findViewById(i);
-                int index = radioGroup.indexOfChild(radioButton);
-                switch (index) {
-                    case 0:
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-        RadioGroup sexRadioGroup = (RadioGroup) findViewById(R.id.radio_data_type);
-        mPatientSexRadioButton = (RadioButton) findViewById(sexRadioGroup.getCheckedRadioButtonId());
-
         // setup spinner
         setupSpinner();
         // Setup GraphView
         FrameLayout container = (FrameLayout)findViewById(R.id.container);
-        mValues = new float[50];
-        String[] horlabels = new String[]{"100", "200", "300", "400", "500"};
-        String[] verlabels = new String[]{"100", "200", "300", "400", "500"};
         mSurfaceView = new MyGLSurfaceView(this);
         container.addView(mSurfaceView);
 
@@ -116,13 +87,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         stopDataService();
-        mRunning = false;
     }
 
     private void setupSpinner(){
         Spinner spinner = (Spinner)findViewById(R.id.spinner_act_type);
         spinner.setAdapter(new MySpinnerAdapter(this, ActType.ACTION_STRING));
-//        spinner.setSelection(0);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -161,7 +130,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Toast.makeText(this, "Begin Training Please Wait ", Toast.LENGTH_LONG).show();
 
         new TrainTask().execute();
-
 
     }
 
@@ -314,7 +282,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void onStopClicked(){
         clearView();
-        mRunning = false;
     }
 
     private void showRecordingDialog(String msg){
@@ -447,39 +414,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             super.onPostExecute(aVoid);
             Toast.makeText(MainActivity.this, "K-Fold Cross Validation Accuracy: " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
 
-        }
-    }
-
-    private class PlotDownloadedDataTask extends AsyncTask<Void, Void, ArrayList<PointData>>{
-        @Override
-        protected ArrayList<PointData> doInBackground(Void... params) {
-            return readRecords();
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<PointData> sensorDatas) {
-            // Stop the current display firstly.
-            onStopClicked();
-            // Read the latest ten second data from the downloaded database and update the data for GraphView.
-            updateData(sensorDatas);
-            // Refresh the GraphView
-            refreshView();
-        }
-
-        private  ArrayList<PointData>  readRecords() {
-            // Query the database for all the records in the descending order of the time stamp.
-            if(mDBAccess != null){
-                int actEatingCount = 0;
-                int actWalkingCount = 0;
-                int actRunningCount = 0;
-                int action = ActType.ACTION_EATING;
-                List<List<PointData>>  activities = mDBAccess.readRecords(action);
-                if(activities != null){
-                    actEatingCount = activities.size();
-                }
-
-            }
-            return null;
         }
     }
 

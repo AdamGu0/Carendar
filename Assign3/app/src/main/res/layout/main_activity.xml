@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="80dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -28,8 +28,8 @@
                 <TextView
                     android:id="@+id/tv_act_type"
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="Activity Type"
                     android:textColor="#000000"
                     android:textSize="13sp" />
@@ -38,6 +38,7 @@
                     android:id="@+id/spinner_act_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:background="#888888" />
             </LinearLayout>
 
@@ -68,42 +69,7 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <RadioGroup
-                    android:id="@+id/radio_data_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:gravity="bottom"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/radio_btn_saved_data"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:checked="true"
-                        android:text="@string/sample_data"
-                        android:textColor="#eeeeee" />
-
-                    <RadioButton
-                        android:id="@+id/rd_btn_new_data"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginLeft="10dp"
-                        android:checked="false"
-                        android:text="@string/new_data"
-                        android:textColor="#eeeeee" />
-                </RadioGroup>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <Button
@@ -111,10 +77,11 @@
                     android:layout_width="70dp"
                     android:layout_height="35dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/button_bg_run"
                     android:gravity="center"
                     android:paddingBottom="5dp"
+                    android:layout_gravity="center_vertical"
                     android:paddingTop="5dp"
                     android:text="Analyze"
                     android:textColor="#000000"
@@ -125,9 +92,11 @@
                     android:layout_width="70dp"
                     android:layout_height="35dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/button_bg_download"
                     android:gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:text="Plot"
