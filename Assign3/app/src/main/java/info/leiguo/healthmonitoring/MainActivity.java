@@ -53,6 +53,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private AlertDialog mAlertDialog;
     SQLiteDatabase db;
     private MyGLSurfaceView mSurfaceView;
+    private View mLLAnalysisDisplay;
+    private FrameLayout mPlottingDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +65,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.btn_save).setOnClickListener(this);
         // setup spinner
         setupSpinner();
-        // Setup GraphView
+        mLLAnalysisDisplay = findViewById(R.id.analysis_display);
         FrameLayout container = (FrameLayout)findViewById(R.id.container);
         mSurfaceView = new MyGLSurfaceView(this);
         container.addView(mSurfaceView);
+        mPlottingDisplay = container;
 
         mDBAccess = new DBAccess(getApplicationContext());
     }
@@ -106,8 +109,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
         });
     }
 
-    private String getTableName(){
-        return PatientContract.PatientEntry.TABLE_NAME;
+    private void showPlottingView(){
+        if(mPlottingDisplay != null){
+            mPlottingDisplay.setVisibility(View.VISIBLE);
+        }
+        if(mLLAnalysisDisplay != null){
+            mLLAnalysisDisplay.setVisibility(View.GONE);
+        }
+    }
+
+    private void showAnalyzingView(){
+        if(mPlottingDisplay != null){
+            mPlottingDisplay.setVisibility(View.GONE);
+        }
+        if(mLLAnalysisDisplay != null){
+            mLLAnalysisDisplay.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -128,7 +145,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void onAnalyzingClicked() {
         Toast.makeText(this, "Begin Training Please Wait ", Toast.LENGTH_LONG).show();
-
+        showAnalyzingView();
         new TrainTask().execute();
 
     }
@@ -219,6 +236,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
+    private void copyRawDbToFile(File outputFile){
+        try {
+            InputStream is = getResources().openRawResource(train);
+            FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+            byte[] buffer = new byte[4096];
+            int count;
+            while((count = is.read(buffer)) > 0){
+                fileOutputStream.write(buffer, 0, count);
+            }
+            is.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
     private List<List<PointData>> readRecords(int actionType) {
         Cursor cursor =  db.query(
                 PatientContract.PatientEntry.TABLE_NAME,
@@ -245,7 +281,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onPlottingClicked(){
-        new TestDataTask().execute();
+//        new TestDataTask().execute();
+        new PlottingTask().execute();
     }
 
     private void onSaveClicked(){
@@ -274,14 +311,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void stopDataService(){
         Intent intent = new Intent(this, MyService.class);
         stopService(intent);
-    }
-
-    private void toastInvalidPatientName(){
-        longToast("Invalid patient name--Only letters and space are allowed in the patient name!");
-    }
-
-    private void onStopClicked(){
-        clearView();
     }
 
     private void showRecordingDialog(String msg){
@@ -344,38 +373,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
     }
 
-    private void showData(){
-        String filePath = getFilesDir().getAbsolutePath() + "/" +PatientDbHelper.DATABASE_NAME;
-        try{
-//            mDownloadDb = SQLiteDatabase.openDatabase(filePath, null, SQLiteDatabase.OPEN_READWRITE);
-        }catch (SQLiteException e){
-            e.printStackTrace();
-            return;
-        }
-        plotDownloadData();
-    }
-
-    private void plotDownloadData(){
-//        if(mDownloadDb != null){
-//            new PlotDownloadedDataTask().execute();
-//        }
-    }
-
-    private void clearView(){
-//        mGraphView.setValues(new float[0]);
-//        mGraphView.invalidate();
-    }
-
-    private void refreshView(){
-//        mGraphView.setValues(mValues);
-//        mGraphView.invalidate();
-    }
-
-
-    private void updateData(List<PointData> dataList){
-
-    }
-
     private class TrainTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
@@ -417,17 +414,42 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    /**
-     * Heavy task, should run on background thread
-     * @param activityType
-     * @return
-     */
-    private int getActivityDataCount(int activityType){
-        List<List<PointData>>  activities = mDBAccess.readRecords(activityType);
-        if(activities != null){
-            return activities.size();
+
+    private class PlottingTask extends AsyncTask<Void, Void, Void>{
+        private List<List<PointData>> mEating;
+        private List<List<PointData>> mWalking;
+        private List<List<PointData>> mRunning;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            File path = getExternalFilesDir(null);
+            String fileName = "plot.db";
+            File outputFile = new File(path, fileName);
+            copyRawDbToFile(outputFile);
+            if(outputFile.isFile()){
+                // Copy succeed
+                try{
+                    SQLiteDatabase db = SQLiteDatabase.openDatabase(outputFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
+                    mEating = DBAccess.readActivityRecords(db, ActType.ACTION_EATING);
+                    mWalking = DBAccess.readActivityRecords(db, ActType.ACTION_WALKING);
+                    mRunning = DBAccess.readActivityRecords(db, ActType.ACTION_RUNNING);
+                }catch (SQLiteException e){
+                    e.printStackTrace();
+                }
+            }
+            return null;
         }
-        return 0;
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(mPlottingDisplay != null){
+                mPlottingDisplay.removeAllViews();
+                mSurfaceView = new MyGLSurfaceView(MainActivity.this);
+                mSurfaceView.setData(mEating, mWalking, mRunning);
+                mPlottingDisplay.addView(mSurfaceView);
+                showPlottingView();
+            }
+        }
     }
 
     private class TestDataTask extends AsyncTask<Void, Void, int[]>{
@@ -469,6 +491,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
             } catch (IOException e){
                 e.printStackTrace();
             }
+        }
+
+        /**
+         * Heavy task, should run on background thread
+         * @param activityType
+         * @return
+         */
+        private int getActivityDataCount(int activityType){
+            List<List<PointData>>  activities = mDBAccess.readRecords(activityType);
+            if(activities != null){
+                return activities.size();
+            }
+            return 0;
         }
     }
 

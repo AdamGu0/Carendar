@@ -39,8 +39,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private static final String TAG = "MyGLRenderer";
 
-    private Line mLine;
-    private List<Line> lines = new ArrayList<>();
+    private final List<Line> lines = new ArrayList<>();
 
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
@@ -56,31 +55,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        mLine = new Line();
-        mLine.SetVerts(-0.5f, 0.5f, 0f, -0.5f, -0.5f, 0f);
-        mLine.SetColor(1.f, 0f, 0f, 1.0f);
-        initLines();
+        List<Line> lines = MyGLSurfaceView.createLines();
+        this.lines.clear();
+        this.lines.addAll(lines);
     }
 
-    private void initLines(){
-        // Lines are not in the viewport
-        Line eastHorz = new Line();
-        eastHorz.SetVerts(1f, 1f, 1f, 1f, -1f, -1f);
-        eastHorz.SetColor(.8f, .8f, 0f, 1.0f);
-        Line northHorz = new Line();
-        northHorz.SetVerts(-1f, 1f, -1f, 1f, 1f, 1f);
-        northHorz.SetColor(0.8f, 0.8f, 0f, 1.0f);
-        Line westHorz = new Line();
-        westHorz.SetVerts(-1f, -1f, 1f, -1f, 1f, -1f);
-        westHorz.SetColor(0.8f, 0.8f, 0f, 1.0f);
-        Line southHorz = new Line();
-        southHorz.SetVerts(-1f, -1f, -1f, 1f, -1f, 1f);
-        southHorz.SetColor(0.8f, 0.8f, 0f, 1.0f);
-        lines.add(eastHorz);
-        lines.add(northHorz);
-        lines.add(westHorz);
-        lines.add(southHorz);
-    }
 
     private void drawLines(float[] mMVPMatrix){
         for(Line line : lines){
@@ -102,7 +81,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
         // Draw lines
-        mLine.draw(mMVPMatrix);
         drawLines(mMVPMatrix);
 
         // Create a rotation for the triangle

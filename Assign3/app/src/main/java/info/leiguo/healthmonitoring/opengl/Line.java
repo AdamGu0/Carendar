@@ -142,11 +142,4 @@ public class Line {
         return shader;
     }
 
-//    public static void showDemoLine(float[] mvpMatrix){
-//        Line vertLine = new Line();
-//        vertLine.SetVerts(-0.5f, 0.5f, 0f, -0.5f, -0.5f, 0f);
-//        vertLine.SetColor(.8f, .8f, 0f, 1.0f);
-//        vertLine.draw(mvpMatrix);
-//    }
-
 }

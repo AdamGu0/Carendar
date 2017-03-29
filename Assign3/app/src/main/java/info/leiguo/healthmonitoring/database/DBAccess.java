@@ -59,15 +59,20 @@ public class DBAccess {
      * @return A list of activity data, each activity data is a list of PointData.
      */
     public List<List<PointData>> readRecords(int actionType) {
+        return readActivityRecords(mDb, actionType);
+    }
+
+    public static List<List<PointData>> readActivityRecords(SQLiteDatabase db, int actionType){
         // Query the database for all the records of actionType.
-        Cursor cursor =  mDb.query(
-                mDefaultTableName,
+        Cursor cursor =  db.query(
+                PatientContract.PatientEntry.TABLE_NAME,
                 new String[]{COLUMN_DATA, COLUMN_TIME_STEMP},
                 COLUMN_ACTION_LABEL + "=?",
                 new String[]{String.valueOf(actionType)},
                 null,
                 null,
-                null
+                null,
+                "20"
         );
         if(cursor != null){
             List<List<PointData>> activities = new ArrayList<>();
