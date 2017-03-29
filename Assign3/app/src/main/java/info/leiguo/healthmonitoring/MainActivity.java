@@ -144,7 +144,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onAnalyzingClicked() {
-        Toast.makeText(this, "Begin Training Please Wait ", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Begin Training Please Wait ", Toast.LENGTH_LONG).show();
         showAnalyzingView();
         new TrainTask().execute();
 
@@ -407,9 +407,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showMessageDialog("Begin Training, Please Wait... \n It will take about one minute.");
+        }
+
+        @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Toast.makeText(MainActivity.this, "K-Fold Cross Validation Accuracy: " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
+            hidMessageDialog();
+            showMessageDialog("Complete.\nK-Fold Cross Validation Accuracy: " + svm_train.accuracy);
+//            Toast.makeText(MainActivity.this, "K-Fold Cross Validation Accuracy: " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
 
         }
     }
