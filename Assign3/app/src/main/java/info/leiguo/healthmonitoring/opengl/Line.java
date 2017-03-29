@@ -46,7 +46,7 @@ public class Line {
             1.0f, 0.0f, 0.0f
     };
 
-    private final int VertexCount = LineCoords.length / COORDS_PER_VERTEX;
+    private int VertexCount = LineCoords.length / COORDS_PER_VERTEX;
     private final int VertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
     // Set color with red, green, blue and alpha (opacity) values
@@ -87,6 +87,25 @@ public class Line {
         VertexBuffer.put(LineCoords);
         // set the buffer to read the first coordinate
         VertexBuffer.position(0);
+        VertexCount = LineCoords.length / COORDS_PER_VERTEX;
+    }
+
+    public void SetVerts(float[] vertices){
+        if(vertices != null && vertices.length > 1){
+            LineCoords = vertices;
+            ByteBuffer bb = ByteBuffer.allocateDirect(
+                    // (number of coordinate values * 4 bytes per float)
+                    LineCoords.length * 4);
+            // use the device hardware's native byte order
+            bb.order(ByteOrder.nativeOrder());
+
+            // create a floating point buffer from the ByteBuffer
+            VertexBuffer = bb.asFloatBuffer();
+            VertexBuffer.put(LineCoords);
+            // set the buffer to read the first coordinate
+            VertexBuffer.position(0);
+            VertexCount = LineCoords.length / COORDS_PER_VERTEX;
+        }
     }
 
     public void SetColor(float red, float green, float blue, float alpha) {
@@ -126,7 +145,8 @@ public class Line {
 //        ArRenderer.checkGlError("glUniformMatrix4fv");
 
         // Draw the triangle
-        GLES20.glDrawArrays(GLES20.GL_LINES, 0, VertexCount);
+//        GLES20.glDrawArrays(GLES20.GL_LINES, 0, VertexCount);
+        GLES20.glDrawArrays(GLES20.GL_LINE_STRIP, 0, VertexCount);
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(PositionHandle);

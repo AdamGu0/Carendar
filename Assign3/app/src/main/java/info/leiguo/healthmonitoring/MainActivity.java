@@ -433,6 +433,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     mEating = DBAccess.readActivityRecords(db, ActType.ACTION_EATING);
                     mWalking = DBAccess.readActivityRecords(db, ActType.ACTION_WALKING);
                     mRunning = DBAccess.readActivityRecords(db, ActType.ACTION_RUNNING);
+                    db.close();
                 }catch (SQLiteException e){
                     e.printStackTrace();
                 }

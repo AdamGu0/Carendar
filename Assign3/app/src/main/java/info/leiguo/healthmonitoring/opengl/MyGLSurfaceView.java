@@ -39,6 +39,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private static final float[] COLOR_RED = {1.0f, 0f, 0f, 1f};
     private static final float[] COLOR_BLUE = {0f, 0f, 1f, 1f};
     private static final float[] COLOR_GREEN = {0f, 1f, 0f, 1f};
+    private static double maxValue;
 
     public MyGLSurfaceView(Context context) {
         super(context);
@@ -74,36 +75,72 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public static List<Line> createLines(){
 //        Log.e("MyGLSurfaceView", "Thraed id: " + android.os.Process.myTid());
-        List<Line> lines = createLines(mEating, COLOR_RED);
+        maxValue = findMaxInAction(mEating);
+        maxValue = Math.max(maxValue, findMaxInAction(mWalking));
+        maxValue = Math.max(maxValue, findMaxInAction(mRunning));
+        List<Line> lines = createLines(mRunning, COLOR_BLUE);
         lines.addAll(createLines(mWalking, COLOR_GREEN));
-        lines.addAll(createLines(mRunning, COLOR_BLUE));
+        lines.addAll(createLines(mEating, COLOR_RED));
         return lines;
     }
 
-    public static List<Line> createLines(List<List<PointData>> lists, float[] color) {
+    private static List<Line> createLines(List<List<PointData>> lists, float[] color) {
         List<Line> tmpLines = new ArrayList<>();
         if (lists == null || lists.size() == 0 || color == null || color.length != 4) {
             return tmpLines;
         }
        for (List<PointData> points : lists) {
             if (points != null && points.size() > 1) {
-                double max = findMax(points);
-                // create lines
-                PointData prePoint = null;
-                for (PointData point : points) {
-                    if (prePoint != null && point != null) {
-                        Line line = new Line();
-                        line.SetVerts(getScaleValue(prePoint.x, max), getScaleValue(prePoint.y, max),
-                                getScaleValue(prePoint.z, max), getScaleValue(point.x, max),
-                                getScaleValue(point.y, max), getScaleValue(point.z, max));
-                        line.SetColor(color[0], color[1], color[2], color[3]);
-                        tmpLines.add(line);
-                    }
-                    prePoint = point;
-                }
+                float[] array = convertToArray(points);
+//                float max = findMax(array);
+                float max = (float)maxValue;
+                array = getScaleValue(array, max);
+                Line line = new Line();
+                line.SetVerts(array);
+                line.SetColor(color[0], color[1], color[2], color[3]);
+                tmpLines.add(line);
             }
         }
         return tmpLines;
+    }
+
+    private static float[] getScaleValue(float[] array, float max){
+        if(array != null && array.length > 0){
+            for(int i = 0; i < array.length; i++){
+                array[i] = getScaleValue(array[i], max);
+            }
+        }
+        return array;
+    }
+
+    private static float[] convertToArray(List<PointData> points){
+        if(points != null && points.size() > 0){
+            float[] result = new float[points.size() * 3];
+            int index = 0;
+            for (PointData point : points){
+                result[index++] = (float) point.x;
+                result[index++] = (float) point.y;
+                result[index++] = (float) point.z;
+            }
+            return result;
+        }
+        return new float[0];
+    }
+
+    private static float findMax(float[] array){
+        if(array != null && array.length >= 2){
+            float max = array[0];
+            float min = array[0];
+            for(float value : array){
+                max = Math.max(max, value);
+                min = Math.min(min, value);
+            }
+            max = Math.max(max, Math.abs(min));
+            if(max != 0f){
+                return max;
+            }
+        }
+        return 1.0f;
     }
 
     private static float getScaleValue(double value, double max){
@@ -115,6 +152,20 @@ public class MyGLSurfaceView extends GLSurfaceView {
             result = 1.0f;
         }
         return result;
+    }
+
+    private static double findMaxInAction(List<List<PointData>> lists){
+        if(lists != null && lists.size() > 0){
+            int size = lists.size();
+            List<PointData> points = lists.get(0);
+            double max = findMax(points);
+            for (int i = 1; i < size; i++){
+                points = lists.get(i);
+                max = Math.max(max, findMax(points));
+            }
+            return max;
+        }
+        return 1.0;
     }
 
     private static double findMax(List<PointData> points){
