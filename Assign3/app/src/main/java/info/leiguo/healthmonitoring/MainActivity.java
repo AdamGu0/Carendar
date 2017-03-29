@@ -55,6 +55,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private MyGLSurfaceView mSurfaceView;
     private View mLLAnalysisDisplay;
     private FrameLayout mPlottingDisplay;
+    private FrameLayout mSurfaceContainer;
+    private boolean mIsPlotting = false;
+    private boolean mIsAnalyzing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         FrameLayout container = (FrameLayout)findViewById(R.id.container);
         mSurfaceView = new MyGLSurfaceView(this);
         container.addView(mSurfaceView);
-        mPlottingDisplay = container;
+        mSurfaceContainer = container;
+        mPlottingDisplay = (FrameLayout)findViewById(R.id.plot_display);
 
         mDBAccess = new DBAccess(getApplicationContext());
     }
@@ -144,7 +148,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onAnalyzingClicked() {
-//        Toast.makeText(this, "Begin Training Please Wait ", Toast.LENGTH_LONG).show();
+        if(mIsAnalyzing){
+            shortToast("Under Training, Please Wait... ");
+            return;
+        }
+        mIsAnalyzing = true;
         showAnalyzingView();
         new TrainTask().execute();
 
@@ -281,7 +289,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onPlottingClicked(){
-//        new TestDataTask().execute();
+        if(mIsPlotting){
+            shortToast("Plotting, Please Wait... ");
+            return;
+        }
+        mIsPlotting = true;
         new PlottingTask().execute();
     }
 
@@ -409,7 +421,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showMessageDialog("Begin Training, Please Wait... \n It will take about one minute.");
+            showMessageDialog("Training, Please Wait... \n It will take about one minute.");
         }
 
         @Override
@@ -418,7 +430,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             hidMessageDialog();
             showMessageDialog("Complete.\nK-Fold Cross Validation Accuracy: " + svm_train.accuracy);
 //            Toast.makeText(MainActivity.this, "K-Fold Cross Validation Accuracy: " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
-
+            mIsAnalyzing = false;
         }
     }
 
@@ -436,14 +448,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
             copyRawDbToFile(outputFile);
             if(outputFile.isFile()){
                 // Copy succeed
+                SQLiteDatabase db = null;
                 try{
-                    SQLiteDatabase db = SQLiteDatabase.openDatabase(outputFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
+                    db = SQLiteDatabase.openDatabase(outputFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
                     mEating = DBAccess.readActivityRecords(db, ActType.ACTION_EATING);
                     mWalking = DBAccess.readActivityRecords(db, ActType.ACTION_WALKING);
                     mRunning = DBAccess.readActivityRecords(db, ActType.ACTION_RUNNING);
-                    db.close();
                 }catch (SQLiteException e){
                     e.printStackTrace();
+                }finally {
+                    if(db != null){
+                        db.close();
+                    }
                 }
             }
             return null;
@@ -451,12 +467,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(mPlottingDisplay != null){
-                mPlottingDisplay.removeAllViews();
+            if(mSurfaceContainer != null){
+                mSurfaceContainer.removeAllViews();
                 mSurfaceView = new MyGLSurfaceView(MainActivity.this);
                 mSurfaceView.setData(mEating, mWalking, mRunning);
-                mPlottingDisplay.addView(mSurfaceView);
+                mSurfaceContainer.addView(mSurfaceView);
                 showPlottingView();
+                mIsPlotting = false;
             }
         }
     }

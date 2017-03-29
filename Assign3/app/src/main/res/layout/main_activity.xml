@@ -106,14 +106,87 @@
             </LinearLayout>
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:text="Group 15"
+            android:textSize="14sp"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/container"
+        android:id="@+id/plot_display"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:visibility="gone">
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="30dp">
+
+            <TextView
+                android:id="@+id/lable_eating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Eating: "
+                android:textColor="@color/red"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="25dp"
+                android:layout_height="1dp"
+                android:layout_toRightOf="@+id/lable_eating"
+                android:layout_alignBottom="@+id/lable_eating"
+                android:layout_marginBottom="5dp"
+                android:background="@color/red" />
+
+            <TextView
+                android:id="@+id/lable_walking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lable_eating"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp"
+                android:text="Walking: "
+                android:textColor="@color/green"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="1dp"
+                android:layout_toRightOf="@+id/lable_walking"
+                android:layout_alignBottom="@+id/lable_walking"
+                android:layout_marginBottom="5dp"
+                android:background="@color/green" />
+
+            <TextView
+                android:id="@+id/lable_running"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lable_walking"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp"
+                android:text="Running: "
+                android:textColor="@color/blue"
+                android:textSize="12sp" />
+            <View
+                android:layout_width="20dp"
+                android:layout_height="1dp"
+                android:layout_toRightOf="@+id/lable_running"
+                android:layout_alignBottom="@+id/lable_running"
+                android:layout_marginBottom="5dp"
+                android:background="@color/blue" />
+        </RelativeLayout>
     </FrameLayout>
 
     <LinearLayout
