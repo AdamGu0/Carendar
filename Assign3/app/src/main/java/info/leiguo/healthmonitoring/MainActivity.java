@@ -349,9 +349,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private AlertDialog mMsgDialog;
-    private void showMessageDialog(String msg){
+    private void showMessageDialog(String msg, boolean cancelable){
         AlertDialog.Builder adBuilder = new AlertDialog.Builder(this);
         adBuilder.setMessage(msg);
+        adBuilder.setCancelable(cancelable);
         adBuilder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -421,14 +422,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showMessageDialog("Training, Please Wait... \n It will take about one minute.");
+            showMessageDialog("Training, Please Wait... \n It will take about one minute.", false);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             hidMessageDialog();
-            showMessageDialog("Complete.\nK-Fold Cross Validation Accuracy: " + svm_train.accuracy);
+            showMessageDialog("Complete.\nK-Fold Cross Validation Accuracy: " + svm_train.accuracy, true);
 //            Toast.makeText(MainActivity.this, "K-Fold Cross Validation Accuracy: " + svm_train.accuracy + "\n", Toast.LENGTH_LONG).show();
             mIsAnalyzing = false;
         }
@@ -492,7 +493,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         @Override
         protected void onPostExecute(int[] ints) {
             String msg = String.format("Activities Data count: [Eating: %d] [Walking: %d] [Running: %d]", ints[0], ints[1], ints[2]);
-            showMessageDialog(msg);
+            showMessageDialog(msg, true);
         }
 
 
