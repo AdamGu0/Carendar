@@ -5,6 +5,7 @@ package com.group15.apps.carendar;
  */
 
 import com.alamkanak.weekview.WeekViewEvent;
+import com.google.firebase.database.Exclude;
 
 import java.util.Calendar;
 
@@ -15,6 +16,9 @@ public class MyWeekViewEvent extends WeekViewEvent {
     private String mName;
     private String mLocation;
     private int mColor;
+    private long mStartTimeMills;
+    private long mEndTimeMills;
+
 
     public MyWeekViewEvent() {
 
@@ -23,10 +27,13 @@ public class MyWeekViewEvent extends WeekViewEvent {
 
         this.mStartTime = (Calendar) startTime.clone();
         this.mEndTime = (Calendar) endTime.clone();
+        this.mStartTimeMills = startTime.getTimeInMillis();
+        this.mEndTimeMills = endTime.getTimeInMillis();
         this.mName = name + "\n";
         this.mLocation = location;
     }
 
+    @Exclude
     public Calendar getStartTime() {
         return mStartTime;
     }
@@ -34,6 +41,8 @@ public class MyWeekViewEvent extends WeekViewEvent {
     public void setStartTime(Calendar startTime) {
         this.mStartTime = startTime;
     }
+
+    @Exclude
     public Calendar getEndTime() {
         return mEndTime;
     }
@@ -64,5 +73,31 @@ public class MyWeekViewEvent extends WeekViewEvent {
 
     public void setColor(int color) {
         this.mColor = color;
+    }
+
+    public void setStartTimeMills(long startTimeMills) {
+        this.mStartTimeMills = startTimeMills;
+    }
+
+    public void setEndTimeMills(long endTimeMills) {
+        this.mEndTimeMills = endTimeMills;
+    }
+
+    public long getStartTimeMills() {
+        return  this.mStartTimeMills;
+    }
+
+    public long getEndTimeMills() {
+        return this.mEndTimeMills;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WeekViewEvent that = (WeekViewEvent) o;
+
+        return this.getName() == that.getName() && this.getLocation() == that.getLocation();
     }
 }

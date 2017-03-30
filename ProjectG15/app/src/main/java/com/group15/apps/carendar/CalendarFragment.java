@@ -39,8 +39,8 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
     }
 
 
-    public void updatePersonalEventMap(Map<Integer, List<com.group15.apps.carendar.MyWeekViewEvent>> map) {
-        mPersonalEventsMap = map;
+    public void updatePersonalEventMap(Map<Integer, List<MyWeekViewEvent>> list) {
+        mPersonalEventsMap = list;
     }
 
 
@@ -101,15 +101,16 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         });
     }
 
-    private List<com.group15.apps.carendar.MyWeekViewEvent> getDatatoDisPlay(int newMonth) {
+    private List<MyWeekViewEvent> getDatatoDisPlay(int newMonth) {
         if (mPersonalEventsMap.isEmpty() || mPersonalEventsMap.get(newMonth - 1) == null) {
             return null;
         }
         return mPersonalEventsMap.get(newMonth - 1);
     }
 
-    public List<com.group15.apps.carendar.MyWeekViewEvent> onMonthChange(int newYear, int newMonth) {
-        List<com.group15.apps.carendar.MyWeekViewEvent> list = getDatatoDisPlay(newMonth - 1);
+    public List<MyWeekViewEvent> onMonthChange(int newYear, int newMonth) {
+
+        List<MyWeekViewEvent> list = getDatatoDisPlay(newMonth - 1);
         if (list == null) {
             return new ArrayList<>();
         }

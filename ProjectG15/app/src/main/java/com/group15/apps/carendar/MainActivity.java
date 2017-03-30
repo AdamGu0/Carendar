@@ -24,8 +24,11 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
     public static int navItemIndex = 0;
 
     private FloatingActionButton mFloatingActionButton;
-
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mEventDatabaseReference;
+    private DatabaseReference fb;
+//    private FirebaseDatabase mFirebaseDatabase;
+//    private DatabaseReference mEventDatabaseReference;
     private ChildEventListener mChildEventListener;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         mHandler = new Handler();
         // Set a Toolbar to replace the ActionBar.
@@ -104,9 +108,10 @@ public class MainActivity extends AppCompatActivity {
             CURRENT_TAG = TAG_CALENDAR;
             loadHomeFragment();
         }
-
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mEventDatabaseReference = mFirebaseDatabase.getReference().child("events");
+        fb = FirebaseDatabase.getInstance().getReference();
+        fb.keepSynced(true);
+//        mFirebaseDatabase = FirebaseDatabase.getInstance();
+//        mEventDatabaseReference = mFirebaseDatabase.getReference().child("events");
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -135,6 +140,12 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.flContent, calendarFragment);
     // Complete the changes added above
         ft.commit();
+        retrieveEvents();
+
+        for (int i = 0; i < 12; i++) {
+            mPersonalEventsMap.put(i, new ArrayList<MyWeekViewEvent>());
+        }
+
     }
 
     private void loadHomeFragment() {
@@ -294,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        retrieveEvents();
     }
 
     @Override
@@ -334,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
 
                 MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime);
 
-
+                fb.child("events").push().setValue(event);
                 event.setColor(getResources().getColor(R.color.event_color_01));
 
                 addEventToList(data.getIntExtra("mStartMonth", 0), event);
@@ -384,6 +396,43 @@ public class MainActivity extends AppCompatActivity {
              mFloatingActionButton.show();
         else
             mFloatingActionButton.hide();
+    }
+
+    public void retrieveEvents() {
+        DatabaseReference events = fb.child("events/");
+        events.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        MyWeekViewEvent event = data.getValue(MyWeekViewEvent.class);
+                        Calendar startTime = Calendar.getInstance();
+                        startTime.setTimeInMillis(event.getStartTimeMills());
+                        Calendar endTime = Calendar.getInstance();
+                        endTime.setTimeInMillis(event.getEndTimeMills());
+                        event.setStartTime(startTime);
+                        event.setEndTime(endTime);
+//                        if (mPersonalEventsMap.get(month) == null) {
+//                            mPersonalEventsMap.put();
+//                        }
+                        List<MyWeekViewEvent> list = mPersonalEventsMap.get(startTime.get(Calendar.MONTH));
+
+                        if (!list.contains(event)) {
+                            list.add(event);
+                        }
+                    }
+                }
+                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
+                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
+                calendarFragment.notifyChange();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }
