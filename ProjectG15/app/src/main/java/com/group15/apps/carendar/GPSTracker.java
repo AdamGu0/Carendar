@@ -2,6 +2,9 @@ package com.group15.apps.carendar;
 
 /**
  * Created by changchu on 3/20/17.
+ * Learn and reference Allah Nawaz Qadir's work "Getting Current Location in Android Using Location Manager"
+ *      at http://clover.studio/2016/08/09/getting-current-location-in-android-using-location-manager/
+ * Basic outline and logic are referenced
  */
 
 import android.app.AlertDialog;
@@ -52,11 +55,11 @@ public final class GPSTracker implements LocationListener {
             locationManager = (LocationManager) mContext
                     .getSystemService(LOCATION_SERVICE);
 
-            // getting GPS status
+            // get GPS status
             checkGPS = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-            // getting network status
+            // get network status
             checkNetwork = locationManager
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
@@ -84,11 +87,11 @@ public final class GPSTracker implements LocationListener {
                         }
                     }
                     catch(SecurityException e){
-
+                        e.printStackTrace();
                     }
                 }
             }
-            // if GPS Enabled get lat/long using GPS Services
+
             if (checkGPS) {
                 Toast.makeText(mContext,"GPS",Toast.LENGTH_SHORT).show();
                 if (loc == null) {
@@ -106,7 +109,7 @@ public final class GPSTracker implements LocationListener {
                             }
                         }
                     } catch (SecurityException e) {
-
+                        e.printStackTrace();
                     }
                 }
             }

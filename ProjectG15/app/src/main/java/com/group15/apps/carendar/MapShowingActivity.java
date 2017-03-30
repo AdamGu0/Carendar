@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by changchu on 3/11/17.
+ * referenced Google Maps API at https://developers.google.com/maps/documentation/android-api/
  */
 
 public class MapShowingActivity extends FragmentActivity
@@ -61,6 +62,7 @@ public class MapShowingActivity extends FragmentActivity
 
                 mGPS = new com.group15.apps.carendar.GPSTracker(MapShowingActivity.this);
 
+                // set the default location at ASU
                 if(mGPS.canGetLocation()){
                     LatLng ASU = new LatLng(33.4242444,-111.9302414);
                     CameraPosition target = CameraPosition.builder().target(ASU).zoom(14).build();
