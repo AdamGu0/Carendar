@@ -26,7 +26,7 @@ class svm_train {
     private File model_file; //I changed
 	private String error_msg;
 	private int cross_validation;
-	private int nr_fold = 20;
+	private int nr_fold = 3;
 	public static double accuracy = 0;
 	private static svm_print_interface svm_print_null = new svm_print_interface()
 	{
@@ -176,7 +176,7 @@ class svm_train {
 		param.nr_weight = 0;
 		param.weight_label = new int[0];
 		param.weight = new double[0];
-		cross_validation = 20;
+		cross_validation = 3;
 		// parse options
 		for(i=0;i<argv.length;i++)
 		{
@@ -226,7 +226,7 @@ class svm_train {
 					i--;
 					break;
 				case 'v':
-					cross_validation = 1;
+					cross_validation = 3;
 					nr_fold = atoi(argv[i]);
 					if(nr_fold < 2)
 					{

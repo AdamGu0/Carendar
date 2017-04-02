@@ -9,5 +9,5 @@
 	<string name="parameter3">degree = 3, gamma = 0, coef0 = 0;</string>
 	<string name="parameter4">nu = 0.5, cache_size = 100, C = 1, eps = 1e-3;</string>
 	<string name="parameter5">p = 0.1, shrinking = 1, probability = 0;</string>
-	<string name="parameter6">nr_weight = 0,cross_validation = 20;</string>
+	<string name="parameter6">nr_weight = 0,cross_validation(nr_fold) = 3;</string>
 </resources>
