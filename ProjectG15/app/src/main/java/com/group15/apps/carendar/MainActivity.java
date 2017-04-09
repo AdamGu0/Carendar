@@ -330,6 +330,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String location = data.getStringExtra("location");
                 String title = data.getStringExtra("title");
+                int eventType = data.getIntExtra("type", 0);
                 Calendar startTime = Calendar.getInstance();
                 startTime.set(Calendar.YEAR, data.getIntExtra("mStartYear", 0));
                 startTime.set(Calendar.MONTH, data.getIntExtra("mStartMonth", 0));
@@ -345,9 +346,9 @@ public class MainActivity extends AppCompatActivity {
                 endTime.set(Calendar.MINUTE, data.getIntExtra("mEndMinute", 0));
 
                 MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime);
-
-                fb.child("events").push().setValue(event);
+                event.setEventType(eventType);
                 event.setColor(getResources().getColor(R.color.event_color_01));
+                fb.child("events").push().setValue(event);
 
                 addEventToList(data.getIntExtra("mStartMonth", 0), event);
 

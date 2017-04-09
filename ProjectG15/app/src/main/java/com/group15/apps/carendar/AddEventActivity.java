@@ -10,9 +10,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
@@ -29,6 +31,9 @@ public class AddEventActivity extends AppCompatActivity implements
     private int mStartYear, mStartMonth, mStartDay, mStartHour, mStartMinute;
     private int mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute;
     private String mTitle, mLocation;
+    private int mEventType;
+    private double mLongitude;
+    private double mLatitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,26 @@ public class AddEventActivity extends AppCompatActivity implements
         btnEndTimePicker.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
+        setupSpinner();
+    }
+
+    private void setupSpinner(){
+        Spinner spinner = (Spinner)findViewById(R.id.sp_event_type);
+        String[] types = new String[]{"Class", "Meeting", "Other"};
+        MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(this, types);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // eg. 0 - Class, 1 - Meeting ...
+                mEventType = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -133,20 +158,7 @@ public class AddEventActivity extends AppCompatActivity implements
             mLocation = etLocation.getText().toString();
             mTitle = etTitle.getText().toString();
 
-            returnIntent.putExtra("mStartYear", mStartYear);
-            returnIntent.putExtra("mStartMonth", mStartMonth);
-            returnIntent.putExtra("mStartDay", mStartDay);
-            returnIntent.putExtra("mStartHour", mStartHour);
-            returnIntent.putExtra("mStartMinute", mStartMinute);
-
-            returnIntent.putExtra("mEndYear", mEndYear);
-            returnIntent.putExtra("mEndMonth", mEndMonth);
-            returnIntent.putExtra("mEndDay", mEndDay);
-            returnIntent.putExtra("mEndHour", mEndHour);
-            returnIntent.putExtra("mEndMinute", mEndMinute);
-
-            returnIntent.putExtra("location", mLocation);
-            returnIntent.putExtra("title", mTitle);
+            putValues(returnIntent);
             setResult(Activity.RESULT_OK,returnIntent);
             finish();
 
@@ -171,20 +183,7 @@ public class AddEventActivity extends AppCompatActivity implements
                 mLocation = etLocation.getText().toString();
                 mTitle = etTitle.getText().toString();
 
-                returnIntent.putExtra("mStartYear", mStartYear);
-                returnIntent.putExtra("mStartMonth", mStartMonth);
-                returnIntent.putExtra("mStartDay", mStartDay);
-                returnIntent.putExtra("mStartHour", mStartHour);
-                returnIntent.putExtra("mStartMinute", mStartMinute);
-
-                returnIntent.putExtra("mEndYear", mStartYear);
-                returnIntent.putExtra("mEndMonth", mStartMonth);
-                returnIntent.putExtra("mEndDay", mStartDay);
-                returnIntent.putExtra("mEndHour", mStartHour);
-                returnIntent.putExtra("mEndMinute", mEndMinute);
-
-                returnIntent.putExtra("location", mLocation);
-                returnIntent.putExtra("title", mTitle);
+                putValues(returnIntent);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
                 // User chose the "Settings" item, show the app settings UI...
@@ -196,5 +195,23 @@ public class AddEventActivity extends AppCompatActivity implements
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    private void putValues(Intent intent){
+        intent.putExtra("mStartYear", mStartYear);
+        intent.putExtra("mStartMonth", mStartMonth);
+        intent.putExtra("mStartDay", mStartDay);
+        intent.putExtra("mStartHour", mStartHour);
+        intent.putExtra("mStartMinute", mStartMinute);
+
+        intent.putExtra("mEndYear", mStartYear);
+        intent.putExtra("mEndMonth", mStartMonth);
+        intent.putExtra("mEndDay", mStartDay);
+        intent.putExtra("mEndHour", mStartHour);
+        intent.putExtra("mEndMinute", mEndMinute);
+
+        intent.putExtra("location", mLocation);
+        intent.putExtra("title", mTitle);
+        intent.putExtra("type", mEventType);
     }
 }
