@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         // Replace the contents of the container with the new fragment
         CalendarFragment calendarFragment = new CalendarFragment();
         calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
-        ft.replace(R.id.flContent, calendarFragment);
+        ft.replace(R.id.flContent, calendarFragment, TAG_CALENDAR);
     // Complete the changes added above
         ft.commit();
         retrieveEvents();
@@ -425,7 +425,6 @@ public class MainActivity extends AppCompatActivity {
                 CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
                 calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
                 calendarFragment.notifyChange();
-
             }
 
             @Override
