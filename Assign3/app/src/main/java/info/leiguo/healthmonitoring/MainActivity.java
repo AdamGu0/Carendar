@@ -69,13 +69,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         // setup spinner
         setupSpinner();
         mLLAnalysisDisplay = findViewById(R.id.analysis_display);
-        FrameLayout container = (FrameLayout)findViewById(R.id.container);
+        FrameLayout container = (FrameLayout) findViewById(R.id.container);
         mSurfaceView = new MyGLSurfaceView(this);
         container.addView(mSurfaceView);
         mSurfaceContainer = container;
-        mPlottingDisplay = (FrameLayout)findViewById(R.id.plot_display);
+        mPlottingDisplay = (FrameLayout) findViewById(R.id.plot_display);
 
         mDBAccess = new DBAccess(getApplicationContext());
+
+        if (fileExist("train.txt")) return;
+        readDBFile();
     }
 
     @Override
@@ -96,8 +99,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         stopDataService();
     }
 
-    private void setupSpinner(){
-        Spinner spinner = (Spinner)findViewById(R.id.spinner_act_type);
+    private void setupSpinner() {
+        Spinner spinner = (Spinner) findViewById(R.id.spinner_act_type);
         spinner.setAdapter(new MySpinnerAdapter(this, ActType.ACTION_STRING));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -113,27 +116,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
         });
     }
 
-    private void showPlottingView(){
-        if(mPlottingDisplay != null){
+    private void showPlottingView() {
+        if (mPlottingDisplay != null) {
             mPlottingDisplay.setVisibility(View.VISIBLE);
         }
-        if(mLLAnalysisDisplay != null){
+        if (mLLAnalysisDisplay != null) {
             mLLAnalysisDisplay.setVisibility(View.GONE);
         }
     }
 
-    private void showAnalyzingView(){
-        if(mPlottingDisplay != null){
+    private void showAnalyzingView() {
+        if (mPlottingDisplay != null) {
             mPlottingDisplay.setVisibility(View.GONE);
         }
-        if(mLLAnalysisDisplay != null){
+        if (mLLAnalysisDisplay != null) {
             mLLAnalysisDisplay.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_analyzing:
                 onAnalyzingClicked();
                 break;
@@ -148,7 +151,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void onAnalyzingClicked() {
-        if(mIsAnalyzing){
+        if (mIsAnalyzing) {
             shortToast("Under Training, Please Wait... ");
             return;
         }
@@ -162,28 +165,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         File path = getExternalFilesDir(null);
         String fileName = "learn.db";
         File outputFile = new File(path, fileName);
-        try {
-            InputStream is = getResources().openRawResource(train);
-            FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-            byte[] buffer = new byte[4096];
-            int count;
-            while((count = is.read(buffer)) > 0){
-                fileOutputStream.write(buffer, 0, count);
-            }
-            is.close();
-            fileOutputStream.flush();
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+        copyRawDbToFile(outputFile);
 
         db = null;
-        try{
+        try {
             db = SQLiteDatabase.openDatabase(outputFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
-            Log.v("tag",db.toString());
-        } catch (SQLiteException e){
+            Log.v("tag", db.toString());
+        } catch (SQLiteException e) {
             e.printStackTrace();
         }
         StringBuilder sb = new StringBuilder();
@@ -196,9 +184,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     PointData pointData = list.get(k);
                     //Format data
                     if (k >= 50) break;
-                    int x = 3*(k+1) - 2;
-                    int y = 3*(k+1) - 1;
-                    int z = 3*(k+1);
+                    int x = 3 * (k + 1) - 2;
+                    int y = 3 * (k + 1) - 1;
+                    int z = 3 * (k + 1);
 
                     String s = i + " " + x + ":" + pointData.x +
                             " " + y + ":" + pointData.y +
@@ -213,44 +201,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
         writeToFile("train.txt", sb.toString());
     }
 
+    private boolean fileExist(String fileName) {
+        File path = getExternalFilesDir(null);
+        File f = new File(path, fileName);
+        return f.exists();
+    }
+
     private void writeToFile(String fileName, String data) {
         File path = getExternalFilesDir(null);
         File outputFile = new File(path, fileName);
-        if (outputFile.exists()) {
-            try {
-                outputFile.createNewFile();
-                InputStream is = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
-                FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-                byte[] buffer = new byte[4096];
-                int count;
-                while((count = is.read(buffer)) > 0){
-                    fileOutputStream.write(buffer, 0, count);
-                }
-                is.close();
-                fileOutputStream.flush();
-                fileOutputStream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-        } else {
-            try{
-                outputFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
-    }
-
-    private void copyRawDbToFile(File outputFile){
         try {
-            InputStream is = getResources().openRawResource(train);
+            outputFile.createNewFile();
+            InputStream is = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
             byte[] buffer = new byte[4096];
             int count;
-            while((count = is.read(buffer)) > 0){
+            while ((count = is.read(buffer)) > 0) {
                 fileOutputStream.write(buffer, 0, count);
             }
             is.close();
@@ -258,13 +225,32 @@ public class MainActivity extends Activity implements View.OnClickListener {
             fileOutputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e){
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void copyRawDbToFile(File outputFile) {
+        try {
+            InputStream is = getResources().openRawResource(train);
+            FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+            byte[] buffer = new byte[4096];
+            int count;
+            while ((count = is.read(buffer)) > 0) {
+                fileOutputStream.write(buffer, 0, count);
+            }
+            is.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private List<List<PointData>> readRecords(int actionType) {
-        Cursor cursor =  db.query(
+        Cursor cursor = db.query(
                 PatientContract.PatientEntry.TABLE_NAME,
                 new String[]{COLUMN_DATA, COLUMN_TIME_STEMP},
                 COLUMN_ACTION_LABEL + "=?",
@@ -273,13 +259,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 null,
                 null
         );
-        if(cursor != null){
+        if (cursor != null) {
             List<List<PointData>> activities = new ArrayList<>();
-            if(cursor.moveToFirst()){
-                do{
+            if (cursor.moveToFirst()) {
+                do {
                     String data = cursor.getString(cursor.getColumnIndex(COLUMN_DATA));
                     activities.add(ActivityData.fromString(data).getDataList());
-                }while (cursor.moveToNext());
+                } while (cursor.moveToNext());
             }
             cursor.close();
             Log.d("DBAccess", "data size:  " + activities.size());
@@ -288,8 +274,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         return new ArrayList<>();
     }
 
-    private void onPlottingClicked(){
-        if(mIsPlotting){
+    private void onPlottingClicked() {
+        if (mIsPlotting) {
             shortToast("Plotting, Please Wait... ");
             return;
         }
@@ -297,7 +283,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         new PlottingTask().execute();
     }
 
-    private void onSaveClicked(){
+    private void onSaveClicked() {
         String activityType = ActType.getActivityString(mActivityType);
         String msg = String.format("Recording [%s]...", activityType);
         showRecordingDialog(msg);
@@ -305,11 +291,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         beginDataService();
     }
 
-    private void createTable(){
+    private void createTable() {
         mDBAccess.createDefaultTable();
     }
 
-    private void beginDataService(){
+    private void beginDataService() {
         // Stop the data service if it is running.
         stopDataService();
         // Start the data service
@@ -320,12 +306,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         startService(intent);
     }
 
-    private void stopDataService(){
+    private void stopDataService() {
         Intent intent = new Intent(this, MyService.class);
         stopService(intent);
     }
 
-    private void showRecordingDialog(String msg){
+    private void showRecordingDialog(String msg) {
         AlertDialog.Builder adBuilder = new AlertDialog.Builder(this);
         adBuilder.setMessage(msg);
         adBuilder.setCancelable(false);
@@ -340,16 +326,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mAlertDialog.show();
     }
 
-    private void hideRecordingDialog(){
-        if(mAlertDialog != null){
+    private void hideRecordingDialog() {
+        if (mAlertDialog != null) {
             mAlertDialog.dismiss();
-        }else{
+        } else {
             Log.e("MaintActivity", "hideRecordingDialog null reference.");
         }
     }
 
     private AlertDialog mMsgDialog;
-    private void showMessageDialog(String msg, boolean cancelable){
+
+    private void showMessageDialog(String msg, boolean cancelable) {
         AlertDialog.Builder adBuilder = new AlertDialog.Builder(this);
         adBuilder.setMessage(msg);
         adBuilder.setCancelable(cancelable);
@@ -362,35 +349,36 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMsgDialog = adBuilder.create();
         mMsgDialog.show();
     }
-    private void hidMessageDialog(){
-        if(mMsgDialog != null){
+
+    private void hidMessageDialog() {
+        if (mMsgDialog != null) {
             mMsgDialog.dismiss();
         }
     }
 
     // TODO: use android provided method instead
-    private String getDatabaseFilePath(){
-        return  getAppFolder() + "/databases/" + PatientDbHelper.DATABASE_NAME;
+    private String getDatabaseFilePath() {
+        return getAppFolder() + "/databases/" + PatientDbHelper.DATABASE_NAME;
     }
 
-    private String getAppFolder(){
+    private String getAppFolder() {
         return "/data/data/" + getPackageName();
     }
 
 
-    private void shortToast(String msg){
+    private void shortToast(String msg) {
         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void longToast(String msg){
+    private void longToast(String msg) {
         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
     }
 
     private class TrainTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            readDBFile();
-//        // TODO: copy the database file to SDcard for part B
+            //readDBFile();
+
             File path = getExternalFilesDir(null);
 
             String train_path = path + "/train.txt";
@@ -436,7 +424,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-    private class PlottingTask extends AsyncTask<Void, Void, Void>{
+    private class PlottingTask extends AsyncTask<Void, Void, Void> {
         private List<List<PointData>> mEating;
         private List<List<PointData>> mWalking;
         private List<List<PointData>> mRunning;
@@ -447,18 +435,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
             String fileName = "plot.db";
             File outputFile = new File(path, fileName);
             copyRawDbToFile(outputFile);
-            if(outputFile.isFile()){
+            if (outputFile.isFile()) {
                 // Copy succeed
                 SQLiteDatabase db = null;
-                try{
+                try {
                     db = SQLiteDatabase.openDatabase(outputFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
                     mEating = DBAccess.readActivityRecords(db, ActType.ACTION_EATING);
                     mWalking = DBAccess.readActivityRecords(db, ActType.ACTION_WALKING);
                     mRunning = DBAccess.readActivityRecords(db, ActType.ACTION_RUNNING);
-                }catch (SQLiteException e){
+                } catch (SQLiteException e) {
                     e.printStackTrace();
-                }finally {
-                    if(db != null){
+                } finally {
+                    if (db != null) {
                         db.close();
                     }
                 }
@@ -468,7 +456,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(mSurfaceContainer != null){
+            if (mSurfaceContainer != null) {
                 mSurfaceContainer.removeAllViews();
                 mSurfaceView = new MyGLSurfaceView(MainActivity.this);
                 mSurfaceView.setData(mEating, mWalking, mRunning);
@@ -479,7 +467,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private class TestDataTask extends AsyncTask<Void, Void, int[]>{
+    private class TestDataTask extends AsyncTask<Void, Void, int[]> {
 
         @Override
         protected int[] doInBackground(Void... voids) {
@@ -497,7 +485,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
 
-        private void copyDbToSdcard(){
+        private void copyDbToSdcard() {
             File path = getExternalFilesDir(null);
             String fileName = System.currentTimeMillis() + ".db";
             File outputFile = new File(path, fileName);
@@ -507,7 +495,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
                 byte[] buffer = new byte[4096];
                 int count;
-                while((count = fileInputStream.read(buffer)) > 0){
+                while ((count = fileInputStream.read(buffer)) > 0) {
                     fileOutputStream.write(buffer, 0, count);
                 }
                 fileInputStream.close();
@@ -515,19 +503,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 fileOutputStream.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-            } catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         /**
          * Heavy task, should run on background thread
+         *
          * @param activityType
          * @return
          */
-        private int getActivityDataCount(int activityType){
-            List<List<PointData>>  activities = mDBAccess.readRecords(activityType);
-            if(activities != null){
+        private int getActivityDataCount(int activityType) {
+            List<List<PointData>> activities = mDBAccess.readRecords(activityType);
+            if (activities != null) {
                 return activities.size();
             }
             return 0;
