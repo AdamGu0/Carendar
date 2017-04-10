@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
@@ -24,12 +26,13 @@ import java.util.Calendar;
 public class AddEventActivity extends AppCompatActivity implements
         View.OnClickListener {
 
-    Button btnStartDatePicker, btnStartTimePicker, btnEndDatePicker, btnEndTimePicker, btnSave;
-    EditText etStartDate, etStartTime, etEndDate, etEndTime, etLocation, etTitle;
+    Button btnStartDatePicker, btnStartTimePicker, btnEndDatePicker, btnEndTimePicker, btnIsGroupEvent, btnSave;
+    EditText etStartDate, etStartTime, etEndDate, etEndTime, etLocation, etTitle, etGroupName;
     private int mStartYear, mStartMonth, mStartDay, mStartHour, mStartMinute;
     private int mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute;
-    private String mTitle, mLocation;
-
+    private String mTitle, mLocation, mGroupName;
+    private boolean mIsGroupEvent;
+    private TextView tv_group_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +54,11 @@ public class AddEventActivity extends AppCompatActivity implements
         btnEndTimePicker = (Button) findViewById(R.id.btn_end_time);
         etEndDate = (EditText) findViewById(R.id.in_end_date);
         etEndTime = (EditText) findViewById(R.id.in_end_time);
+
+        btnIsGroupEvent = (Button) findViewById(R.id.btn_group_event);
+        etGroupName = (EditText) findViewById(R.id.et_group_name);
+
+        tv_group_name = (TextView) findViewById(R.id.tv_group_name);
 
         btnEndDatePicker.setOnClickListener(this);
         btnEndTimePicker.setOnClickListener(this);
@@ -132,6 +140,7 @@ public class AddEventActivity extends AppCompatActivity implements
             Intent returnIntent = new Intent(AddEventActivity.this, MainActivity.class);
             mLocation = etLocation.getText().toString();
             mTitle = etTitle.getText().toString();
+            mGroupName = etGroupName.getText().toString();
 
             returnIntent.putExtra("mStartYear", mStartYear);
             returnIntent.putExtra("mStartMonth", mStartMonth);
@@ -147,9 +156,34 @@ public class AddEventActivity extends AppCompatActivity implements
 
             returnIntent.putExtra("location", mLocation);
             returnIntent.putExtra("title", mTitle);
-            setResult(Activity.RESULT_OK,returnIntent);
+            returnIntent.putExtra("isGroupEvent", mIsGroupEvent);
+            returnIntent.putExtra("groupName", mGroupName);
+
+            setResult(Activity.RESULT_OK, returnIntent);
             finish();
 
+        }
+
+    }
+
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch (view.getId()) {
+            case R.id.radio_group:
+                if (checked) {
+                    etGroupName.setVisibility(View.VISIBLE);
+                    tv_group_name.setVisibility(View.VISIBLE);
+                    mIsGroupEvent = true;
+                }
+                break;
+            case R.id.radio_personal:
+                if (checked) {
+                    etGroupName.setVisibility(View.INVISIBLE);
+                    tv_group_name.setVisibility(View.INVISIBLE);
+                    mIsGroupEvent = false;
+                }
+                break;
         }
 
     }
