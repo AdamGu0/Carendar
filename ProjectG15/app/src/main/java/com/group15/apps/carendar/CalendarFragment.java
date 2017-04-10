@@ -1,5 +1,7 @@
 package com.group15.apps.carendar;
 
+import android.content.Intent;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import com.alamkanak.weekview.DateTimeInterpreter;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
+import com.alamkanak.weekview.WeekViewEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ import java.util.Map;
 /**
  * Created by Neo on 3/18/17.
  */
-public class CalendarFragment extends Fragment  implements MonthLoader.MonthChangeListener {
+public class CalendarFragment extends Fragment  implements MonthLoader.MonthChangeListener, WeekView.EventClickListener {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -58,6 +61,7 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         mWeekView = (WeekView) v.findViewById(R.id.weekView);
 
         mWeekView.setMonthChangeListener(this);
+        mWeekView.setOnEventClickListener(this);
 
         setupDateTimeInterpreter(true);
 
@@ -115,5 +119,20 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
             return new ArrayList<>();
         }
         return list;
+    }
+
+    public void onEventClick(WeekViewEvent event, RectF eventRect) {
+        Intent intent = new Intent();
+        intent.setClass(this.getContext(), ShowEventActivity.class);
+
+        MyWeekViewEvent e = (MyWeekViewEvent) event;
+
+        intent.putExtra("mStartTimeMills", e.getStartTimeMills());
+        intent.putExtra("mEndTimeMills", e.getEndTimeMills());
+
+        intent.putExtra("mLocation", e.getLocation());
+        intent.putExtra("mTitle", e.getName());
+
+        this.startActivity(intent);
     }
 }

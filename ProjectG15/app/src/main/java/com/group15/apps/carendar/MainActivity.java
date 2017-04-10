@@ -332,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
                 String title = data.getStringExtra("title");
                 boolean isGroupEvnet = data.getBooleanExtra("isGroupEvent", false);
                 String groupName = data.getStringExtra("groupName");
+                int eventType = data.getIntExtra("type", 0);
                 Calendar startTime = Calendar.getInstance();
                 startTime.set(Calendar.YEAR, data.getIntExtra("mStartYear", 0));
                 startTime.set(Calendar.MONTH, data.getIntExtra("mStartMonth", 0));
@@ -347,9 +348,10 @@ public class MainActivity extends AppCompatActivity {
                 endTime.set(Calendar.MINUTE, data.getIntExtra("mEndMinute", 0));
 
                 MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime, isGroupEvnet, groupName);
+                event.setEventType(eventType);
+                event.setColor(getResources().getColor(R.color.event_color_01));
 
                 fb.child("events").push().setValue(event);
-                event.setColor(getResources().getColor(R.color.event_color_01));
 
                 addEventToList(data.getIntExtra("mStartMonth", 0), event);
 
@@ -426,7 +428,6 @@ public class MainActivity extends AppCompatActivity {
                 CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
                 calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
                 calendarFragment.notifyChange();
-
             }
 
             @Override

@@ -20,6 +20,9 @@ public class MyWeekViewEvent extends WeekViewEvent {
     private long mEndTimeMills;
     private boolean mIsGroupEvent;
     private String mGroupName;
+    private int mType;
+    private double mLongitude;
+    private double mLatitude;
 
     public MyWeekViewEvent() {
 
@@ -111,6 +114,30 @@ public class MyWeekViewEvent extends WeekViewEvent {
 
     public long getEndTimeMills() {
         return this.mEndTimeMills;
+    }
+
+    public void setEventType(int type){
+        this.mType = type;
+    }
+
+    public int getEventType(){
+        return mType;
+    }
+
+    public void setLongitude(double longitude){
+        this.mLongitude = longitude;
+    }
+
+    public double getLongitude(){
+        return mLongitude;
+    }
+
+    public void setLatitude(double latitude){
+        this.mLatitude = latitude;
+    }
+
+    public double getLatitude(){
+        return mLatitude;
     }
 
     @Override
