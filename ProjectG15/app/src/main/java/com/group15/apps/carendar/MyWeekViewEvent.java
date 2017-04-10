@@ -18,15 +18,17 @@ public class MyWeekViewEvent extends WeekViewEvent {
     private int mColor;
     private long mStartTimeMills;
     private long mEndTimeMills;
+    private boolean mIsGroupEvent;
+    private String mGroupName;
     private int mType;
     private double mLongitude;
     private double mLatitude;
 
-
     public MyWeekViewEvent() {
 
     }
-    public MyWeekViewEvent(String name, String location, Calendar startTime, Calendar endTime) {
+    public MyWeekViewEvent(String name, String location, Calendar startTime, Calendar endTime,
+                           boolean isGroupEvent, String groupName) {
 
         this.mStartTime = (Calendar) startTime.clone();
         this.mEndTime = (Calendar) endTime.clone();
@@ -34,7 +36,27 @@ public class MyWeekViewEvent extends WeekViewEvent {
         this.mEndTimeMills = endTime.getTimeInMillis();
         this.mName = name + "\n";
         this.mLocation = location;
+        this.mIsGroupEvent = isGroupEvent;
+        this.mGroupName = groupName;
     }
+
+    public boolean getIsGroupEvent() {
+        return mIsGroupEvent;
+    }
+
+    public void setIsGroupEvent(boolean isGroupEvent) {
+        this.mIsGroupEvent = isGroupEvent;
+    }
+
+
+    public void setGroupName(String groupName) {
+        this.mGroupName = groupName;
+    }
+
+    public String getGroupName() {
+        return this.mGroupName;
+    }
+
 
     @Exclude
     public Calendar getStartTime() {

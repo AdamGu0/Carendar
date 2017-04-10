@@ -10,43 +10,46 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
 
 /**
- * Created by Neo on 3/11/17.
+ * Created by bluetooth on 2017/4/9.
  */
 
-public class AddEventActivity extends AppCompatActivity implements
-        View.OnClickListener {
+public class ShowEventActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btnStartDatePicker, btnStartTimePicker, btnEndDatePicker, btnEndTimePicker, btnIsGroupEvent, btnSave;
-    EditText etStartDate, etStartTime, etEndDate, etEndTime, etLocation, etTitle, etGroupName;
+    Button btnStartDatePicker, btnStartTimePicker, btnEndDatePicker, btnEndTimePicker, btnUpdate, btnDelete;
+    EditText etStartDate, etStartTime, etEndDate, etEndTime, etLocation, etTitle;
     private int mStartYear, mStartMonth, mStartDay, mStartHour, mStartMinute;
     private int mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute;
-    private String mTitle, mLocation, mGroupName;
-    private boolean mIsGroupEvent;
-    private TextView tv_group_name;
-    private int mEventType;
-    private double mLongitude;
-    private double mLatitude;
+    private String mTitle, mLocation;
+    private Calendar mStartTime,mEndTime;
+    private long mStartTimeMills, mEndTimeMills;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_event);
+        setContentView(R.layout.activity_show_event);
+
+        Intent intent = getIntent();
+        mStartTimeMills = intent.getLongExtra("mStartTimeMills",0);
+        mEndTimeMills = intent.getLongExtra("mEndTimeMills",0);
+        mTitle = intent.getStringExtra("mTitle");
+        mLocation = intent.getStringExtra("mLocation");
+        mStartTime = Calendar.getInstance();
+        mStartTime.setTimeInMillis(mStartTimeMills);
+        mEndTime = Calendar.getInstance();
+        mEndTime.setTimeInMillis(mEndTimeMills);
 
         btnStartDatePicker = (Button) findViewById(R.id.btn_start_date);
         btnStartTimePicker = (Button) findViewById(R.id.btn_start_time);
-        btnSave = (Button) findViewById(R.id.btn_save);
+        btnUpdate = (Button) findViewById(R.id.btn_update);
+        btnDelete = (Button) findViewById(R.id.btn_delete);
 
         etStartDate = (EditText) findViewById(R.id.in_start_date);
         etStartTime = (EditText) findViewById(R.id.in_start_time);
@@ -61,35 +64,17 @@ public class AddEventActivity extends AppCompatActivity implements
         etEndDate = (EditText) findViewById(R.id.in_end_date);
         etEndTime = (EditText) findViewById(R.id.in_end_time);
 
-        btnIsGroupEvent = (Button) findViewById(R.id.btn_group_event);
-        etGroupName = (EditText) findViewById(R.id.et_group_name);
-
-        tv_group_name = (TextView) findViewById(R.id.tv_group_name);
-
         btnEndDatePicker.setOnClickListener(this);
         btnEndTimePicker.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
+        btnUpdate.setOnClickListener(this);
+        btnDelete.setOnClickListener(this);
 
-        setupSpinner();
-    }
-
-    private void setupSpinner(){
-        Spinner spinner = (Spinner)findViewById(R.id.sp_event_type);
-        String[] types = new String[]{"Class", "Meeting", "Other"};
-        MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(this, types);
-        spinner.setAdapter(spinnerAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // eg. 0 - Class, 1 - Meeting ...
-                mEventType = position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        etTitle.setText(mTitle);
+        etLocation.setText(mLocation);
+        etStartDate.setText(mStartTime.get(Calendar.DAY_OF_MONTH) + "-" + (mStartTime.get(Calendar.MONTH) + 1) + "-" + mStartTime.get(Calendar.YEAR));
+        etEndDate.setText(mEndTime.get(Calendar.DAY_OF_MONTH) + "-" + (mEndTime.get(Calendar.MONTH) + 1) + "-" + mEndTime.get(Calendar.YEAR));
+        etStartTime.setText(mStartTime.get(Calendar.HOUR_OF_DAY) + ":" + mStartTime.get(Calendar.MINUTE));
+        etEndTime.setText(mEndTime.get(Calendar.HOUR_OF_DAY) + ":" + mEndTime.get(Calendar.MINUTE));
     }
 
     @Override
@@ -162,11 +147,13 @@ public class AddEventActivity extends AppCompatActivity implements
                         }
                     }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
             timePickerDialog.show();
-        } else if (v == btnSave) {
-            Intent returnIntent = new Intent(AddEventActivity.this, MainActivity.class);
+        } else if (v == btnUpdate) {
+            //TODO update event
+
+            /*
+            Intent returnIntent = new Intent(this, MainActivity.class);
             mLocation = etLocation.getText().toString();
             mTitle = etTitle.getText().toString();
-            mGroupName = etGroupName.getText().toString();
 
             returnIntent.putExtra("mStartYear", mStartYear);
             returnIntent.putExtra("mStartMonth", mStartMonth);
@@ -182,35 +169,11 @@ public class AddEventActivity extends AppCompatActivity implements
 
             returnIntent.putExtra("location", mLocation);
             returnIntent.putExtra("title", mTitle);
-            returnIntent.putExtra("isGroupEvent", mIsGroupEvent);
-            returnIntent.putExtra("groupName", mGroupName);
-
-            putValues(returnIntent);
             setResult(Activity.RESULT_OK,returnIntent);
             finish();
-
-        }
-
-    }
-
-    public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-
-        switch (view.getId()) {
-            case R.id.radio_group:
-                if (checked) {
-                    etGroupName.setVisibility(View.VISIBLE);
-                    tv_group_name.setVisibility(View.VISIBLE);
-                    mIsGroupEvent = true;
-                }
-                break;
-            case R.id.radio_personal:
-                if (checked) {
-                    etGroupName.setVisibility(View.INVISIBLE);
-                    tv_group_name.setVisibility(View.INVISIBLE);
-                    mIsGroupEvent = false;
-                }
-                break;
+            */
+        } else if (v == btnDelete) {
+            //TODO delete event
         }
 
     }
@@ -228,11 +191,24 @@ public class AddEventActivity extends AppCompatActivity implements
             case R.id.action_save:
 
                 // User chose the "Settings" item, show the app settings UI...
-                Intent returnIntent = new Intent(AddEventActivity.this, MainActivity.class);
+                Intent returnIntent = new Intent(this, MainActivity.class);
                 mLocation = etLocation.getText().toString();
                 mTitle = etTitle.getText().toString();
 
-                putValues(returnIntent);
+                returnIntent.putExtra("mStartYear", mStartYear);
+                returnIntent.putExtra("mStartMonth", mStartMonth);
+                returnIntent.putExtra("mStartDay", mStartDay);
+                returnIntent.putExtra("mStartHour", mStartHour);
+                returnIntent.putExtra("mStartMinute", mStartMinute);
+
+                returnIntent.putExtra("mEndYear", mStartYear);
+                returnIntent.putExtra("mEndMonth", mStartMonth);
+                returnIntent.putExtra("mEndDay", mStartDay);
+                returnIntent.putExtra("mEndHour", mStartHour);
+                returnIntent.putExtra("mEndMinute", mEndMinute);
+
+                returnIntent.putExtra("location", mLocation);
+                returnIntent.putExtra("title", mTitle);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
                 // User chose the "Settings" item, show the app settings UI...
@@ -244,23 +220,5 @@ public class AddEventActivity extends AppCompatActivity implements
                 return super.onOptionsItemSelected(item);
 
         }
-    }
-
-    private void putValues(Intent intent){
-        intent.putExtra("mStartYear", mStartYear);
-        intent.putExtra("mStartMonth", mStartMonth);
-        intent.putExtra("mStartDay", mStartDay);
-        intent.putExtra("mStartHour", mStartHour);
-        intent.putExtra("mStartMinute", mStartMinute);
-
-        intent.putExtra("mEndYear", mEndYear);
-        intent.putExtra("mEndMonth", mEndMonth);
-        intent.putExtra("mEndDay", mEndDay);
-        intent.putExtra("mEndHour", mEndHour);
-        intent.putExtra("mEndMinute", mEndMinute);
-
-        intent.putExtra("location", mLocation);
-        intent.putExtra("title", mTitle);
-        intent.putExtra("type", mEventType);
     }
 }
