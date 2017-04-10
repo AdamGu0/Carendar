@@ -247,7 +247,7 @@ public class MapShowingActivity extends FragmentActivity
                 }
             }
             if(address.equalsIgnoreCase("MUSIC") || address.equalsIgnoreCase("Music Bldg") || address.equalsIgnoreCase("Music building")) {
-                List<Address> addresses = geoCoder.getFromLocationName("50 E. Gammage Pkwy, Tempe,", 1);
+                List<Address> addresses = geoCoder.getFromLocationName("50 E. Gammage Pkwy, Tempe", 1);
                 if (addresses.size() > 0)
                 {
                     Address add = addresses.get(0);
@@ -261,7 +261,7 @@ public class MapShowingActivity extends FragmentActivity
                 }
             }
             if(address.equalsIgnoreCase("lsa") || address.equalsIgnoreCase("Life Sciences Center A")) {
-                List<Address> addresses = geoCoder.getFromLocationName("A Wing 451 E Tyler Mall, Tempe,", 1);
+                List<Address> addresses = geoCoder.getFromLocationName("A Wing 451 E Tyler Mall, Tempe", 1);
                 if (addresses.size() > 0)
                 {
                     Address add = addresses.get(0);
@@ -275,7 +275,7 @@ public class MapShowingActivity extends FragmentActivity
                 }
             }
             if(address.equalsIgnoreCase("lsb") || address.equalsIgnoreCase("Life Sciences Center B")) {
-                List<Address> addresses = geoCoder.getFromLocationName("B Wing 425 E Tyler Mall, Tempe,", 1);
+                List<Address> addresses = geoCoder.getFromLocationName("B Wing 425 E Tyler Mall, Tempe", 1);
                 if (addresses.size() > 0)
                 {
                     Address add = addresses.get(0);
@@ -289,7 +289,7 @@ public class MapShowingActivity extends FragmentActivity
                 }
             }
             if(address.equalsIgnoreCase("lsc") || address.equalsIgnoreCase("Life Sciences Center C")) {
-                List<Address> addresses = geoCoder.getFromLocationName("C Wing 401 E Tyler Mall, Tempe,", 1);
+                List<Address> addresses = geoCoder.getFromLocationName("C Wing 401 E Tyler Mall, Tempe", 1);
                 if (addresses.size() > 0)
                 {
                     Address add = addresses.get(0);
@@ -303,7 +303,7 @@ public class MapShowingActivity extends FragmentActivity
                 }
             }
             if(address.equalsIgnoreCase("lsd") || address.equalsIgnoreCase("Life Sciences Center D")) {
-                List<Address> addresses = geoCoder.getFromLocationName("D Wing 435 E Tyler Mall, Tempe,", 1);
+                List<Address> addresses = geoCoder.getFromLocationName("D Wing 435 E Tyler Mall, Tempe", 1);
                 if (addresses.size() > 0)
                 {
                     Address add = addresses.get(0);
@@ -317,7 +317,7 @@ public class MapShowingActivity extends FragmentActivity
                 }
             }
             if(address.equalsIgnoreCase("lse") || address.equalsIgnoreCase("Life Sciences Center E")) {
-                List<Address> addresses = geoCoder.getFromLocationName("E Wing 427 E Tyler Mall, Tempe,", 1);
+                List<Address> addresses = geoCoder.getFromLocationName("E Wing 427 E Tyler Mall, Tempe", 1);
                 if (addresses.size() > 0)
                 {
                     Address add = addresses.get(0);
@@ -328,6 +328,174 @@ public class MapShowingActivity extends FragmentActivity
                             .position(myLocation)
                             .title("Life Sciences Center E")
                             .snippet("E Wing 427 E, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("byac") || address.equalsIgnoreCase("Artisan Court at the Brickyard")) {
+                List<Address> addresses = geoCoder.getFromLocationName("699 S. Mill Ave, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Artisan Court at the Brickyard")
+                            .snippet("699 S. Mill Ave, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("neeb") || address.equalsIgnoreCase("Neeb Hall")) {
+                List<Address> addresses = geoCoder.getFromLocationName("920 S. Forest Mall, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Neeb Hall")
+                            .snippet("920 S. Forest Mall, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("PEBE") || address.equalsIgnoreCase("Physical Education Bldg. East") || address.equalsIgnoreCase("Physical Education Building East")) {
+                List<Address> addresses = geoCoder.getFromLocationName("611 E. Orange St, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Physical Education Bldg. East")
+                            .snippet("611 E. Orange St, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("Post") || address.equalsIgnoreCase("Post Office")) {
+                List<Address> addresses = geoCoder.getFromLocationName("522 N. Central Ave, Phoenix", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Post Office")
+                            .snippet("522 N. Central Ave, Phoenix"));
+                }
+            }
+            if(address.equalsIgnoreCase("PSY") || address.equalsIgnoreCase("Psychology Bldg") || address.equalsIgnoreCase("Psychology Building")) {
+                List<Address> addresses = geoCoder.getFromLocationName("950 S. McAllister Ave, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Psychology Bldg.")
+                            .snippet("950 S. McAllister Ave, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("SDFC") || address.equalsIgnoreCase("Sun Devil Fitness Complex")) {
+                List<Address> addresses = geoCoder.getFromLocationName("500 E. Apache Blvd, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Sun Devil Fitness Complex")
+                            .snippet("500 E. Apache Blvd, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("main") || address.equalsIgnoreCase("Old Main")) {
+                List<Address> addresses = geoCoder.getFromLocationName("400 E. Tyler Mall, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Old Main")
+                            .snippet("400 E. Tyler Mall, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("WFA") || address.equalsIgnoreCase("Wells Fargo Arena")) {
+                List<Address> addresses = geoCoder.getFromLocationName("600 E. Veterans Way, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Wells Fargo Arena")
+                            .snippet("600 E. Veterans Way, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("STAD") || address.equalsIgnoreCase("Sun Devil Stadium")) {
+                List<Address> addresses = geoCoder.getFromLocationName("500 E. Veterans Way, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Sun Devil Stadium")
+                            .snippet("500 E. Veterans Way, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("NOBLE") || address.equalsIgnoreCase("Noble Science Library")) {
+                List<Address> addresses = geoCoder.getFromLocationName("601 E. Tyler Mall, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Noble Science Library")
+                            .snippet("601 E. Tyler Mall, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("BKSTR") || address.equalsIgnoreCase("Bookstore")) {
+                List<Address> addresses = geoCoder.getFromLocationName("525 E. Orange St, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Bookstore")
+                            .snippet("525 E. Orange St, Tempe"));
+                }
+            }
+            if(address.equalsIgnoreCase("SSV") || address.equalsIgnoreCase("Student Services Bldg") || address.equalsIgnoreCase("Student Services Building")) {
+                List<Address> addresses = geoCoder.getFromLocationName("1151 S. Forest Ave, Tempe", 1);
+                if (addresses.size() > 0)
+                {
+                    Address add = addresses.get(0);
+                    LatLng myLocation = new LatLng(add.getLatitude(),add.getLongitude());
+                    CameraPosition target = CameraPosition.builder().target(myLocation).zoom(14).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                    locationMarker = map.addMarker(new MarkerOptions()
+                            .position(myLocation)
+                            .title("Student Services Bldg.")
+                            .snippet("1151 S. Forest Ave, Tempe"));
                 }
             }
         }

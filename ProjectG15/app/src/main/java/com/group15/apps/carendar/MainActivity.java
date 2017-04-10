@@ -331,6 +331,8 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String location = data.getStringExtra("location");
                 String title = data.getStringExtra("title");
+                boolean isGroupEvnet = data.getBooleanExtra("isGroupEvent", false);
+                String groupName = data.getStringExtra("groupName");
                 int eventType = data.getIntExtra("type", 0);
                 Calendar startTime = Calendar.getInstance();
                 startTime.set(Calendar.YEAR, data.getIntExtra("mStartYear", 0));
@@ -346,9 +348,10 @@ public class MainActivity extends AppCompatActivity {
                 endTime.set(Calendar.HOUR_OF_DAY, data.getIntExtra("mEndHour", 0));
                 endTime.set(Calendar.MINUTE, data.getIntExtra("mEndMinute", 0));
 
-                MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime);
+                MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime, isGroupEvnet, groupName);
                 event.setEventType(eventType);
                 event.setColor(getResources().getColor(R.color.event_color_01));
+
                 fb.child("events").push().setValue(event);
 
                 addEventToList(data.getIntExtra("mStartMonth", 0), event);
@@ -376,7 +379,6 @@ public class MainActivity extends AppCompatActivity {
         list.add(event);
         mPersonalEventsMap.put(index, list);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

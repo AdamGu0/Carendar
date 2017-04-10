@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -39,6 +40,8 @@ def var = dependencies {
 
     compile 'com.google.android.gms:play-services-gcm:9.6.0'
     compile 'com.google.android.gms:play-services-maps:9.6.0'
+    compile 'com.android.support:multidex:1.0.0'
+
 
 
 }
