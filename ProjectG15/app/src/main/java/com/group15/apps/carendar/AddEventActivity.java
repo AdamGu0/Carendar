@@ -204,10 +204,10 @@ public class AddEventActivity extends AppCompatActivity implements
         intent.putExtra("mStartHour", mStartHour);
         intent.putExtra("mStartMinute", mStartMinute);
 
-        intent.putExtra("mEndYear", mStartYear);
-        intent.putExtra("mEndMonth", mStartMonth);
-        intent.putExtra("mEndDay", mStartDay);
-        intent.putExtra("mEndHour", mStartHour);
+        intent.putExtra("mEndYear", mEndYear);
+        intent.putExtra("mEndMonth", mEndMonth);
+        intent.putExtra("mEndDay", mEndDay);
+        intent.putExtra("mEndHour", mEndHour);
         intent.putExtra("mEndMinute", mEndMinute);
 
         intent.putExtra("location", mLocation);
