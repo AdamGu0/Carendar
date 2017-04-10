@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int RC_SIGN_IN = 1;
     static final int RC_ADD_EVENT = 2;
     static final int RC_MAP_FINISH = 3;
+    static final int RC_SELECT_ICS = 4;
 
     private static final String TAG_CALENDAR = "calendar";
     private static final String TAG_ACCOUNT = "account";
@@ -357,7 +358,13 @@ public class MainActivity extends AppCompatActivity {
                 calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
                 calendarFragment.notifyChange();
             }
+        }else if (requestCode == RC_SELECT_ICS){
+            parseIcsData();
         }
+    }
+
+    private void parseIcsData(){
+
     }
 
 
@@ -381,6 +388,12 @@ public class MainActivity extends AppCompatActivity {
                 case android.R.id.home:
                     mDrawer.openDrawer(GravityCompat.START);
                     return true;
+                case R.id.import_menu:
+                    showFileChooser();
+                    return true;
+                case R.id.export_menu:
+
+                    return true;
             }
 
         }
@@ -389,6 +402,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    RC_SELECT_ICS);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(this, "Please install a File Manager.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     // show or hide the fab
