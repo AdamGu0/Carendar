@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Carendar</string>
+    <string name="import_ics">Import</string>
+    <string name="export_ics">Export</string>
     <string name="sign_out">Sign Out</string>
     <string name="action_today">Today</string>
     <string name="action_day_view">Day view</string>

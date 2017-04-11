@@ -2,6 +2,7 @@ package com.group15.apps.carendar;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -30,9 +31,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.util.CompatibilityHints;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int RC_SIGN_IN = 1;
     static final int RC_ADD_EVENT = 2;
     static final int RC_MAP_FINISH = 3;
+    static final int RC_SELECT_ICS = 4;
 
     private static final String TAG_CALENDAR = "calendar";
     private static final String TAG_ACCOUNT = "account";
@@ -360,6 +372,35 @@ public class MainActivity extends AppCompatActivity {
                 calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
                 calendarFragment.notifyChange();
             }
+        }else if (requestCode == RC_SELECT_ICS){
+            if(data != null && data.getData() != null){
+                parseIcsData(data.getData());
+            }
+
+        }
+    }
+
+    private void parseIcsData(Uri uri) {
+        try {
+            InputStream is = getContentResolver().openInputStream(uri);
+            CalendarBuilder builder = new CalendarBuilder();
+            CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
+            net.fortuna.ical4j.model.Calendar calendar = builder.build(is);
+            for (Iterator i = calendar.getComponents().iterator(); i.hasNext();) {
+                Component component = (Component) i.next();
+                System.out.println("Component [" + component.getName() + "]");
+
+                for (Iterator j = component.getProperties().iterator(); j.hasNext();) {
+                    Property property = (Property) j.next();
+                    System.out.println("Property [" + property.getName() + ", " + property.getValue() + "]");
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParserException e) {
+            e.printStackTrace();
         }
     }
 
@@ -383,6 +424,12 @@ public class MainActivity extends AppCompatActivity {
                 case android.R.id.home:
                     mDrawer.openDrawer(GravityCompat.START);
                     return true;
+                case R.id.import_menu:
+                    showFileChooser();
+                    return true;
+                case R.id.export_menu:
+
+                    return true;
             }
 
         }
@@ -391,6 +438,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    RC_SELECT_ICS);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(this, "Please install a File Manager.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     // show or hide the fab
