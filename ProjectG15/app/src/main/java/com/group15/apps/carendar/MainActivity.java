@@ -35,6 +35,7 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.util.CompatibilityHints;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -383,6 +384,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             InputStream is = getContentResolver().openInputStream(uri);
             CalendarBuilder builder = new CalendarBuilder();
+            CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
             net.fortuna.ical4j.model.Calendar calendar = builder.build(is);
             for (Iterator i = calendar.getComponents().iterator(); i.hasNext();) {
                 Component component = (Component) i.next();
