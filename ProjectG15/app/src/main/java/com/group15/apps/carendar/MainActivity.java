@@ -147,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        mUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // Begin the transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -473,6 +472,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void retrieveEvents() {
+        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        if (u == null) return;
+        mUserID = u.getUid();
+
         DatabaseReference events = fb.child("users").child(mUserID).child("events");
         events.addValueEventListener(new ValueEventListener() {
             @Override
