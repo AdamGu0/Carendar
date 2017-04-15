@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton mFloatingActionButton;
     private DatabaseReference fb;
-//    private FirebaseDatabase mFirebaseDatabase;
+    //    private FirebaseDatabase mFirebaseDatabase;
 //    private DatabaseReference mEventDatabaseReference;
     private ChildEventListener mChildEventListener;
     private FirebaseAuth mFirebaseAuth;
@@ -81,11 +81,14 @@ public class MainActivity extends AppCompatActivity {
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
 
+    private String mUserID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        if (fb != null) FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         mHandler = new Handler();
         // Set a Toolbar to replace the ActionBar.
@@ -133,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     Toast.makeText(MainActivity.this, "You're are now signed in. Welcome to Calendar.", Toast.LENGTH_SHORT).show();
+
                 } else {
                     startActivityForResult(AuthUI.getInstance()
                             .createSignInIntentBuilder()
@@ -143,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+        mUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // Begin the transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -150,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         CalendarFragment calendarFragment = new CalendarFragment();
         calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
         ft.replace(R.id.flContent, calendarFragment, TAG_CALENDAR);
-    // Complete the changes added above
+        // Complete the changes added above
         ft.commit();
         retrieveEvents();
 
@@ -210,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle setupDrawerToggle() {
         // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
         // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
+        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open, R.string.drawer_close);
     }
 
 
@@ -231,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         // Pass any configuration change to the drawer toggles
         drawerToggle.onConfigurationChanged(newConfig);
     }
+
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -269,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
-        switch(menuItem.getItemId()) {
+        switch (menuItem.getItemId()) {
             case R.id.nav_calendar_fragment:
                 CURRENT_TAG = TAG_CALENDAR;
                 navItemIndex = 0;
@@ -299,7 +305,9 @@ public class MainActivity extends AppCompatActivity {
         loadHomeFragment();
 
         return true;
-    };
+    }
+
+    ;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -348,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
                 Calendar startTime = Calendar.getInstance();
                 startTime.set(Calendar.YEAR, data.getIntExtra("mStartYear", 0));
                 startTime.set(Calendar.MONTH, data.getIntExtra("mStartMonth", 0));
-                startTime.set(Calendar.DAY_OF_MONTH,data.getIntExtra("mStartDay", 0));
+                startTime.set(Calendar.DAY_OF_MONTH, data.getIntExtra("mStartDay", 0));
                 startTime.set(Calendar.HOUR_OF_DAY, data.getIntExtra("mStartHour", 0));
                 startTime.set(Calendar.MINUTE, data.getIntExtra("mStartMinute", 0));
 
@@ -363,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
                 event.setEventType(eventType);
                 event.setColor(getResources().getColor(R.color.event_color_01));
 
-                fb.child("events").push().setValue(event);
+                fb.child("users").child(mUserID).child("events").push().setValue(event);
 
                 addEventToList(data.getIntExtra("mStartMonth", 0), event);
 
@@ -372,8 +380,8 @@ public class MainActivity extends AppCompatActivity {
                 calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
                 calendarFragment.notifyChange();
             }
-        }else if (requestCode == RC_SELECT_ICS){
-            if(data != null && data.getData() != null){
+        } else if (requestCode == RC_SELECT_ICS) {
+            if (data != null && data.getData() != null) {
                 parseIcsData(data.getData());
             }
 
@@ -386,11 +394,11 @@ public class MainActivity extends AppCompatActivity {
             CalendarBuilder builder = new CalendarBuilder();
             CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
             net.fortuna.ical4j.model.Calendar calendar = builder.build(is);
-            for (Iterator i = calendar.getComponents().iterator(); i.hasNext();) {
+            for (Iterator i = calendar.getComponents().iterator(); i.hasNext(); ) {
                 Component component = (Component) i.next();
                 System.out.println("Component [" + component.getName() + "]");
 
-                for (Iterator j = component.getProperties().iterator(); j.hasNext();) {
+                for (Iterator j = component.getProperties().iterator(); j.hasNext(); ) {
                     Property property = (Property) j.next();
                     System.out.println("Property [" + property.getName() + ", " + property.getValue() + "]");
                 }
@@ -459,13 +467,13 @@ public class MainActivity extends AppCompatActivity {
     // show or hide the fab
     private void toggleFab() {
         if (navItemIndex == 0)
-             mFloatingActionButton.show();
+            mFloatingActionButton.show();
         else
             mFloatingActionButton.hide();
     }
 
     public void retrieveEvents() {
-        DatabaseReference events = fb.child("events/");
+        DatabaseReference events = fb.child("users").child(mUserID).child("events");
         events.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

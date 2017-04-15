@@ -18,7 +18,7 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 /**
- * Created by bluetooth on 2017/4/9.
+ * Created by AdamGu0 on 2017/4/9.
  */
 
 public class ShowEventActivity extends AppCompatActivity implements View.OnClickListener {
