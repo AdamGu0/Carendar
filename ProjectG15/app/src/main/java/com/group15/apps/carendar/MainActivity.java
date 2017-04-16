@@ -136,6 +136,9 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        mUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
         // Begin the transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment
