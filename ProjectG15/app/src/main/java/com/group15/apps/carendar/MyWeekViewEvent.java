@@ -23,12 +23,12 @@ public class MyWeekViewEvent extends WeekViewEvent {
     private int mType;
     private double mLongitude;
     private double mLatitude;
-
+    private String mEventKey;
     public MyWeekViewEvent() {
 
     }
     public MyWeekViewEvent(String name, String location, Calendar startTime, Calendar endTime,
-                           boolean isGroupEvent, String groupName) {
+                           boolean isGroupEvent, String groupName, String eventKey) {
 
         this.mStartTime = (Calendar) startTime.clone();
         this.mEndTime = (Calendar) endTime.clone();
@@ -38,6 +38,15 @@ public class MyWeekViewEvent extends WeekViewEvent {
         this.mLocation = location;
         this.mIsGroupEvent = isGroupEvent;
         this.mGroupName = groupName;
+        this.mEventKey = eventKey;
+    }
+
+    public String getEventKey() {
+        return mEventKey;
+    }
+
+    public void setEventKey(String eventKey) {
+        this.mEventKey = eventKey;
     }
 
     public boolean getIsGroupEvent() {
@@ -60,6 +69,10 @@ public class MyWeekViewEvent extends WeekViewEvent {
 
     @Exclude
     public Calendar getStartTime() {
+        if (mStartTime == null) {
+            mStartTime = Calendar.getInstance();
+            mStartTime.setTimeInMillis(mStartTimeMills);
+        }
         return mStartTime;
     }
 
@@ -69,6 +82,10 @@ public class MyWeekViewEvent extends WeekViewEvent {
 
     @Exclude
     public Calendar getEndTime() {
+        if (mEndTime == null) {
+            mEndTime = Calendar.getInstance();
+            mEndTime.setTimeInMillis(mEndTimeMills);
+        }
         return mEndTime;
     }
 
@@ -101,6 +118,7 @@ public class MyWeekViewEvent extends WeekViewEvent {
     }
 
     public void setStartTimeMills(long startTimeMills) {
+
         this.mStartTimeMills = startTimeMills;
     }
 
@@ -109,7 +127,7 @@ public class MyWeekViewEvent extends WeekViewEvent {
     }
 
     public long getStartTimeMills() {
-        return  this.mStartTimeMills;
+        return  mStartTimeMills;
     }
 
     public long getEndTimeMills() {

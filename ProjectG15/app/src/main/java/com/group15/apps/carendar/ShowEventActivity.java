@@ -15,6 +15,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Calendar;
 
 /**
@@ -30,13 +33,33 @@ public class ShowEventActivity extends AppCompatActivity implements View.OnClick
     private String mTitle, mLocation;
     private Calendar mStartTime,mEndTime;
     private long mStartTimeMills, mEndTimeMills;
+    private FirebaseAuth mFirebaseAuth;
+    private int mEventType;
+    private String mEventKey;
+    private String mUserId;
+//    private DatabaseReference fb;
+    private boolean startDateChanged;
+    private boolean endDateChanged;
+    private boolean endTimeChanged;
+    private boolean startTimeChanged;
+    private int oldStartYear, oldStartMonth, oldStartDay, oldStartHour, oldStartMinute,
+                oldEndYear, oldEndMonth, oldEndDay, oldEndHour, oldEndMinute;
+
+    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_event);
 
+        startDateChanged = false;
+        endDateChanged = false;
+        endTimeChanged = false;
+        startTimeChanged = false;
+
         Intent intent = getIntent();
+        mEventKey = intent.getStringExtra("EVENT_KEY");
+
         mStartTimeMills = intent.getLongExtra("mStartTimeMills",0);
         mEndTimeMills = intent.getLongExtra("mEndTimeMills",0);
         mTitle = intent.getStringExtra("mTitle");
@@ -71,8 +94,9 @@ public class ShowEventActivity extends AppCompatActivity implements View.OnClick
 
         etTitle.setText(mTitle);
         etLocation.setText(mLocation);
+
         etStartDate.setText(mStartTime.get(Calendar.DAY_OF_MONTH) + "-" + (mStartTime.get(Calendar.MONTH) + 1) + "-" + mStartTime.get(Calendar.YEAR));
-        etEndDate.setText(mEndTime.get(Calendar.DAY_OF_MONTH) + "-" + (mEndTime.get(Calendar.MONTH) + 1) + "-" + mEndTime.get(Calendar.YEAR));
+        etEndDate.setText(mEndTime.get(Calendar.DAY_OF_MONTH) + "-" + (mEndTime.get(Calendar.MONTH) + 1)  + "-" + mEndTime.get(Calendar.YEAR));
         etStartTime.setText(mStartTime.get(Calendar.HOUR_OF_DAY) + ":" + mStartTime.get(Calendar.MINUTE));
         etEndTime.setText(mEndTime.get(Calendar.HOUR_OF_DAY) + ":" + mEndTime.get(Calendar.MINUTE));
     }
@@ -96,6 +120,7 @@ public class ShowEventActivity extends AppCompatActivity implements View.OnClick
                         }
                     }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show();
+            startDateChanged = true;
         } else if (v == btnEndDatePicker) {
             // Get Current Date
             final Calendar c = Calendar.getInstance();
@@ -112,6 +137,7 @@ public class ShowEventActivity extends AppCompatActivity implements View.OnClick
                         }
                     }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show();
+            endDateChanged = true;
         } else if (v == btnStartTimePicker) {
             // Get Current Time
             final Calendar c = Calendar.getInstance();
@@ -129,6 +155,7 @@ public class ShowEventActivity extends AppCompatActivity implements View.OnClick
                         }
                     }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
             timePickerDialog.show();
+            startTimeChanged = true;
         } else if (v == btnEndTimePicker) {
 
             // Get Current Time
@@ -147,33 +174,48 @@ public class ShowEventActivity extends AppCompatActivity implements View.OnClick
                         }
                     }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
             timePickerDialog.show();
+            endTimeChanged = true;
         } else if (v == btnUpdate) {
             //TODO update event
-
-            /*
-            Intent returnIntent = new Intent(this, MainActivity.class);
             mLocation = etLocation.getText().toString();
             mTitle = etTitle.getText().toString();
 
-            returnIntent.putExtra("mStartYear", mStartYear);
-            returnIntent.putExtra("mStartMonth", mStartMonth);
-            returnIntent.putExtra("mStartDay", mStartDay);
-            returnIntent.putExtra("mStartHour", mStartHour);
-            returnIntent.putExtra("mStartMinute", mStartMinute);
+            if (startDateChanged) {
+//                mStartTime = Calendar.getInstance();
+                mStartTime.set(Calendar.YEAR, mStartYear);
+                mStartTime.set(Calendar.MONTH, mStartMonth);
+                mStartTime.set(Calendar.DAY_OF_MONTH, mStartDay);
+            }
+//
+            if (startTimeChanged) {
+                mStartTime.set(Calendar.HOUR_OF_DAY, mStartHour);
+                mStartTime.set(Calendar.MINUTE, mStartMinute);
+            }
 
-            returnIntent.putExtra("mEndYear", mEndYear);
-            returnIntent.putExtra("mEndMonth", mEndMonth);
-            returnIntent.putExtra("mEndDay", mEndDay);
-            returnIntent.putExtra("mEndHour", mEndHour);
-            returnIntent.putExtra("mEndMinute", mEndMinute);
+            if (endDateChanged) {
+//                mEndTime = Calendar.getInstance();
+                mEndTime.set(Calendar.YEAR, mEndYear);
+                mEndTime.set(Calendar.MONTH, mEndMonth);
+                mEndTime.set(Calendar.DAY_OF_MONTH, mEndDay);
+            }
 
-            returnIntent.putExtra("location", mLocation);
-            returnIntent.putExtra("title", mTitle);
-            setResult(Activity.RESULT_OK,returnIntent);
+            if (endTimeChanged) {
+                mEndTime.set(Calendar.HOUR_OF_DAY, mEndHour);
+                mEndTime.set(Calendar.MINUTE, mEndMinute);
+            }
+
+            MyWeekViewEvent event = new MyWeekViewEvent(mTitle, mLocation, mStartTime, mEndTime, false, "", mEventKey);
+
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            FirebaseDatabase.getInstance().getReference().child("users").child(userId).child("events").child(mEventKey).setValue(event);
+            setResult(Activity.RESULT_OK);
             finish();
-            */
+
         } else if (v == btnDelete) {
             //TODO delete event
+            FirebaseDatabase.getInstance().getReference().child("users").child(userId).child("events").child(mEventKey).removeValue();
+            setResult(Activity.RESULT_OK);
+            finish();
         }
 
     }
@@ -220,5 +262,16 @@ public class ShowEventActivity extends AppCompatActivity implements View.OnClick
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    private void updateValues(Intent intent){
+        mStartTimeMills = intent.getLongExtra("mStartTimeMills",0);
+        mEndTimeMills = intent.getLongExtra("mEndTimeMills",0);
+        mTitle = intent.getStringExtra("mTitle");
+        mLocation = intent.getStringExtra("mLocation");
+        mStartTime = Calendar.getInstance();
+        mStartTime.setTimeInMillis(mStartTimeMills);
+        mEndTime = Calendar.getInstance();
+        mEndTime.setTimeInMillis(mEndTimeMills);
     }
 }

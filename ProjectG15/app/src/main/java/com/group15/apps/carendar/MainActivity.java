@@ -29,7 +29,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     static final int RC_ADD_EVENT = 2;
     static final int RC_MAP_FINISH = 3;
     static final int RC_SELECT_ICS = 4;
-
+    static final int RC_UPDATE = 5;
     private static final String TAG_CALENDAR = "calendar";
     private static final String TAG_ACCOUNT = "account";
     private static final String TAG_MAP = "map";
@@ -82,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean shouldLoadHomeFragOnBackPress = true;
 
     private String mUserID;
+    DatabaseReference eventsReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +125,6 @@ public class MainActivity extends AppCompatActivity {
         }
         fb = FirebaseDatabase.getInstance().getReference();
         fb.keepSynced(true);
-//        mFirebaseDatabase = FirebaseDatabase.getInstance();
-//        mEventDatabaseReference = mFirebaseDatabase.getReference().child("events");
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -157,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.flContent, calendarFragment, TAG_CALENDAR);
         // Complete the changes added above
         ft.commit();
+        eventsReference = fb.child("users").child(mUserID).child("events");
         retrieveEvents();
 
         for (int i = 0; i < 12; i++) {
@@ -367,24 +366,23 @@ public class MainActivity extends AppCompatActivity {
                 endTime.set(Calendar.HOUR_OF_DAY, data.getIntExtra("mEndHour", 0));
                 endTime.set(Calendar.MINUTE, data.getIntExtra("mEndMinute", 0));
 
-                MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime, isGroupEvnet, groupName);
+                String key = fb.push().getKey();
+
+                MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime, isGroupEvnet, groupName, key);
                 event.setEventType(eventType);
                 event.setColor(getResources().getColor(R.color.event_color_01));
 
-                fb.child("users").child(mUserID).child("events").push().setValue(event);
-
+                fb.child("users").child(mUserID).child("events").child(key).setValue(event);
                 addEventToList(data.getIntExtra("mStartMonth", 0), event);
 
-                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
-
-                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
-                calendarFragment.notifyChange();
+//                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
+//                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
+//                calendarFragment.notifyChange();
             }
         } else if (requestCode == RC_SELECT_ICS) {
             if (data != null && data.getData() != null) {
                 parseIcsData(data.getData());
             }
-
         }
     }
 
@@ -452,7 +450,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-
         try {
             startActivityForResult(
                     Intent.createChooser(intent, "Select a File to Upload"),
@@ -473,27 +470,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void retrieveEvents() {
-        DatabaseReference events = fb.child("users").child(mUserID).child("events");
-        events.addValueEventListener(new ValueEventListener() {
+        eventsReference.addChildEventListener(new ChildEventListener(){
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String key) {
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        MyWeekViewEvent event = data.getValue(MyWeekViewEvent.class);
-                        Calendar startTime = Calendar.getInstance();
-                        startTime.setTimeInMillis(event.getStartTimeMills());
-                        Calendar endTime = Calendar.getInstance();
-                        endTime.setTimeInMillis(event.getEndTimeMills());
-                        event.setStartTime(startTime);
-                        event.setEndTime(endTime);
-//                        if (mPersonalEventsMap.get(month) == null) {
-//                            mPersonalEventsMap.put();
-//                        }
-                        List<MyWeekViewEvent> list = mPersonalEventsMap.get(startTime.get(Calendar.MONTH));
+                    MyWeekViewEvent event = dataSnapshot.getValue(MyWeekViewEvent.class);
+                    Calendar startTime = Calendar.getInstance();
+                    startTime.setTimeInMillis(event.getStartTimeMills());
+                    Calendar endTime = Calendar.getInstance();
+                    endTime.setTimeInMillis(event.getEndTimeMills());
+                    event.setStartTime(startTime);
+                    event.setEndTime(endTime);
+                    List<MyWeekViewEvent> list = mPersonalEventsMap.get(startTime.get(Calendar.MONTH));
 
-                        if (!list.contains(event)) {
-                            list.add(event);
-                        }
+                    if (!list.contains(event)) {
+                        list.add(event);
                     }
                 }
                 CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
@@ -502,10 +493,48 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                MyWeekViewEvent event = dataSnapshot.getValue(MyWeekViewEvent.class);
+                List<MyWeekViewEvent> list = mPersonalEventsMap.get(event.getStartTime().get(Calendar.MONTH));
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getEventKey().equals(event.getEventKey())) {
+                        list.remove(i);
+                    }
+                }
+                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
+                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
+                calendarFragment.notifyChange();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                MyWeekViewEvent event = dataSnapshot.getValue(MyWeekViewEvent.class);
+                List<MyWeekViewEvent> list = mPersonalEventsMap.get(event.getStartTime().get(Calendar.MONTH));
+
+                if (event == null || event.getEventKey() == null) return;
+
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getEventKey().equals(event.getEventKey())) {
+                        list.remove(i);
+                        list.add(i, event);
+                    }
+                }
+
+                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
+                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
+                calendarFragment.notifyChange();
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        } );
     }
-
 }

@@ -42,8 +42,8 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
     }
 
 
-    public void updatePersonalEventMap(Map<Integer, List<MyWeekViewEvent>> list) {
-        mPersonalEventsMap = list;
+    public void updatePersonalEventMap(Map<Integer, List<MyWeekViewEvent>> map) {
+        mPersonalEventsMap = map;
     }
 
 
@@ -109,6 +109,8 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         if (mPersonalEventsMap.isEmpty() || mPersonalEventsMap.get(newMonth - 1) == null) {
             return null;
         }
+
+
         return mPersonalEventsMap.get(newMonth - 1);
     }
 
@@ -132,6 +134,8 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
 
         intent.putExtra("mLocation", e.getLocation());
         intent.putExtra("mTitle", e.getName());
+        String key = e.getEventKey();
+        intent.putExtra("EVENT_KEY", key);
 
         this.startActivity(intent);
     }
