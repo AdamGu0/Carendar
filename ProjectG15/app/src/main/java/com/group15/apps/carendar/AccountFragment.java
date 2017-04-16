@@ -10,19 +10,31 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 /**
  * Created by Neo on 3/18/17.
  */
 
-public class AccountFragment extends Fragment implements View.OnClickListener {
+public class AccountFragment extends Fragment implements View.OnClickListener, ValueEventListener {
 
     private EditText etEmail, etPassword, etConfirm, etUsername, etDescription;
     private RadioButton radioMale, radioFemale, radioNone;
     private Button btnUpdate;
+
+    private DatabaseReference mRef;
+
     private int mGender; //male:1 female:2 not provided:0
+
 
     public static AccountFragment newInstance() {
         return new AccountFragment();
@@ -65,6 +77,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         });
 
         etEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mRef = FirebaseDatabase.getInstance().getReference("users/"+id+"/info");
+        mRef.addValueEventListener(this);
         setGender(0);
     }
 
@@ -96,6 +111,26 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        Map info = (Map) dataSnapshot.getValue();
+        if (info == null) return;
+
+        String n = (String) info.get("username");
+        if(n != null) etUsername.setText(n);
+
+        Long g = (Long) info.get("gender");
+        if (g != null) setGender(g.intValue());
+
+        String d = (String) info.get("description");
+        if(d != null) etDescription.setText(d);
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
+    }
+
+    @Override
     public void onClick(View v) {
         onGenderClick(v);
     }
@@ -106,6 +141,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onUpdateClick(View v) {
-
+        mRef.child("username").setValue(etUsername.getText().toString());
+        mRef.child("gender").setValue(mGender);
+        mRef.child("description").setValue(etDescription.getText().toString());
+        Toast.makeText(getContext(), "Information updated.", Toast.LENGTH_SHORT);
     }
 }
