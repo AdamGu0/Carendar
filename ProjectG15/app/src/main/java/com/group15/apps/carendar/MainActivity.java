@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment
         CalendarFragment calendarFragment = new CalendarFragment();
-        calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
         ft.replace(R.id.flContent, calendarFragment, TAG_CALENDAR);
         // Complete the changes added above
         ft.commit();
@@ -190,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
         switch (navItemIndex) {
             case 0:
                 CalendarFragment calendarFragment = new CalendarFragment();
+                retrieveEvents();
                 return calendarFragment;
             case 1:
                 AccountFragment accountFragment = new AccountFragment();
