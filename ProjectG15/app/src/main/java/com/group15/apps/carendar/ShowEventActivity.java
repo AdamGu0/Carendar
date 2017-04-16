@@ -181,19 +181,17 @@ public class ShowEventActivity extends AppCompatActivity implements View.OnClick
             mTitle = etTitle.getText().toString();
 
             if (startDateChanged) {
-//                mStartTime = Calendar.getInstance();
                 mStartTime.set(Calendar.YEAR, mStartYear);
                 mStartTime.set(Calendar.MONTH, mStartMonth);
                 mStartTime.set(Calendar.DAY_OF_MONTH, mStartDay);
             }
-//
+
             if (startTimeChanged) {
                 mStartTime.set(Calendar.HOUR_OF_DAY, mStartHour);
                 mStartTime.set(Calendar.MINUTE, mStartMinute);
             }
 
             if (endDateChanged) {
-//                mEndTime = Calendar.getInstance();
                 mEndTime.set(Calendar.YEAR, mEndYear);
                 mEndTime.set(Calendar.MONTH, mEndMonth);
                 mEndTime.set(Calendar.DAY_OF_MONTH, mEndDay);

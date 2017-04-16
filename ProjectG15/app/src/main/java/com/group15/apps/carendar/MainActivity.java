@@ -30,19 +30,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.util.CompatibilityHints;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -145,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        mUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // Begin the transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -387,27 +376,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void parseIcsData(Uri uri) {
-        try {
-            InputStream is = getContentResolver().openInputStream(uri);
-            CalendarBuilder builder = new CalendarBuilder();
-            CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-            net.fortuna.ical4j.model.Calendar calendar = builder.build(is);
-            for (Iterator i = calendar.getComponents().iterator(); i.hasNext(); ) {
-                Component component = (Component) i.next();
-                System.out.println("Component [" + component.getName() + "]");
+        new ParseCalendarTask(uri, this, new ParseCalendarTask.OnParseFinishListener() {
+            @Override
+            public void onParseFinish() {
 
-                for (Iterator j = component.getProperties().iterator(); j.hasNext(); ) {
-                    Property property = (Property) j.next();
-                    System.out.println("Property [" + property.getName() + ", " + property.getValue() + "]");
-                }
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParserException e) {
-            e.printStackTrace();
-        }
+        }).execute();
     }
 
 
@@ -470,7 +444,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void retrieveEvents() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
         eventsReference.addChildEventListener(new ChildEventListener(){
+
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String key) {
                 if (dataSnapshot.exists()) {
