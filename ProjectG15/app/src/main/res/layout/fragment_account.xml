@@ -33,32 +33,6 @@
         android:id="@+id/Text2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Password:" />
-
-    <EditText
-        android:id="@+id/et_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPassword" />
-
-    <TextView
-        android:id="@+id/Text3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Confirm password:" />
-
-    <EditText
-        android:id="@+id/et_confirm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPassword" />
-
-    <TextView
-        android:id="@+id/Text4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="User name:" />
 
     <EditText
@@ -70,7 +44,7 @@
         android:inputType="textPersonName" />
 
     <TextView
-        android:id="@+id/Text5"
+        android:id="@+id/Text3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Gender:" />
@@ -106,7 +80,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/Text6"
+        android:id="@+id/Text4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Description:" />
@@ -125,5 +99,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Update" />
+
+    <Button
+        android:id="@+id/btn_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reset password" />
 
 </LinearLayout>

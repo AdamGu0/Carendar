@@ -2,6 +2,7 @@ package com.group15.apps.carendar;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,12 +30,13 @@ import java.util.Map;
 
 public class AccountFragment extends Fragment implements View.OnClickListener, ValueEventListener {
 
-    private EditText etEmail, etPassword, etConfirm, etUsername, etDescription;
+    private EditText etEmail, etUsername, etDescription;
     private RadioButton radioMale, radioFemale, radioNone;
-    private Button btnUpdate;
+    private Button btnUpdate, btnPassword;
 
     private DatabaseReference mRef;
 
+    private String mEmail;
     private int mGender; //male:1 female:2 not provided:0
 
 
@@ -57,14 +61,14 @@ public class AccountFragment extends Fragment implements View.OnClickListener, V
 
         View v = getView();
         etEmail = (EditText) v.findViewById(R.id.et_email);
-        etPassword = (EditText) v.findViewById(R.id.et_password);
-        etConfirm = (EditText) v.findViewById(R.id.et_confirm);
+        etEmail.setEnabled(false);
         etUsername = (EditText) v.findViewById(R.id.et_username);
         etDescription = (EditText) v.findViewById(R.id.et_description);
         radioMale = (RadioButton) v.findViewById(R.id.radio_male);
         radioFemale = (RadioButton) v.findViewById(R.id.radio_female);
         radioNone = (RadioButton) v.findViewById(R.id.radio_none);
         btnUpdate = (Button) v.findViewById(R.id.btn_updateProfile);
+        btnPassword = (Button) v.findViewById(R.id.btn_password);
 
         radioMale.setOnClickListener(this);
         radioFemale.setOnClickListener(this);
@@ -72,11 +76,18 @@ public class AccountFragment extends Fragment implements View.OnClickListener, V
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onUpdateClick(v);
+                onUpdateClick();
+            }
+        });
+        btnPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPasswordClick();
             }
         });
 
-        etEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        mEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        etEmail.setText(mEmail);
         String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mRef = FirebaseDatabase.getInstance().getReference("users/"+id+"/info");
         mRef.addValueEventListener(this);
@@ -110,6 +121,20 @@ public class AccountFragment extends Fragment implements View.OnClickListener, V
         }
     }
 
+    private void resetEmail() {
+        String email = etEmail.getText().toString();
+        if (email.equals(mEmail)) //email changed
+            return;
+        if ( !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ) {
+            Toast.makeText(getContext(), "Invalid e-mail address, please check your input.", Toast.LENGTH_LONG);
+            etEmail.setText(mEmail);
+            return;
+
+
+        }
+
+    }
+
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         Map info = (Map) dataSnapshot.getValue();
@@ -140,10 +165,26 @@ public class AccountFragment extends Fragment implements View.OnClickListener, V
         setGender(g);
     }
 
-    private void onUpdateClick(View v) {
+    private void onUpdateClick() {
+        //resetEmail();
+
         mRef.child("username").setValue(etUsername.getText().toString());
         mRef.child("gender").setValue(mGender);
         mRef.child("description").setValue(etDescription.getText().toString());
-        Toast.makeText(getContext(), "Information updated.", Toast.LENGTH_SHORT);
+        Toast.makeText(getContext(), "Information updated.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void onPasswordClick() {
+        FirebaseAuth.getInstance().sendPasswordResetEmail(mEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), "A link to reset your password has been sent to your e-mail address.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Failed to send password reset email, please try again later.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
     }
 }
