@@ -1,11 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:weightSum="1">
     <!--<fragment-->
-        <!--android:id="@+id/account_fragment"-->
-        <!--class="com.group15.apps.carendar.AccountFragment"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"/>-->
-</FrameLayout>
+    <!--android:id="@+id/account_fragment"-->
+    <!--class="com.group15.apps.carendar.AccountFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"/>-->
+
+    <TextView
+        android:id="@+id/Text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="E-mail:" />
+
+    <EditText
+        android:id="@+id/et_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:id="@+id/Text2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Password:" />
+
+    <EditText
+        android:id="@+id/et_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/Text3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm password:" />
+
+    <EditText
+        android:id="@+id/et_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/Text4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="User name:" />
+
+    <EditText
+        android:id="@+id/et_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Please set a user name."
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/Text5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gender:" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:tag="1"
+            android:text="Male" />
+
+        <RadioButton
+            android:id="@+id/radio_female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:tag="2"
+            android:text="Female" />
+
+        <RadioButton
+            android:id="@+id/radio_none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:tag="0"
+            android:text="Prefer not tell" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/Text6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Description:" />
+
+    <EditText
+        android:id="@+id/et_description"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:ems="10"
+        android:gravity="top"
+        android:hint="Courses? Skills? anything else?"
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/btn_updateProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update" />
+
+</LinearLayout>

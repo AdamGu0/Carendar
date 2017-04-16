@@ -136,9 +136,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
         // Begin the transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment
@@ -147,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.flContent, calendarFragment, TAG_CALENDAR);
         // Complete the changes added above
         ft.commit();
-        eventsReference = fb.child("users").child(mUserID).child("events");
         retrieveEvents();
 
         for (int i = 0; i < 12; i++) {
@@ -447,7 +443,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void retrieveEvents() {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        if (u == null) return;
+        mUserID = u.getUid();
+        eventsReference = fb.child("users").child(mUserID).child("events");
+
         eventsReference.addChildEventListener(new ChildEventListener(){
 
             @Override
