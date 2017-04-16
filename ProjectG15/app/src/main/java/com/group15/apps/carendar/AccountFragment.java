@@ -81,6 +81,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 radioMale.setChecked(false);
                 radioFemale.setChecked(false);
                 radioNone.setChecked(true);
+                break;
             case 1:
                 radioMale.setChecked(true);
                 radioFemale.setChecked(false);
