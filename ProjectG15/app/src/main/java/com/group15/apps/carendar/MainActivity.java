@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         switch (navItemIndex) {
             case 0:
                 CalendarFragment calendarFragment = new CalendarFragment();
-                retrieveEvents();
+                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
                 return calendarFragment;
             case 1:
                 AccountFragment accountFragment = new AccountFragment();
