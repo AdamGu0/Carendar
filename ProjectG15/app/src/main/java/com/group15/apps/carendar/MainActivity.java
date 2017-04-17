@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -407,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
                     showFileChooser();
                     return true;
                 case R.id.export_menu:
-
+                    onExportClicked();
                     return true;
             }
 
@@ -417,6 +418,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void shortToast(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private void onExportClicked(){
+        new ExportCalendarTask(this, mPersonalEventsMap, new ExportCalendarTask.OnExportFinishListener() {
+            @Override
+            public void onExportFinish() {
+                shortToast("Export finished.");
+            }
+        }).execute();
     }
 
     private void showFileChooser() {
