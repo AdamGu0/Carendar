@@ -36,6 +36,7 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
     private ArrayList<MyWeekViewEvent> mNewEvents;
     private MyWeekViewEvent myWeekViewEvent;
     private Map<Integer, List<MyWeekViewEvent>> mPersonalEventsMap = new HashMap<>();
+    private int mEventType = 0; //0:all 1:personal 2:group
 
     public static CalendarFragment newInstance() {
         return new CalendarFragment();
@@ -74,6 +75,7 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
     }
 
     public void notifyChange() {
+        if (mWeekView == null) return;
         mWeekView.notifyDatasetChanged();
     }
 
@@ -105,18 +107,29 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         });
     }
 
-    private List<MyWeekViewEvent> getDatatoDisPlay(int newMonth) {
+    private List<MyWeekViewEvent> getDataToDisPlay(int newMonth) {
         if (mPersonalEventsMap.isEmpty() || mPersonalEventsMap.get(newMonth - 1) == null) {
             return null;
         }
 
+        List<MyWeekViewEvent> list = mPersonalEventsMap.get(newMonth - 1);
 
-        return mPersonalEventsMap.get(newMonth - 1);
+        if (mEventType == 0) return list; // no filter selected
+
+        Boolean isGroup;
+        if (mEventType == 1) isGroup = false; //personal filter selected
+        else isGroup = true; //group filter selected
+
+        List<MyWeekViewEvent> fList = new ArrayList<>();
+        for ( MyWeekViewEvent e : list) {
+            if (e.getIsGroupEvent() == isGroup) fList.add(e);
+        }
+        return fList;
     }
 
     public List<MyWeekViewEvent> onMonthChange(int newYear, int newMonth) {
 
-        List<MyWeekViewEvent> list = getDatatoDisPlay(newMonth - 1);
+        List<MyWeekViewEvent> list = getDataToDisPlay(newMonth - 1);
         if (list == null) {
             return new ArrayList<>();
         }
@@ -138,5 +151,10 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         intent.putExtra("EVENT_KEY", key);
 
         this.startActivity(intent);
+    }
+
+    public void setEventType(int p) {
+        mEventType = p;
+        notifyChange();
     }
 }

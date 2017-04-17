@@ -37,7 +37,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener, V
     private DatabaseReference mRef;
 
     private String mEmail;
-    private int mGender; //male:1 female:2 not provided:0
+    private int mGender = -1; //male:1 female:2 not provided:0
 
 
     public static AccountFragment newInstance() {
@@ -73,6 +73,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener, V
         radioMale.setOnClickListener(this);
         radioFemale.setOnClickListener(this);
         radioNone.setOnClickListener(this);
+        setGender(0);
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,7 +92,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener, V
         String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mRef = FirebaseDatabase.getInstance().getReference("users/"+id+"/info");
         mRef.addValueEventListener(this);
-        setGender(0);
     }
 
     @Override

@@ -19,6 +19,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     public static int navItemIndex = 0;
 
     private FloatingActionButton mFloatingActionButton;
+    private Spinner mSpinner;
+    private int mEventType = 0;
+
     private DatabaseReference fb;
     //    private FirebaseDatabase mFirebaseDatabase;
 //    private DatabaseReference mEventDatabaseReference;
@@ -100,6 +106,20 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        mSpinner = (Spinner) findViewById(R.id.sp_filter);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.event_type_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                onFilterItemSelected(position);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
         // Find our drawer view
@@ -151,6 +171,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void onFilterItemSelected(int position) {
+        CalendarFragment c = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
+        if (c == null) return;
+        c.setEventType(position);
+    }
+
     private void loadHomeFragment() {
         nvDrawer.getMenu().getItem(navItemIndex).setChecked(true);
         getSupportActionBar().setTitle(activityTitles[navItemIndex]);
@@ -190,12 +216,13 @@ public class MainActivity extends AppCompatActivity {
             case 0:
                 CalendarFragment calendarFragment = new CalendarFragment();
                 calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
+                calendarFragment.setEventType(mSpinner.getSelectedItemPosition());
                 return calendarFragment;
             case 1:
                 AccountFragment accountFragment = new AccountFragment();
                 return accountFragment;
             default:
-                return new CalendarFragment();
+                return null;
         }
     }
 
@@ -436,10 +463,13 @@ public class MainActivity extends AppCompatActivity {
 
     // show or hide the fab
     private void toggleFab() {
-        if (navItemIndex == 0)
+        if (navItemIndex == 0) {
             mFloatingActionButton.show();
-        else
+            mSpinner.setVisibility(View.VISIBLE);
+        } else {
             mFloatingActionButton.hide();
+            mSpinner.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void retrieveEvents() {

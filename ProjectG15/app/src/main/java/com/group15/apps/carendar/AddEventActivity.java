@@ -15,8 +15,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
@@ -259,5 +259,7 @@ public class AddEventActivity extends AppCompatActivity implements
         intent.putExtra("location", mLocation);
         intent.putExtra("title", mTitle);
         intent.putExtra("type", mEventType);
+        intent.putExtra("isGroupEvent", mIsGroupEvent);
+        intent.putExtra("groupName", mGroupName);
     }
 }
