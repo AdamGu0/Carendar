@@ -34,7 +34,7 @@ public class MyWeekViewEvent extends WeekViewEvent {
         this.mEndTime = (Calendar) endTime.clone();
         this.mStartTimeMills = startTime.getTimeInMillis();
         this.mEndTimeMills = endTime.getTimeInMillis();
-        this.mName = name + "\n";
+        this.mName = name;
         this.mLocation = location;
         this.mIsGroupEvent = isGroupEvent;
         this.mGroupName = groupName;
@@ -94,7 +94,7 @@ public class MyWeekViewEvent extends WeekViewEvent {
     }
 
     public String getName() {
-        return mName;
+        return mName + "\n";
     }
 
     public void setName(String name) {
