@@ -1,19 +1,19 @@
 package com.group15.apps.carendar;
 
-import com.alamkanak.weekview.WeekViewEvent;
-
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.BusyType;
 import net.fortuna.ical4j.model.property.Clazz;
+import net.fortuna.ical4j.model.property.Comment;
 import net.fortuna.ical4j.model.property.Geo;
 import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Uid;
 
 import java.math.BigDecimal;
 import java.net.SocketException;
+import java.text.ParseException;
 import java.util.HashMap;
 
 /**
@@ -51,8 +51,9 @@ public class Utils {
         // add event type
         BusyType type = new BusyType(String.valueOf(event.getEventType()));
         vEvent.getProperties().add(type);
-
-        // TODO: color
+        // add event color, use comment to save the color
+        Comment comment = new Comment(String.valueOf(event.getColor()));
+        vEvent.getProperties().add(comment);
 
         return vEvent;
     }
@@ -73,14 +74,14 @@ public class Utils {
         event.setName(map.get(Property.SUMMARY));
         event.setEventKey(map.get(Property.UID));
         event.setLocation(map.get(Property.LOCATION));
-        // TODO:
         // add start time
+        event.setStartTimeMills(getTime(map.get(Property.DTSTART)));
         // add end time
-
+        event.setEndTimeMills(getTime(map.get(Property.DTEND)));
         // add geo
         String geo = map.get(Property.GEO);
         if(geo != null && geo.length() > 0){
-            String arr[] = geo.split(",");
+            String arr[] = geo.split(";");
             if(arr != null && arr.length == 2){
                 event.setLatitude(string2Double(arr[0]));
                 event.setLongitude(string2Double(arr[1]));
@@ -94,20 +95,27 @@ public class Utils {
         }
         // add event type
         String type = map.get(Property.BUSYTYPE);
-        if(type != null){
-            int t = 0;
-            try{
-                t = Integer.valueOf(type);
-            }catch (NumberFormatException e){
-                e.printStackTrace();
-            }
-            event.setEventType(t);
-        }
+        event.setEventType(string2Int(type));
+        // add color
+        String comment = map.get(Property.COMMENT);
+        event.setColor(string2Int(comment));
 
         return event;
     }
 
-    private static double string2Double(String value){
+    private static long getTime(String value){
+        if(value != null && value.length() > 0){
+            try {
+                DateTime dateTime = new DateTime(value);
+                return dateTime.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    public static double string2Double(String value){
         if(value != null && value.length() > 0){
             try {
                 double v = Double.valueOf(value);
@@ -117,6 +125,18 @@ public class Utils {
             }
         }
         return 0.0;
+    }
+
+    public static int string2Int(String value){
+        if(value != null && value.length() > 0){
+            try {
+                Integer integer = Integer.valueOf(value);
+                return integer.intValue();
+            }catch (NumberFormatException e){
+                e.printStackTrace();
+            }
+        }
+        return 0;
     }
 
 }

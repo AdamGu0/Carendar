@@ -36,8 +36,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -404,12 +406,52 @@ public class MainActivity extends AppCompatActivity {
     private void parseIcsData(Uri uri) {
         new ParseCalendarTask(uri, this, new ParseCalendarTask.OnParseFinishListener() {
             @Override
-            public void onParseFinish() {
-
+            public void onParseFinish(List<MyWeekViewEvent> eventList) {
+                if(isDestroyed()){
+                    return;
+                }
+                if(eventList == null || eventList.size() == 0){
+                    return;
+                }
+                updateEvents(eventList);
             }
         }).execute();
     }
 
+    private void updateEvents(List<MyWeekViewEvent> eventList){
+        Set<String> keys = getEventKeys();
+        for(MyWeekViewEvent event : eventList){
+            String key = event.getEventKey();
+            if(!keys.contains(key)){
+                // save to firebase
+                fb.child("users").child(mUserID).child("events").child(key).setValue(event);
+            }
+        }
+    }
+
+    private Set<String> getEventKeys(){
+        HashSet<String> set = new HashSet<>();
+        for(Map.Entry<Integer, List<MyWeekViewEvent>> entry : mPersonalEventsMap.entrySet()){
+            List<MyWeekViewEvent> events = entry.getValue();
+            for(MyWeekViewEvent event : events){
+                set.add(event.getEventKey());
+            }
+        }
+        return set;
+    }
+
+    private void addEvent(MyWeekViewEvent event){
+        Integer month = event.getStartTime().get(Calendar.MONTH);
+        List<MyWeekViewEvent> list = mPersonalEventsMap.get(month);
+        // list.contains()...
+        if(list == null || !list.contains(event)){
+            if(list == null){
+                list = new ArrayList<>();
+                mPersonalEventsMap.put(month, list);
+            }
+            list.add(event);
+        }
+    }
 
     private void addEventToList(int index, MyWeekViewEvent event) {
         List<MyWeekViewEvent> list = mPersonalEventsMap.get(index);
@@ -503,6 +545,7 @@ public class MainActivity extends AppCompatActivity {
                     endTime.setTimeInMillis(event.getEndTimeMills());
                     event.setStartTime(startTime);
                     event.setEndTime(endTime);
+                    int month = startTime.get(Calendar.MONTH);
                     List<MyWeekViewEvent> list = mPersonalEventsMap.get(startTime.get(Calendar.MONTH));
 
                     if (!list.contains(event)) {
