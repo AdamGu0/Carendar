@@ -21,7 +21,7 @@ public class MyWeekViewEvent extends WeekViewEvent {
     private boolean mIsGroupEvent;
     private String mGroupName;
     private int mType;
-    private double mLongitude;
+    private double mLongitude = 1;
     private double mLatitude;
     private String mEventKey;
     public MyWeekViewEvent() {

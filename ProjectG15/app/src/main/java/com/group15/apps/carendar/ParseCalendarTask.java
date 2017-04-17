@@ -57,6 +57,7 @@ public class ParseCalendarTask extends AsyncTask {
             for (Iterator i = calendar.getComponents().iterator(); i.hasNext(); ) {
                 Component component = (Component) i.next();
                 System.out.println("Component [" + component.getName() + "]");
+                MyWeekViewEvent event = Utils.property2WeekViewEvent(component.getProperties());
 
                 for (Iterator j = component.getProperties().iterator(); j.hasNext(); ) {
                     Property property = (Property) j.next();
