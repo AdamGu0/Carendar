@@ -167,23 +167,6 @@ public class AddEventActivity extends AppCompatActivity implements
             mTitle = etTitle.getText().toString();
             mGroupName = etGroupName.getText().toString();
 
-//            returnIntent.putExtra("mStartYear", mStartYear);
-//            returnIntent.putExtra("mStartMonth", mStartMonth);
-//            returnIntent.putExtra("mStartDay", mStartDay);
-//            returnIntent.putExtra("mStartHour", mStartHour);
-//            returnIntent.putExtra("mStartMinute", mStartMinute);
-//
-//            returnIntent.putExtra("mEndYear", mEndYear);
-//            returnIntent.putExtra("mEndMonth", mEndMonth);
-//            returnIntent.putExtra("mEndDay", mEndDay);
-//            returnIntent.putExtra("mEndHour", mEndHour);
-//            returnIntent.putExtra("mEndMinute", mEndMinute);
-//
-//            returnIntent.putExtra("location", mLocation);
-//            returnIntent.putExtra("title", mTitle);
-//            returnIntent.putExtra("isGroupEvent", mIsGroupEvent);
-//            returnIntent.putExtra("groupName", mGroupName);
-
             putValues(returnIntent);
             setResult(Activity.RESULT_OK,returnIntent);
             finish();

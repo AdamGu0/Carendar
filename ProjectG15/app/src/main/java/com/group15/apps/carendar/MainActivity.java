@@ -545,16 +545,13 @@ public class MainActivity extends AppCompatActivity {
                     endTime.setTimeInMillis(event.getEndTimeMills());
                     event.setStartTime(startTime);
                     event.setEndTime(endTime);
-                    int month = startTime.get(Calendar.MONTH);
                     List<MyWeekViewEvent> list = mPersonalEventsMap.get(startTime.get(Calendar.MONTH));
 
                     if (!list.contains(event)) {
                         list.add(event);
                     }
                 }
-                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
-                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
-                calendarFragment.notifyChange();
+                CreateCalendarFragment();
             }
 
             @Override
@@ -566,9 +563,8 @@ public class MainActivity extends AppCompatActivity {
                         list.remove(i);
                     }
                 }
-                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
-                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
-                calendarFragment.notifyChange();
+                CreateCalendarFragment();
+
             }
 
             @Override
@@ -585,9 +581,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
-                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
-                calendarFragment.notifyChange();
+                CreateCalendarFragment();
 
             }
 
@@ -601,5 +595,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         } );
+    }
+
+
+    private void CreateCalendarFragment() {
+        CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
+        if (calendarFragment != null) {
+            calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
+            calendarFragment.notifyChange();
+        }
+
     }
 }
