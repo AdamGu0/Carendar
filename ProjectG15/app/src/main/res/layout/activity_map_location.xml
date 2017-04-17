@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="25dp"
+    tools:context=".MapShowingActivity">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/btnMyLocation"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_gravity="end|bottom"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/ic_gps_fixed_black_48dp"
+            android:paddingBottom="30dp"
+            android:paddingRight="30dp" />
+    </fragment>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="4dip"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <EditText
+            android:id="@+id/etxtSearchLocation"
+            android:layout_width="325dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="4dip"
+            android:layout_marginRight="4dip"
+            android:background="@drawable/text_shape"
+            android:hint="Search a place"
+            android:maxLines="1"
+            android:minLines="1"
+            android:paddingLeft="2dip"
+            android:textCursorDrawable="@color/cursurBlack" />
+
+        <ImageButton
+            android:id="@+id/btnSearchLocation"
+            android:layout_width="20dip"
+            android:layout_height="35dip"
+            android:background="@drawable/ic_keyboard_return_black_48dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Confirm" />
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Cancel" />
+    </LinearLayout>
+
+</RelativeLayout>

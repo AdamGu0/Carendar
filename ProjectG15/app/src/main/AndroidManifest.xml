@@ -33,6 +33,9 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <activity android:name=".MapLocationActivity">
+        </activity>
+
         <activity android:name=".ShowEventActivity"></activity>
 
         <meta-data

@@ -50,7 +50,9 @@
             android:text="SELECT ON MAP"/>
         <EditText
             android:id="@+id/et_location"
+            android:maxLines="1"
             android:layout_width="match_parent"
+            android:textSize="14sp"
             android:layout_height="match_parent" />
     </LinearLayout>
     <LinearLayout

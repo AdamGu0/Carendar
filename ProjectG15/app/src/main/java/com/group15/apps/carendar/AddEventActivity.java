@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ import java.util.Calendar;
 public class AddEventActivity extends AppCompatActivity implements
         View.OnClickListener {
 
+    private final static int REQUEST_CODE_SELECT_LOCATION = 1;
     Button btnStartDatePicker, btnStartTimePicker, btnEndDatePicker, btnEndTimePicker, btnIsGroupEvent, btnSave;
     EditText etStartDate, etStartTime, etEndDate, etEndTime, etLocation, etTitle, etGroupName;
     private int mStartYear, mStartMonth, mStartDay, mStartHour, mStartMinute;
@@ -70,6 +72,8 @@ public class AddEventActivity extends AppCompatActivity implements
         btnEndTimePicker.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
+        Button btnSelectLoc = (Button) findViewById(R.id.btn_select_location);
+        btnSelectLoc.setOnClickListener(this);
         setupSpinner();
     }
 
@@ -171,6 +175,31 @@ public class AddEventActivity extends AppCompatActivity implements
             setResult(Activity.RESULT_OK,returnIntent);
             finish();
 
+        } else if(v.getId() == R.id.btn_select_location){
+            onSelectLocationClicked();
+        }
+    }
+
+    private void onSelectLocationClicked(){
+        Intent intent = new Intent(this, MapLocationActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_SELECT_LOCATION);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_CODE_SELECT_LOCATION){
+            if(resultCode == Activity.RESULT_OK && data != null){
+                mLongitude = data.getDoubleExtra("longitude", 0.0);
+                mLatitude = data.getDoubleExtra("latitude", 0.0);
+                String location = data.getStringExtra("name");
+                if(etLocation != null){
+                    etLocation.setText(location);
+                }
+            }else{
+                // error
+            }
+        }else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
