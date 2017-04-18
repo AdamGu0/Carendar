@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by Lei on 4/15/2017.
+ * Created by Lei
  */
 
 public class ParseCalendarTask extends AsyncTask {
