@@ -137,7 +137,8 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         }
         Calendar calendar = Calendar.getInstance();
         if(newMonth == (calendar.get(Calendar.MONTH)+1))
-            mWeekView.goToToday();
+            mWeekView.goToDate(calendar);
+            mWeekView.goToHour(calendar.get(Calendar.HOUR_OF_DAY));
 
         return list;
     }
