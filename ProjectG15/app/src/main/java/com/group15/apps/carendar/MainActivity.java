@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle);
-
+        mDrawer.addDrawerListener(new drawerListener());
         if (savedInstanceState == null) {
             navItemIndex = 0;
             CURRENT_TAG = TAG_CALENDAR;
@@ -341,6 +341,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
     }
 
     @Override
@@ -604,5 +605,30 @@ public class MainActivity extends AppCompatActivity {
             calendarFragment.notifyChange();
         }
 
+    }
+
+    private class drawerListener implements DrawerLayout.DrawerListener{
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            mSpinner.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            if (navItemIndex == 0) {
+                mSpinner.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+            mSpinner.setVisibility(View.INVISIBLE);
+
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+
+        }
     }
 }
