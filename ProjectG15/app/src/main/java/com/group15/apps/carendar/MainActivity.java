@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.alamkanak.weekview.WeekViewEvent;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -323,7 +325,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    ;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -450,7 +451,40 @@ public class MainActivity extends AppCompatActivity {
                 mPersonalEventsMap.put(month, list);
             }
             list.add(event);
+            onEventsUpdate();
         }
+    }
+
+    /**
+     * Put the classes events into reminder service. Silent the phone before class.
+     * call this function after updating the events.
+     */
+    private void onEventsUpdate(){
+        ArrayList<ReminderEvent> classEvents = getClassesEvents();
+        if(classEvents != null && classEvents.size() > 0){
+            Intent intent = new Intent(this, ReminderService.class);
+            intent.putParcelableArrayListExtra("events", classEvents);
+            startService(intent);
+        }
+    }
+
+    private ArrayList<ReminderEvent> getClassesEvents(){
+        if(mPersonalEventsMap != null && mPersonalEventsMap.size() > 0){
+            ArrayList<ReminderEvent> events = new ArrayList<>();
+            final long now = System.currentTimeMillis();
+            for(Map.Entry<Integer, List<MyWeekViewEvent>> entry : mPersonalEventsMap.entrySet()){
+                List<MyWeekViewEvent> eventList = entry.getValue();
+                if(eventList != null && eventList.size() > 0){
+                    for (MyWeekViewEvent event : eventList){
+                        if(event.getStartTimeMills() > now && event.getEventType() == EventType.CLASS){
+                            events.add(new ReminderEvent(event));
+                        }
+                    }
+                }
+            }
+            return events;
+        }
+        return new ArrayList<>(0);
     }
 
     private void addEventToList(int index, MyWeekViewEvent event) {
@@ -460,6 +494,7 @@ public class MainActivity extends AppCompatActivity {
         }
         list.add(event);
         mPersonalEventsMap.put(index, list);
+        onEventsUpdate();
     }
 
     @Override
@@ -549,6 +584,8 @@ public class MainActivity extends AppCompatActivity {
 
                     if (!list.contains(event)) {
                         list.add(event);
+                        // call this function to notify the class reminder
+                        onEventsUpdate();
                     }
                 }
                 CreateCalendarFragment();
@@ -561,6 +598,8 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getEventKey().equals(event.getEventKey())) {
                         list.remove(i);
+                        // call this function to notify the class reminder
+                        onEventsUpdate();
                     }
                 }
                 CreateCalendarFragment();
@@ -578,6 +617,8 @@ public class MainActivity extends AppCompatActivity {
                     if (list.get(i).getEventKey().equals(event.getEventKey())) {
                         list.remove(i);
                         list.add(i, event);
+                        // call this function to notify the class reminder
+                        onEventsUpdate();
                     }
                 }
 

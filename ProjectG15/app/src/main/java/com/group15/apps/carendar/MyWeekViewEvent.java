@@ -160,7 +160,12 @@ public class MyWeekViewEvent extends WeekViewEvent {
 
     @Override
     public boolean equals(Object o) {
-
+        if(this == o){
+            return true;
+        }
+        if(o == null || getClass() != o.getClass() || getEventKey() == null){
+            return false;
+        }
 
         MyWeekViewEvent that = (MyWeekViewEvent) o;
 

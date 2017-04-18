@@ -79,7 +79,7 @@ public class AddEventActivity extends AppCompatActivity implements
 
     private void setupSpinner(){
         Spinner spinner = (Spinner)findViewById(R.id.sp_event_type);
-        String[] types = new String[]{"Class", "Meeting", "Other"};
+        String[] types = EventType.TYPES;
         MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(this, types);
         spinner.setAdapter(spinnerAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
