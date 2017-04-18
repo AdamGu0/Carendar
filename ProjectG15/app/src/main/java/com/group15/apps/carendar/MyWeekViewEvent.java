@@ -160,11 +160,10 @@ public class MyWeekViewEvent extends WeekViewEvent {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        WeekViewEvent that = (WeekViewEvent) o;
 
-        return this.getName() == that.getName() && this.getLocation() == that.getLocation();
+        MyWeekViewEvent that = (MyWeekViewEvent) o;
+
+        return this.getEventKey().equals(that.getEventKey());
     }
 }

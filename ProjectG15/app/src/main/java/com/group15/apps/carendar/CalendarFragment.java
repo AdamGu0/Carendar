@@ -63,6 +63,7 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
 
         mWeekView.setMonthChangeListener(this);
         mWeekView.setOnEventClickListener(this);
+        mWeekView.goToToday();
 
         setupDateTimeInterpreter(true);
 
@@ -72,6 +73,7 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
 
         setupDateTimeInterpreter(false);
+
     }
 
     public void notifyChange() {
@@ -133,6 +135,10 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         if (list == null) {
             return new ArrayList<>();
         }
+        Calendar calendar = Calendar.getInstance();
+        if(newMonth == (calendar.get(Calendar.MONTH)+1))
+            mWeekView.goToToday();
+
         return list;
     }
 
