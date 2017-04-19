@@ -4,6 +4,8 @@ package com.group15.apps.carendar;
  * Created by Neo on 3/10/17.
  */
 
+import android.graphics.Color;
+
 import com.alamkanak.weekview.WeekViewEvent;
 import com.google.firebase.database.Exclude;
 
@@ -40,7 +42,7 @@ public class MyWeekViewEvent extends WeekViewEvent {
         this.mGroupName = groupName;
         this.mEventKey = eventKey;
 
-        if (isGroupEvent) setColor(R.color.event_color_01);
+        if (isGroupEvent) setColor(Color.rgb(89, 219, 224));
     }
 
     public String getEventKey() {
