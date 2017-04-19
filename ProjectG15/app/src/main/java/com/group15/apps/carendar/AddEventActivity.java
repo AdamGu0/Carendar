@@ -6,7 +6,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -273,5 +272,7 @@ public class AddEventActivity extends AppCompatActivity implements
         intent.putExtra("type", mEventType);
         intent.putExtra("isGroupEvent", mIsGroupEvent);
         intent.putExtra("groupName", mGroupName);
+        intent.putExtra("longitude", mLongitude);
+        intent.putExtra("latitude", mLatitude);
     }
 }

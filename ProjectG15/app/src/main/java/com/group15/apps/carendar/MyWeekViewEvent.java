@@ -34,11 +34,13 @@ public class MyWeekViewEvent extends WeekViewEvent {
         this.mEndTime = (Calendar) endTime.clone();
         this.mStartTimeMills = startTime.getTimeInMillis();
         this.mEndTimeMills = endTime.getTimeInMillis();
-        this.mName = name;
+        this.mName = name + "\n";
         this.mLocation = location;
         this.mIsGroupEvent = isGroupEvent;
         this.mGroupName = groupName;
         this.mEventKey = eventKey;
+
+        if (isGroupEvent) setColor(R.color.event_color_01);
     }
 
     public String getEventKey() {
@@ -94,7 +96,7 @@ public class MyWeekViewEvent extends WeekViewEvent {
     }
 
     public String getName() {
-        return mName + "\n";
+        return mName;
     }
 
     public void setName(String name) {

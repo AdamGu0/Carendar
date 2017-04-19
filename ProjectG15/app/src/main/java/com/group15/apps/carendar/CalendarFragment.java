@@ -153,9 +153,14 @@ public class CalendarFragment extends Fragment  implements MonthLoader.MonthChan
         intent.putExtra("mEndTimeMills", e.getEndTimeMills());
 
         intent.putExtra("mLocation", e.getLocation());
-        intent.putExtra("mTitle", e.getName());
-        String key = e.getEventKey();
-        intent.putExtra("EVENT_KEY", key);
+        intent.putExtra("mTitle", e.getName().replaceAll("\n",""));
+        intent.putExtra("type", e.getEventType());
+        intent.putExtra("isGroupEvent", e.getIsGroupEvent());
+        intent.putExtra("groupName", e.getGroupName());
+        intent.putExtra("longitude", e.getLongitude());
+        intent.putExtra("latitude", e.getLatitude());
+
+        intent.putExtra("EVENT_KEY", e.getEventKey());
 
         this.startActivity(intent);
     }

@@ -13,20 +13,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:id="@+id/et_title"
-            android:layout_marginTop="82dp"
+            android:id="@+id/et_title_show"
+            android:layout_marginTop="50dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Add Title"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Event type"/>
+
+        <Spinner
+            android:id="@+id/sp_event_type_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+        </Spinner>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
         android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_select_location_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SELECT ON MAP"/>
         <EditText
-            android:id="@+id/et_location"
+            android:id="@+id/et_location_show"
+            android:maxLines="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="Add Location"/>
+            android:textSize="14sp"
+            android:layout_height="match_parent" />
     </LinearLayout>
     <LinearLayout
         android:layout_height="wrap_content"
@@ -35,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CHANGE START DATE"
-            android:id="@+id/btn_start_date"
+            android:id="@+id/btn_start_date_show"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -43,7 +68,7 @@
         <EditText
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:id="@+id/in_start_date"
+            android:id="@+id/in_start_date_show"
             android:layout_alignBottom="@+id/btn_start_date"
             android:layout_toRightOf="@+id/btn_start_date"
             android:layout_toEndOf="@+id/btn_start_date"
@@ -56,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CHANGE START TIME"
-            android:id="@+id/btn_start_time"
+            android:id="@+id/btn_start_time_show"
             android:layout_below="@+id/btn_start_date"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -65,7 +90,7 @@
         <EditText
             android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:id="@+id/in_start_time"
+            android:id="@+id/in_start_time_show"
             android:layout_below="@+id/in_date"
             android:layout_toRightOf="@+id/btn_start_time"/>
     </LinearLayout>
@@ -76,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CHANGE END DATE"
-            android:id="@+id/btn_end_date"
+            android:id="@+id/btn_end_date_show"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -84,7 +109,7 @@
         <EditText
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:id="@+id/in_end_date"
+            android:id="@+id/in_end_date_show"
             android:layout_alignBottom="@+id/btn_end_date"
             android:layout_toRightOf="@+id/btn_end_date"
             android:layout_toEndOf="@+id/btn_end_date"
@@ -97,7 +122,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CHANGE END TIME"
-            android:id="@+id/btn_end_time"
+            android:id="@+id/btn_end_time_show"
             android:layout_below="@+id/btn_end_date"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -105,8 +130,47 @@
         <EditText
             android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:id="@+id/in_end_time"
+            android:id="@+id/in_end_time_show"
             android:layout_below="@+id/in_end_date"
+            android:layout_toRightOf="@+id/btn_end_time"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Personal Event"
+                android:id="@+id/radio_personal_show"
+                android:onClick="onRadioButtonClicked"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:id="@+id/radio_group_show"
+                android:text="Group Event"
+                android:layout_height="wrap_content"
+                android:onClick="onRadioButtonClicked"/>
+        </RadioGroup>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_group_name_show"
+            android:visibility="invisible"
+            android:text="Group Name:"/>
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_group_name_show"
+            android:visibility="invisible"
             android:layout_toRightOf="@+id/btn_end_time"/>
     </LinearLayout>
 
@@ -114,7 +178,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="update"
-        android:id="@+id/btn_update"
+        android:id="@+id/btn_update_show"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         />
@@ -122,7 +186,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="delete"
-        android:id="@+id/btn_delete"
+        android:id="@+id/btn_delete_show"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         />

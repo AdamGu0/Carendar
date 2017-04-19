@@ -24,7 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.alamkanak.weekview.WeekViewEvent;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,7 +33,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -56,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton mFloatingActionButton;
     private Spinner mSpinner;
-    private int mEventType = 0;
 
     private DatabaseReference fb;
     //    private FirebaseDatabase mFirebaseDatabase;
@@ -388,7 +385,8 @@ public class MainActivity extends AppCompatActivity {
 
                 MyWeekViewEvent event = new MyWeekViewEvent(title, location, startTime, endTime, isGroupEvnet, groupName, key);
                 event.setEventType(eventType);
-                event.setColor(getResources().getColor(R.color.event_color_01));
+                event.setLongitude(data.getDoubleExtra("longitude", 0));
+                event.setLatitude(data.getDoubleExtra("latitude", 0));
 
                 fb.child("users").child(mUserID).child("events").child(key).setValue(event);
                 addEventToList(data.getIntExtra("mStartMonth", 0), event);
