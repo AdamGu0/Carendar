@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     Toast.makeText(MainActivity.this, "You're are now signed in. Welcome to Calendar.", Toast.LENGTH_SHORT).show();
-
+                    retrieveEvents();
                 } else {
                     startActivityForResult(AuthUI.getInstance()
                             .createSignInIntentBuilder()
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.flContent, calendarFragment, TAG_CALENDAR);
         // Complete the changes added above
         ft.commit();
-        retrieveEvents();
+
 
         for (int i = 0; i < 12; i++) {
             mPersonalEventsMap.put(i, new ArrayList<MyWeekViewEvent>());
@@ -354,6 +354,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
+            retrieveEvents();
             if (resultCode == RESULT_OK) {
                 Toast.makeText(this, "Sign in!", Toast.LENGTH_LONG).show();
             } else if (resultCode == RESULT_CANCELED) {
