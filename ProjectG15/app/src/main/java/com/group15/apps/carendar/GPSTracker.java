@@ -93,7 +93,7 @@ public final class GPSTracker implements LocationListener {
             }
 
             if (checkGPS) {
-                Toast.makeText(mContext,"GPS",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext,"GPS",Toast.LENGTH_SHORT).show();
                 if (loc == null) {
                     try {
                         locationManager.requestLocationUpdates(

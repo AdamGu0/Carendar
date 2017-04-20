@@ -17,6 +17,8 @@ import java.util.List;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
+import static java.security.AccessController.getContext;
+
 /**
  * Created by Lei
  */
@@ -97,8 +99,10 @@ public class ReminderService extends Service {
         @Override
         public void run() {
             try {
-                sleep(5000);
-                runOnUiThread();
+                while(true){
+                    sleep(5000);
+                    runOnUiThread();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -118,7 +122,7 @@ public class ReminderService extends Service {
         if(mCurrentEvent != null){
             processEndEvent(mCurrentEvent);
         }else if (mWaitingEvents != null && mWaitingEvents.size() > 0){
-            removePassedEvents();
+//            removePassedEvents();
             processTheComingEvent();
         }
     }
@@ -156,19 +160,20 @@ public class ReminderService extends Service {
     }
 
     private boolean isInTheClassroom(ReminderEvent event){
-        if(mGPSTracker == null){
-            mGPSTracker = new GPSTracker(getApplicationContext());
-        }
-        mGPSTracker.getLocation();
-        float[] result = new float[1];
-        // get the distance in meters
-        Location.distanceBetween(event.getLatitude(), event.getLongitude(),
-                getCurrentLatitude(), getCurrentLongitude(), result);
-        float distance = result[0];
-        if(distance <= 50){
-            return true;
-        }
-        return false;
+//        if(mGPSTracker == null){
+//            mGPSTracker = new GPSTracker(getApplicationContext());
+//        }
+//        mGPSTracker.getLocation();
+//        float[] result = new float[1];
+//        // get the distance in meters
+//        Location.distanceBetween(event.getLatitude(), event.getLongitude(),
+//                getCurrentLatitude(), getCurrentLongitude(), result);
+//        float distance = result[0];
+//        if(distance <= 50){
+//            return true;
+//        }
+//        return false;
+        return true;
     }
 
     private double getCurrentLongitude(){
@@ -190,7 +195,7 @@ public class ReminderService extends Service {
         Iterator<ReminderEvent> it = mWaitingEvents.iterator();
         while(it.hasNext()){
             ReminderEvent event = it.next();
-            if(event.getStartTimeMills() > now){
+            if(event.getStartTimeMills() < now){
                 it.remove();
             }
         }
@@ -201,6 +206,7 @@ public class ReminderService extends Service {
         if(now >= event.getEndTimeMills()){
             setPhoneNormal();
             longToast(String.format("Class %s is over, set the phone to normal mode.", event.getName()));
+            mCurrentEvent = null;
         }
     }
 
