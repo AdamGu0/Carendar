@@ -173,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     private void onFilterItemSelected(int position) {
         CalendarFragment c = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
         if (c == null) return;
@@ -309,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_map_fragment:
                 CURRENT_TAG = TAG_MAP;
-                navItemIndex = 2;
+                //navItemIndex = 2;
                 Intent intent = new Intent(MainActivity.this, MapShowingActivity.class);
                 startActivityForResult(intent, RC_MAP_FINISH);
                 mDrawer.closeDrawers();
@@ -347,7 +349,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-
     }
 
     @Override
@@ -408,6 +409,8 @@ public class MainActivity extends AppCompatActivity {
             if (data != null && data.getData() != null) {
                 parseIcsData(data.getData());
             }
+        } else if (requestCode == RC_MAP_FINISH) {
+            toggleFab();
         }
     }
 
@@ -665,12 +668,14 @@ public class MainActivity extends AppCompatActivity {
         public void onDrawerClosed(View drawerView) {
             if (navItemIndex == 0) {
                 mSpinner.setVisibility(View.VISIBLE);
+                mFloatingActionButton.show();
             }
         }
 
         @Override
         public void onDrawerSlide(View drawerView, float slideOffset) {
             mSpinner.setVisibility(View.INVISIBLE);
+            mFloatingActionButton.hide();
 
         }
 
