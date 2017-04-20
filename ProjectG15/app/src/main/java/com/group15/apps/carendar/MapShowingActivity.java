@@ -1,7 +1,10 @@
 package com.group15.apps.carendar;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -94,7 +97,29 @@ public class MapShowingActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Button btnNav = (Button)findViewById(R.id.btn_navigation);
+        btnNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (locationMarker != null && locationMarker.getPosition() != null) {
+                    double longitude = locationMarker.getPosition().longitude;
+                    double latitude = locationMarker.getPosition().latitude;
+                    String name = locationMarker.getTitle();
+                    navigate(latitude, longitude, name);
+                }
+            }
+        });
+
     }
+
+    private void navigate(double dstLatitude, double dstLongitude, String name){
+        String format = "geo:0,0?q=" + dstLatitude + "," + dstLongitude + name;
+        Uri uri = Uri.parse(format);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mapReady = true;
