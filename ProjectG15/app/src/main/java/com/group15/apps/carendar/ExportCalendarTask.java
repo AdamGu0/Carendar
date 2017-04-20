@@ -82,6 +82,7 @@ public class ExportCalendarTask extends AsyncTask {
         FileOutputStream fout = null;
         try {
             File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+//            File path = Environment.getExternalStorageDirectory();
             fout = new FileOutputStream(new File(path, "mycalendar.ics"));
             CalendarOutputter outputter = new CalendarOutputter();
             outputter.output(icsCalendar, fout);
