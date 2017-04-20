@@ -1,12 +1,17 @@
 package com.group15.apps.carendar;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -65,7 +70,7 @@ public class MapLocationActivity extends FragmentActivity
                     locationMarker = map.addMarker(new MarkerOptions()
                             .position(myLocation)
                             .title(name));
-                    locationMarker.showInfoWindow();
+//                    locationMarker.showInfoWindow();
                 }
             }
         });
@@ -74,6 +79,7 @@ public class MapLocationActivity extends FragmentActivity
             public void onClick(View v) {
                 String address = edtxtLocation.getText().toString();
                 searchLocationByString(address);
+                hideInputMethod();
             }
         });
 
@@ -93,11 +99,11 @@ public class MapLocationActivity extends FragmentActivity
         });
     }
 
-    private String getLocationNameFromCoordinate(double latitude, double longitude){
+    private String getLocationNameFromCoordinate(double latitude, double longitude) {
         Geocoder geoCoder = new Geocoder(MapLocationActivity.this, Locale.getDefault());
         try {
             List<Address> addresses = geoCoder.getFromLocation(latitude, longitude, 1);
-            if(addresses != null && addresses.size() > 0){
+            if (addresses != null && addresses.size() > 0) {
                 Address addr = addresses.get(0);
                 return addr.getFeatureName();
             }
@@ -107,8 +113,8 @@ public class MapLocationActivity extends FragmentActivity
         return null;
     }
 
-    private void onConfirmClicked(){
-        if(locationMarker != null && locationMarker.getPosition() != null){
+    private void onConfirmClicked() {
+        if (locationMarker != null && locationMarker.getPosition() != null) {
             double longitude = locationMarker.getPosition().longitude;
             double latitude = locationMarker.getPosition().latitude;
             String name = locationMarker.getTitle();
@@ -118,12 +124,12 @@ public class MapLocationActivity extends FragmentActivity
             intent.putExtra("latitude", latitude);
             setResult(Activity.RESULT_OK, intent);
             finish();
-        }else{
+        } else {
             onCancelClicked();
         }
     }
 
-    private void onCancelClicked(){
+    private void onCancelClicked() {
         setResult(Activity.RESULT_CANCELED);
         finish();
     }
@@ -132,20 +138,55 @@ public class MapLocationActivity extends FragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         mapReady = true;
         map = googleMap;
+        map.setPadding(0, 100, 0, 10);
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        map.getUiSettings().setZoomControlsEnabled(true);
+//        map.getUiSettings().setMyLocationButtonEnabled(true);
         LatLng ASU = new LatLng(33.4242444, -111.9302414);
         CameraPosition target = CameraPosition.builder().target(ASU).zoom(14).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
-        locationMarker = map.addMarker(new MarkerOptions()
-                .position(ASU)
-                .title("Arizona State University"));
-        locationMarker.showInfoWindow();
+//        locationMarker = map.addMarker(new MarkerOptions()
+//                .position(ASU)
+//                .title("Arizona State University"));
+//        locationMarker.showInfoWindow();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+            }, 1);
+            return;
+        }
+        map.setMyLocationEnabled(true);
+    }
+
+    private void hideInputMethod(){
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 1){
+            if(map != null){
+                try{
+                    map.setMyLocationEnabled(true);
+                }catch (SecurityException e){
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     //https://developer.android.com/reference/android/location/Geocoder.html
     public void searchLocationByString(String address) {
         Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
-        locationMarker.remove();
+        if(locationMarker != null){
+            locationMarker.remove();
+        }
         try {
             if (address.equalsIgnoreCase("MU") || address.equalsIgnoreCase("memorial union")) {
                 List<Address> addresses = geoCoder.getFromLocationName("301 Orange Mall, Tempe", 1);
