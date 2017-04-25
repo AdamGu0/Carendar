@@ -131,13 +131,17 @@ public class ReminderService extends Service {
         if(mWaitingEvents != null && mWaitingEvents.size() > 0){
             updateLocation();
             ReminderEvent event = mWaitingEvents.get(0);
-            isInTheClassroom(event);
-            if(isTimeClose(event.getStartTimeMills()) && isInTheClassroom(event)){
+            boolean isInClassroom = false;
+            if(isEventComing(event.getStartTimeMills(), 5)){
+                isInClassroom = isInTheClassroom(event);
+            }
+            if(isTimeClose(event.getStartTimeMills()) && isInClassroom){
                 // Silent the phone when the class is going to begin.
                 setPhoneSilent();
                 longToast(String.format("Class %s is going to begin, silent the phone.", event.getName()));
                 mCurrentEvent = event;
                 mWaitingEvents.remove(0);
+                stopLocation();
             }
         }
     }
@@ -153,27 +157,44 @@ public class ReminderService extends Service {
         }
     }
 
+    private void stopLocation(){
+        if(mGPSTracker != null){
+            mGPSTracker.stopUsingGPS();
+        }
+    }
+
+    /**
+     *
+     * @param eventStartTimeMillis
+     * @return true if the class will begin in 2 minutes, false otherwise
+     */
     private boolean isTimeClose(long eventStartTimeMillis){
         final long now = System.currentTimeMillis();
         // The event is going to happen in 3 minutes.
-        return eventStartTimeMillis <= now + 3 * 60 * 1000;
+        return eventStartTimeMillis <= now + 2 * 60 * 1000;
+    }
+
+    private boolean isEventComing(long eventStartTimeMillis, int minutes){
+        final long now = System.currentTimeMillis();
+        // The event is going to happen in 3 minutes.
+        return eventStartTimeMillis <= now + minutes * 60 * 1000;
     }
 
     private boolean isInTheClassroom(ReminderEvent event){
-//        if(mGPSTracker == null){
-//            mGPSTracker = new GPSTracker(getApplicationContext());
-//        }
-//        mGPSTracker.getLocation();
-//        float[] result = new float[1];
-//        // get the distance in meters
-//        Location.distanceBetween(event.getLatitude(), event.getLongitude(),
-//                getCurrentLatitude(), getCurrentLongitude(), result);
-//        float distance = result[0];
-//        if(distance <= 50){
-//            return true;
-//        }
-//        return false;
-        return true;
+        if(mGPSTracker == null){
+            mGPSTracker = new GPSTracker(getApplicationContext());
+        }
+        mGPSTracker.getLocation();
+        float[] result = new float[1];
+        // get the distance in meters
+        Location.distanceBetween(event.getLatitude(), event.getLongitude(),
+                getCurrentLatitude(), getCurrentLongitude(), result);
+        float distance = result[0];
+        if(distance <= 50){
+            return true;
+        }
+        return false;
+//        return true;
     }
 
     private double getCurrentLongitude(){
