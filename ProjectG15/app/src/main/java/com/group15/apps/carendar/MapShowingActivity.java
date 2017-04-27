@@ -1,6 +1,5 @@
 package com.group15.apps.carendar;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;

@@ -25,6 +25,7 @@ import java.util.Map;
 
 /**
  * Created by Neo on 3/18/17.
+ * week view is built on Android-Week-View library https://github.com/alamkanak/Android-Week-View
  */
 public class CalendarFragment extends Fragment  implements MonthLoader.MonthChangeListener, WeekView.EventClickListener {
 

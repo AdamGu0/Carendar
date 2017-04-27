@@ -42,6 +42,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * the code to implement navigation drawer is adapted from
+ * http://www.androidhive.info/2013/11/android-sliding-menu-using-navigation-drawer/
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,16 +61,12 @@ public class MainActivity extends AppCompatActivity {
     private Spinner mSpinner;
 
     private DatabaseReference fb;
-    //    private FirebaseDatabase mFirebaseDatabase;
-//    private DatabaseReference mEventDatabaseReference;
-    private ChildEventListener mChildEventListener;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
     static final int RC_ADD_EVENT = 2;
     static final int RC_MAP_FINISH = 3;
     static final int RC_SELECT_ICS = 4;
-    static final int RC_UPDATE = 5;
     private static final String TAG_CALENDAR = "calendar";
     private static final String TAG_ACCOUNT = "account";
     private static final String TAG_MAP = "map";
@@ -238,27 +238,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
         return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open, R.string.drawer_close);
     }
 
 
-    // `onPostCreate` called when activity start-up is complete after `onStart()`
-    // NOTE 1: Make sure to override the method with only a single `Bundle` argument
-    // Note 2: Make sure you implement the correct `onPostCreate(Bundle savedInstanceState)` method.
-    // There are 2 signatures and only `onPostCreate(Bundle state)` shows the hamburger icon.
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
         drawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
@@ -401,9 +393,7 @@ public class MainActivity extends AppCompatActivity {
                 fb.child("users").child(mUserID).child("events").child(key).setValue(event);
                 addEventToList(data.getIntExtra("mStartMonth", 0), event);
 
-//                CalendarFragment calendarFragment = (CalendarFragment) getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
-//                calendarFragment.updatePersonalEventMap(mPersonalEventsMap);
-//                calendarFragment.notifyChange();
+
             }
         } else if (requestCode == RC_SELECT_ICS) {
             if (data != null && data.getData() != null) {
@@ -451,19 +441,6 @@ public class MainActivity extends AppCompatActivity {
         return set;
     }
 
-    private void addEvent(MyWeekViewEvent event){
-        Integer month = event.getStartTime().get(Calendar.MONTH);
-        List<MyWeekViewEvent> list = mPersonalEventsMap.get(month);
-        // list.contains()...
-        if(list == null || !list.contains(event)){
-            if(list == null){
-                list = new ArrayList<>();
-                mPersonalEventsMap.put(month, list);
-            }
-            list.add(event);
-            onEventsUpdate();
-        }
-    }
 
     /**
      * Put the classes events into reminder service. Silent the phone before class.

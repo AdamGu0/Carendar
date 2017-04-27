@@ -23,6 +23,7 @@ import java.util.Calendar;
 
 /**
  * Created by Neo on 3/11/17.
+ * The code to implement date and time picker are adapted from http://www.journaldev.com/9976/android-date-time-picker-dialog
  */
 
 public class AddEventActivity extends AppCompatActivity implements
