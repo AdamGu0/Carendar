@@ -81,6 +81,7 @@ public class ReminderService extends Service {
         }
     }
 
+    // reference: http://stackoverflow.com/questions/7317974/android-mute-unmute-phone
     private void setPhoneSilent() {
         AudioManager am = (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
         //For Silent mode
@@ -89,6 +90,7 @@ public class ReminderService extends Service {
 //        am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
     }
 
+    // reference: http://stackoverflow.com/questions/7317974/android-mute-unmute-phone
     private void setPhoneNormal(){
         AudioManager am = (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
         //For Normal mode

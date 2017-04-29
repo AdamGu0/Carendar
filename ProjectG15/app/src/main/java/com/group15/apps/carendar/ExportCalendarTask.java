@@ -63,6 +63,7 @@ public class ExportCalendarTask extends AsyncTask {
         }
     }
 
+    // reference: http://ical4j.sourceforge.net/introduction.html
     private void exportCalendar(Map<Integer, List<MyWeekViewEvent>> eventsMap){
         if(eventsMap != null && eventsMap.size() > 0){
             Set<Integer> keys = eventsMap.keySet();

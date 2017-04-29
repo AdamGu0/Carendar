@@ -58,6 +58,7 @@ public class ParseCalendarTask extends AsyncTask {
             CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
             net.fortuna.ical4j.model.Calendar calendar = builder.build(is);
             List<MyWeekViewEvent> eventList = new ArrayList<>();
+            // reference: http://ical4j.sourceforge.net/introduction.html
             for (Iterator i = calendar.getComponents().iterator(); i.hasNext(); ) {
                 Component component = (Component) i.next();
                 System.out.println("Component [" + component.getName() + "]");
